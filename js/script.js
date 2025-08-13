@@ -202,7 +202,6 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        document.body.classList.remove('header-hidden');
         document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
         targetPage.classList.add('active');
         setupScrollAnimations(targetPage);
@@ -800,7 +799,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // 1. Find all matching services
         for (const serviceName in botBrain.services) {
             for (const keyword of botBrain.services[serviceName].keywords) {
-                const keywordRegex = new RegExp(`\\b${keyword.replace(/ /g, '\\s')}\\b`);
+                const keywordRegex = new RegExp(`\\b${keyword}\\b`);
                 if (keywordRegex.test(normalizedInput)) {
                     servicesFound.push({ service: serviceName, score: keyword.length });
                 }
@@ -810,7 +809,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // 2. Find all matching intents
         for (const intentName in botBrain.intents) {
             for (const keyword of botBrain.intents[intentName]) {
-                const keywordRegex = new RegExp(`\\b${keyword.replace(/ /g, '\\s')}\\b`);
+                const keywordRegex = new RegExp(`\\b${keyword}\\b`);
                 if (keywordRegex.test(normalizedInput)) {
                     intentsFound.push({ intent: intentName, score: keyword.length });
                 }
@@ -898,11 +897,12 @@ document.addEventListener('DOMContentLoaded', () => {
             case 'ask_about_service':
                  addMessage("We offer a range of professional exterior cleaning services. Which one would you like to know more about?", 'bot');
                  showOptions(Object.keys(botBrain.services));
-                 currentConversationState.step = 'awaiting_service_followup';
+                 currentConversationState.step = 'awaiting_service_clarification';
                  break;
             case 'service_inquiry':
                 addMessage(`You're asking about ${serviceName}. What would you like to do?`, 'bot');
                 showOptions([`Get a Quote for ${serviceName}`, `More Details about ${serviceName}`]);
+                currentConversationState.data.service = serviceName;
                 currentConversationState.step = 'awaiting_service_followup';
                 break;
             case 'ask_about_location':
@@ -972,18 +972,42 @@ document.addEventListener('DOMContentLoaded', () => {
         const { step } = currentConversationState;
         
         switch(step) {
+            case 'awaiting_service_clarification':
+                // Reset state so the input is re-analyzed from scratch.
+                // This lets the user ask a full question (e.g., "how much for windows")
+                // instead of just selecting a service.
+                resetConversationState();
+                processConversationStep(userInput);
+                break;
             case 'awaiting_service':
             case 'awaiting_service_for_city':
-                const serviceMatch = Object.keys(botBrain.services).find(s => normalize(userInput).includes(normalize(s)));
-                if (serviceMatch) {
-                    currentConversationState.data.service = serviceMatch;
+                let matchedServiceName = null;
+                const normalizedInput = normalize(userInput);
+                
+                // Find service by matching name or keywords
+                for (const serviceName in botBrain.services) {
+                    if (normalize(serviceName).includes(normalizedInput)) {
+                        matchedServiceName = serviceName;
+                        break;
+                    }
+                    for (const keyword of botBrain.services[serviceName].keywords) {
+                        if (normalizedInput.includes(keyword)) {
+                            matchedServiceName = serviceName;
+                            break;
+                        }
+                    }
+                    if (matchedServiceName) break;
+                }
+
+                if (matchedServiceName) {
+                    currentConversationState.data.service = matchedServiceName;
                     if (currentConversationState.data.city) {
                         currentConversationState.step = 'awaiting_name';
-                        addMessage(`Ok, I have ${serviceMatch} in ${currentConversationState.data.city}. To get you an accurate quote, I just need a few more details. What is your full name?`, 'bot');
+                        addMessage(`Ok, I have ${matchedServiceName} in ${currentConversationState.data.city}. To get you an accurate quote, I just need a few more details. What is your full name?`, 'bot');
                         showTextInput("e.g., Jane Doe");
                     } else {
                         currentConversationState.step = 'awaiting_city_check';
-                        addMessage(`Great, let's get a quote for ${serviceMatch}. What city is the property in?`, 'bot');
+                        addMessage(`Great, let's get a quote for ${matchedServiceName}. What city is the property in?`, 'bot');
                         showTextInput("e.g., Irvine, CA");
                     }
                 } else {
@@ -995,6 +1019,7 @@ document.addEventListener('DOMContentLoaded', () => {
             case 'awaiting_city_check':
                 const allCities = Object.values(citiesData).flat();
                 const cityMatch = allCities.find(c => normalize(c).includes(normalize(userInput)) || normalize(userInput).includes(normalize(c.replace(', CA', ''))));
+
                 if (cityMatch) {
                     currentConversationState.data.city = cityMatch;
                     
@@ -1034,14 +1059,24 @@ document.addEventListener('DOMContentLoaded', () => {
                  break;
 
             case 'awaiting_service_followup':
-                if (normalize(userInput).includes('quote')) {
+                const normInput = normalize(userInput);
+                const service = currentConversationState.data.service;
+
+                if (!service) {
+                    addMessage(botBrain.knowledgeBase.error_message, 'bot');
+                    resetConversationState();
+                    break;
+                }
+
+                if (normInput.includes('quote')) {
                     currentConversationState.step = 'awaiting_city_check';
-                    addMessage(`Great, let's get a quote for ${currentConversationState.data.service}. What city is the property in?`, 'bot');
+                    addMessage(`Great, let's get a quote for ${service}. What city is the property in?`, 'bot');
                     showTextInput("e.g., Irvine, CA");
-                } else if (normalize(userInput).includes('detail')) {
-                    const serviceInfo = botBrain.services[currentConversationState.data.service];
+                } else if (normInput.includes('detail')) {
+                    const serviceInfo = botBrain.services[service];
                     const pageUrl = serviceInfo.pageUrl;
-                    const linkHTML = `<a href="#" data-target="${pageUrl}" data-service-title="${serviceInfo.name}" data-image-url="${serviceInfo.imageUrl}">${currentConversationState.data.service} Details</a>`;
+                    const imageName = service.toLowerCase().replace(/\//g, '').replace(/ /g, '-');
+                    const linkHTML = `<a href="#" data-target="${pageUrl}" data-service-title="${service}" data-image-url="assets/images/services/${imageName}.webp">${service} Details</a>`;
                     addMessage(`You got it. Click here for more information: ${linkHTML}`, 'bot');
                     endConversation(true);
                 } else {
