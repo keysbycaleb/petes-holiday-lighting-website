@@ -1,0 +1,5 @@
+{
+    "los-angeles-county": ["Agoura Hills, CA", "West Covina, CA", "Long Beach, CA", "Santa Clarita, CA", "Glendale, CA", "Lancaster, CA", "Palmdale, CA", "Pomona, CA", "Torrance, CA", "Pasadena, CA", "El Monte, CA", "Downey, CA", "Burbank, CA", "Compton, CA", "South Gate, CA", "Carson, CA", "Santa Monica, CA", "Whittier, CA", "Hawthorne, CA", "Alhambra, CA", "Lakewood, CA", "Bellflower, CA", "Baldwin Park, CA", "Lynwood, CA", "Redondo Beach, CA"],
+    "orange-county": ["Irvine, CA", "Newport Beach, CA", "Costa Mesa, CA", "Yorba Linda, CA", "Laguna Hills, CA", "Anaheim, CA", "Laguna Niguel, CA", "Laguna Beach, CA"],
+    "san-diego-county": ["San Diego, CA", "National City, CA", "La Mesa, CA", "Imperial Beach, CA", "Lemon Grove, CA", "Chula Vista, CA", "Oceanside, CA", "Escondido, CA", "Carlsbad, CA", "El Cajon, CA", "Vista, CA", "San Marcos, CA", "Encinitas, CA", "Santee, CA", "Poway, CA", "Coronado, CA", "Del Mar, CA", "Solana Beach, CA"]
+}

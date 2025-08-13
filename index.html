@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Mode Pressure Washing</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Oswald:wght@700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <div class="app-container">
+        <canvas id="particle-canvas"></canvas>
+
+        <section class="page active" id="page-home">
+             <header class="app-header main-header">
+                <a href="#" class="header-brand-name home-btn scroll-to-top">MODE</a>
+                <div class="header-actions">
+                    <a href="#" class="social-link" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="social-link" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+                    <a href="tel:6573871505" class="icon-btn" aria-label="Call">
+                        <i class="fa-solid fa-phone"></i>
+                    </a>
+                </div>
+            </header>
+
+            <main class="page-content">
+                <section class="hero">
+                    <div class="hero-content">
+                        <h1 class="home-hero-title">Your Property's Potential, Unlocked.</h1>
+                        <p class="home-hero-subtitle">Expert pressure washing and exterior cleaning for a pristine, protected, and valuable home.</p>
+                        <form class="hero-search-bar" id="hero-search-form">
+                            <i class="fa-solid fa-search"></i>
+                            <input type="text" id="hero-search-input" placeholder="How can we help?">
+                        </form>
+                        <div class="google-rating">
+                            <div class="stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                            </div>
+                            <span>4.7 stars on Google</span>
+                        </div>
+                    </div>
+                </section>
+
+                <div class="content-block">
+                    <h2 class="block-title text-center">Our Services</h2>
+                    <div class="service-card-grid">
+                        <a href="#" data-target="pages/services/roof-washing.html" class="service-card" style="background-image: url('assets/images/services/house-roof-washing.webp');" data-image-url="assets/images/services/house-roof-washing.webp" data-color-class="gradient-1" data-service-title="House & Roof Washing">
+                            <div class="card-content">
+                                <h3>House & Roof Washing</h3>
+                            </div>
+                        </a>
+                        <a href="#" data-target="pages/services/solar-pannel-cleaning.html" class="service-card" style="background-image: url('assets/images/services/solar-panel-cleaning.webp');" data-image-url="assets/images/services/solar-panel-cleaning.webp" data-color-class="gradient-2" data-service-title="Solar Panel Cleaning">
+                             <div class="card-content">
+                                <h3>Solar Panel Cleaning</h3>
+                            </div>
+                        </a>
+                        <a href="#" data-target="pages/services/window-cleaning.html" class="service-card" style="background-image: url('assets/images/services/window-cleaning.webp');" data-image-url="assets/images/services/window-cleaning.webp" data-color-class="gradient-3" data-service-title="Exterior Window Cleaning">
+                             <div class="card-content">
+                                <h3>Exterior Window Cleaning</h3>
+                            </div>
+                        </a>
+                         <a href="#" data-target="pages/services/gutter-cleaning.html" class="service-card" style="background-image: url('assets/images/services/gutter-cleaning.webp');" data-image-url="assets/images/services/gutter-cleaning.webp" data-color-class="gradient-4" data-service-title="Gutter Cleaning">
+                           <div class="card-content">
+                                <h3>Gutter Cleaning</h3>
+                            </div>
+                        </a>
+                         <a href="#" data-target="pages/services/bird-proofing.html" class="service-card" style="background-image: url('assets/images/services/bird-proofing.webp');" data-image-url="assets/images/services/bird-proofing.webp" data-color-class="gradient-5" data-service-title="Bird Proofing">
+                           <div class="card-content">
+                                <h3>Bird Proofing</h3>
+                            </div>
+                        </a>
+                        <a href="#" data-target="pages/services/residential-pressure-washing.html" class="service-card" style="background-image: url('assets/images/services/residential-pressure-washing.webp');" data-image-url="assets/images/services/residential-pressure-washing.webp" data-color-class="gradient-6" data-service-title="Residential Pressure Washing">
+                            <div class="card-content">
+                                <h3>Residential Pressure Washing</h3>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="content-block">
+                     <div class="testimonial-card">
+                        <i class="fas fa-quote-right quote-icon"></i>
+                       <p class="quote">"We hired 'Mode Pressure Washing Service' to install pigeon proofing... That level of customer care is rare. Highly recommend this company."</p>
+                       <p class="author">- Patti L.</p>
+                    </div>
+                </div>
+
+                <footer class="cta-footer">
+                    <div class="cta-content">
+                        <span class="cta-icon">M</span>
+                        <h3>Ready for a Transformation?</h3>
+                        <p>Let's restore your home's curb appeal. Get a free, no-obligation estimate today.</p>
+                    </div>
+                    <a href="#" class="btn btn-primary cta-btn">Get in touch</a>
+                </footer>
+
+                <footer class="app-footer"></footer>
+            </main>
+        </section>
+
+        <section class="page" id="page-services">
+            <header class="app-header">
+                 <a href="#" class="header-brand-name home-btn">MODE</a>
+                <div class="header-actions">
+                    <a href="#" class="social-link" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="social-link" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+                    <a href="tel:6573871505" class="icon-btn" aria-label="Call">
+                        <i class="fa-solid fa-phone"></i>
+                    </a>
+                </div>
+            </header>
+            <main class="page-content">
+                <h2 class="page-title animate-on-scroll">Our Services</h2>
+                <div class="services-page-grid animate-on-scroll">
+                    <a href="#" data-target="pages/services/roof-washing.html" class="service-page-card" style="background-image: url('assets/images/services/house-roof-washing.webp');" data-image-url="assets/images/services/house-roof-washing.webp" data-color-class="gradient-1" data-service-title="House & Roof Washing">
+                        <div class="service-page-card-overlay gradient-1"></div>
+                        <div class="service-page-card-content">
+                            <i class="fa-solid fa-house card-icon"></i>
+                            <h3 class="card-title">House & Roof Washing</h3>
+                        </div>
+                    </a>
+                    <a href="#" data-target="pages/services/solar-pannel-cleaning.html" class="service-page-card" style="background-image: url('assets/images/services/solar-panel-cleaning.webp');" data-image-url="assets/images/services/solar-panel-cleaning.webp" data-color-class="gradient-2" data-service-title="Solar Panel Cleaning">
+                        <div class="service-page-card-overlay gradient-2"></div>
+                        <div class="service-page-card-content">
+                            <i class="fa-solid fa-solar-panel card-icon"></i>
+                            <h3 class="card-title">Solar Panel Cleaning</h3>
+                        </div>
+                    </a>
+                    <a href="#" data-target="pages/services/window-cleaning.html" class="service-page-card" style="background-image: url('assets/images/services/window-cleaning.webp');" data-image-url="assets/images/services/window-cleaning.webp" data-color-class="gradient-3" data-service-title="Exterior Window Cleaning">
+                        <div class="service-page-card-overlay gradient-3"></div>
+                        <div class="service-page-card-content">
+                            <i class="fa-solid fa-igloo card-icon"></i>
+                            <h3 class="card-title">Exterior Window Cleaning</h3>
+                        </div>
+                    </a>
+                    <a href="#" data-target="pages/services/gutter-cleaning.html" class="service-page-card" style="background-image: url('assets/images/services/gutter-cleaning.webp');" data-image-url="assets/images/services/gutter-cleaning.webp" data-color-class="gradient-4" data-service-title="Gutter Cleaning">
+                        <div class="service-page-card-overlay gradient-4"></div>
+                        <div class="service-page-card-content">
+                            <i class="fa-solid fa-wind card-icon"></i>
+                            <h3 class="card-title">Gutter Cleaning</h3>
+                        </div>
+                    </a>
+                    <a href="#" data-target="pages/services/bird-proofing.html" class="service-page-card" style="background-image: url('assets/images/services/bird-proofing.webp');" data-image-url="assets/images/services/bird-proofing.webp" data-color-class="gradient-5" data-service-title="Bird Proofing">
+                        <div class="service-page-card-overlay gradient-5"></div>
+                        <div class="service-page-card-content">
+                            <i class="fa-solid fa-dove card-icon"></i>
+                            <h3 class="card-title">Bird Proofing</h3>
+                        </div>
+                    </a>
+                    <a href="#" data-target="pages/services/residential-pressure-washing.html" class="service-page-card" style="background-image: url('assets/images/services/residential-pressure-washing.webp');" data-image-url="assets/images/services/residential-pressure-washing.webp" data-color-class="gradient-6" data-service-title="Residential Pressure Washing">
+                        <div class="service-page-card-overlay gradient-6"></div>
+                        <div class="service-page-card-content">
+                            <i class="fa-solid fa-faucet-drip card-icon"></i>
+                            <h3 class="card-title">Residential Pressure Washing</h3>
+                        </div>
+                    </a>
+                </div>
+                <footer class="app-footer">
+                </footer>
+            </main>
+        </section>
+
+        <section class="page" id="page-locations">
+            <header class="app-header">
+                 <a href="#" class="header-brand-name home-btn">MODE</a>
+                <div class="header-actions">
+                    <a href="#" class="social-link" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="social-link" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+                    <a href="tel:6573871505" class="icon-btn" aria-label="Call">
+                        <i class="fa-solid fa-phone"></i>
+                    </a>
+                </div>
+            </header>
+            <main class="page-content">
+                <h2 class="page-title animate-on-scroll">Service Areas</h2>
+                <div class="location-filters-bar animate-on-scroll">
+                    <div class="search-input-wrapper">
+                        <i class="fas fa-search search-icon"></i>
+                        <input type="text" id="location-search-bar" placeholder="Search for a city...">
+                    </div>
+                    <button class="btn btn-filter" id="filter-toggle-btn" aria-label="Filters">
+                        <i class="fas fa-filter"></i>
+                    </button>
+                </div>
+                 <div class="location-card-grid animate-on-scroll">
+                 </div>
+                 <footer class="app-footer">
+                </footer>
+            </main>
+        </section>
+        
+        <section class="page" id="page-contact">
+            <header class="app-header">
+                 <a href="#" class="header-brand-name home-btn">MODE</a>
+                <div class="header-actions">
+                    <a href="#" class="social-link" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="social-link" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+                    <a href="tel:6573871505" class="icon-btn" aria-label="Call">
+                        <i class="fa-solid fa-phone"></i>
+                    </a>
+                </div>
+            </header>
+            <main class="page-content">
+                <h2 class="page-title animate-on-scroll">Get In Touch</h2>
+                <div class="content-block">
+                    <p class="text-center animate-on-scroll" style="margin-top: -20px; margin-bottom: 30px;">
+                        Have a question or ready to book? Tap the chat icon in the corner to get started, or give us a call at <a href="tel:6573871505">(657) 387-1505</a>.
+                    </p>
+
+                    <div class="contact-methods-grid animate-on-scroll">
+                        <a href="tel:6573871505" class="contact-method-card">
+                            <i class="fa-solid fa-phone"></i>
+                            <h3>Call Us Directly</h3>
+                            <p>Speak with our team now.</p>
+                        </a>
+                        <a href="mailto:luke@modepressurewashing.com" class="contact-method-card">
+                            <i class="fa-solid fa-envelope"></i>
+                            <h3>Send An Email</h3>
+                            <p>We'll reply within 24 hours.</p>
+                        </a>
+                        <a href="#" class="contact-method-card contact-form-trigger">
+                            <i class="fa-solid fa-file-lines"></i>
+                            <h3>Fill Out Contact Form</h3>
+                            <p>Get a quote through our bot.</p>
+                        </a>
+                    </div>
+                </div>
+                 <footer class="app-footer">
+                </footer>
+            </main>
+        </section>
+
+        <section class="page service-detail-page" id="page-service-detail-template">
+            <header class="app-header">
+                <a href="#" class="header-back-btn"><i class="fas fa-chevron-left"></i> Back</a>
+                <h2 class="header-title">Service Name</h2>
+                <div class="header-actions">
+                    <a href="tel:6573871505" class="icon-btn" aria-label="Call"><i class="fa-solid fa-phone"></i></a>
+                </div>
+            </header>
+            <main class="page-content">
+                <div class="service-detail-hero"></div>
+                <div class="service-detail-tabs">
+                    <div class="service-detail-tabs-scroller">
+                        <button class="service-detail-tab" data-section="overview">Overview</button>
+                        <button class="service-detail-tab" data-section="info">Details</button>
+                        <button class="service-detail-tab" data-section="why-us">Why Us</button>
+                        <button class="service-detail-tab" data-section="faq">FAQs</button>
+                        <span class="tab-highlighter"></span>
+                    </div>
+                </div>
+                <div class="service-detail-content-wrapper">
+                </div>
+                <div class="service-detail-cta-container">
+                </div>
+                <footer class="app-footer"></footer>
+            </main>
+        </section>
+    </div>
+
+    <nav class="bottom-nav">
+        <a href="#" class="nav-item active" data-target="page-home">
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
+        </a>
+        <a href="#" class="nav-item" data-target="page-services">
+            <i class="fa-solid fa-spray-can-sparkles"></i>
+            <span>Services</span>
+        </a>
+        <a href="#" class="nav-item" data-target="page-locations">
+            <i class="fa-solid fa-map-location-dot"></i>
+            <span>Locations</span>
+        </a>
+        <a href="#" class="nav-item" data-target="page-contact">
+            <i class="fa-solid fa-envelope"></i>
+            <span>Contact</span>
+        </a>
+    </nav>
+    
+    <button class="chatbot-toggler" id="chatbot-toggler">
+        <i class="fa-solid fa-comments"></i>
+    </button>
+    <div class="chatbot-container" id="chatbot-container">
+        <div class="chatbot-header">
+            <div class="chatbot-header-avatar">M</div>
+            <div class="chatbot-header-info">
+                <h2>ModeBot</h2>
+                <p>Typically replies instantly</p>
+            </div>
+             <button class="chatbot-close-btn" id="chatbot-close-btn" aria-label="Close chat"><i class="fa-solid fa-times"></i></button>
+        </div>
+        <ul class="chatbot-messages" id="chatbot-messages">
+        </ul>
+        <div class="chatbot-input" id="chatbot-input">
+        </div>
+    </div>
+
+
+    <div class="action-sheet-overlay" id="cta-overlay"></div>
+    <div class="action-sheet" id="cta-action-sheet">
+        <div class="action-sheet-header">
+            <h4>How would you like to get in touch?</h4>
+        </div>
+        <div class="action-sheet-options">
+            <a href="tel:6573871505" class="action-sheet-btn">
+                <i class="fa-solid fa-phone"></i>
+                <span>Call Us Now</span>
+            </a>
+            <a href="mailto:luke@modepressurewashing.com" class="action-sheet-btn">
+                <i class="fa-solid fa-envelope"></i>
+                <span>Send an Email</span>
+            </a>
+            <a href="#" class="action-sheet-btn" id="action-sheet-open-chatbot">
+                <i class="fa-solid fa-robot"></i>
+                <span>Get an Instant Quote</span>
+            </a>
+        </div>
+        <button class="action-sheet-cancel" id="cta-cancel-btn">Cancel</button>
+    </div>
+
+    <div id="filter-modal-overlay"></div>
+    <div id="filter-panel" role="dialog" aria-modal="true">
+        <h3 id="filter-panel-title" class="sr-only">Filter Options</h3>
+        <div class="filter-group">
+            <h4>Filter by County:</h4>
+            <div class="filter-options-grid" id="county-filter-tags">
+            </div>
+        </div>
+        <div class="filter-actions">
+            <button class="btn-filter-action" id="clear-filters-btn">Reset</button>
+            <button class="btn-filter-action" id="apply-filters-btn">Done</button>
+        </div>
+    </div>
+    
+    <script src="js/script.js"></script>
+
+<form name="quote-request" netlify netlify-honeypot="bot-field" hidden>
+  <input type="text" name="service" />
+  <input type="text" name="name" />
+  <input type="email" name="email" />
+  <input type="text" name="address" />
+  <input type="text" name="details" />
+</form>
+
+</body>
+</html>
