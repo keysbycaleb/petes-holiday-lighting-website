@@ -144,9 +144,21 @@ document.addEventListener('DOMContentLoaded', () => {
             targetPage = document.getElementById('page-service-detail-template');
             const pageContentHTML = await fetchPage(pageData.target);
             
-            // The main header title is now static, so we only update the hero title.
-            const serviceTitle = pageData.title.replace(' Details', '').replace(' Cleaning', '').replace('Washing', 'Wash');
-            targetPage.querySelector('.service-detail-hero-title').textContent = serviceTitle;
+            let finalTitle = pageData.title;
+
+            // Specific formatting for titles to achieve the pyramid wrap
+            if (finalTitle === "House & Roof Washing") {
+                finalTitle = "House &<br>Roof Washing";
+            } else if (finalTitle === "Solar Panel Cleaning") {
+                finalTitle = "Solar Panel<br>Cleaning";
+            } else if (finalTitle === "Exterior Window Cleaning") {
+                finalTitle = "Exterior<br>Window Cleaning";
+            } else if (finalTitle === "Residential Pressure Washing") {
+                finalTitle = "Residential<br>Pressure Washing";
+            }
+
+            // Use .innerHTML because we are now adding a <br> tag
+            targetPage.querySelector('.service-detail-hero-title').innerHTML = finalTitle;
             targetPage.querySelector('.service-detail-hero').style.backgroundImage = `url('${pageData.image}')`;
             
             const contentWrapper = targetPage.querySelector('.service-detail-content-wrapper');
@@ -169,7 +181,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (overviewTab) {
                 overviewTab.classList.add('active');
-                updateTabHighlighter(overviewTab);
+                // Use a timeout to ensure the element is fully rendered before calculating its position
+                setTimeout(() => updateTabHighlighter(overviewTab), 50);
             }
             if (overviewContent) overviewContent.classList.add('active');
 

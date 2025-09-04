@@ -704,6 +704,7 @@ strong { font-weight: 600; color: var(--text-color); }
     line-height: 1.2;
     text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
     margin: 0;
+    max-width: 90%; /* Controls wrapping for the pyramid effect */
 }
 /* END: Redesign Styles */
 
