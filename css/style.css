@@ -672,17 +672,41 @@ strong { font-weight: 600; color: var(--text-color); }
     padding-right: 0;
     padding-top: 0; /* Let hero and tabs manage spacing */
 }
+
+/* START: Redesign Styles */
 .service-detail-hero {
-    height: 250px;
+    height: 280px; /* Increased height */
     background-size: cover;
     background-position: center;
     position: relative;
-    padding-top: var(--header-height); /* Push content down to account for header */
+    padding-top: var(--header-height);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 20px;
 }
+
 .service-detail-hero::after {
-    content: ''; position: absolute; inset: 0;
-    background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 50%);
+    content: '';
+    position: absolute;
+    inset: 0;
+    /* Darker gradient for better text contrast */
+    background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.6) 30%, transparent 60%);
 }
+
+.service-detail-hero-title {
+    position: relative;
+    z-index: 2;
+    font-family: 'Oswald', sans-serif; /* Using Oswald for impact */
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--text-color);
+    line-height: 1.2;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
+    margin: 0;
+}
+/* END: Redesign Styles */
+
 /* 8. Sticky Service Tabs */
 .service-detail-tabs {
     background-color: var(--bg-color);

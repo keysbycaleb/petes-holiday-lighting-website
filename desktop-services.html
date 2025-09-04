@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mode Pressure Washing - Services</title>
+
+    <!-- Google Fonts: Poppins for body/UI, Oswald for impactful headlines -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Oswald:wght@700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    
+    <!-- 
+    ====================================================================
+    MASTER STYLESHEET
+    All styles for the services page and its sub-screen.
+    ====================================================================
+    -->
+    <style>
+        /* --- 1. CSS Variables & Root Setup --- */
+        :root {
+            --font-primary: 'Poppins', sans-serif;
+            --font-display: 'Oswald', sans-serif;
+
+            --color-primary: #007BFF;
+            --color-primary-dark: #0056b3;
+            --color-primary-light: rgba(0, 123, 255, 0.1);
+            --color-dark: #1a202c;
+            --color-dark-accent: #131823;
+            --color-light: #ffffff;
+            --color-grey-text: #a0aec0;
+            --color-star: #ffc107;
+
+            --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.2), 0 4px 6px -4px rgba(0, 0, 0, 0.2);
+            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 8px 10px -6px rgba(0, 0, 0, 0.4);
+            --shadow-glow: 0 0 30px rgba(0, 123, 255, 0.4);
+            
+            --border-radius: 16px;
+            --transition-speed: 0.4s;
+            --transition-speed-fast: 0.2s;
+        }
+
+        /* --- 2. Global Resets & Base Styles --- */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-primary);
+            background-color: var(--color-dark);
+            color: var(--color-light);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            overflow-x: hidden;
+        }
+        
+        /* --- Animation for content fade-in on scroll --- */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- 3. Header Styling --- */
+        .app-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 2rem;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            transition: all var(--transition-speed) ease;
+        }
+
+        .header-brand-name {
+            font-family: var(--font-display);
+            font-size: 2rem;
+            text-decoration: none;
+            color: var(--color-light);
+            letter-spacing: 1px;
+        }
+
+        .desktop-nav { display: flex; gap: 2.5rem; }
+        .desktop-nav .nav-item { text-decoration: none; color: rgba(255, 255, 255, 0.8); font-weight: 500; position: relative; transition: color var(--transition-speed) ease; cursor: pointer; }
+        .desktop-nav .nav-item::after { content: ''; position: absolute; bottom: -5px; left: 0; width: 100%; height: 2px; background-color: var(--color-light); transform: scaleX(0); transform-origin: right; transition: transform var(--transition-speed) ease-in-out; }
+        .desktop-nav .nav-item:hover, .desktop-nav .nav-item.active { color: var(--color-light); }
+        .desktop-nav .nav-item:hover::after, .desktop-nav .nav-item.active::after { transform: scaleX(1); transform-origin: left; }
+        .header-actions { display: flex; align-items: center; gap: 1.5rem; }
+        .header-actions .social-link { color: rgba(255, 255, 255, 0.8); font-size: 1.2rem; transition: all var(--transition-speed) ease; }
+        .header-actions .social-link:hover { color: var(--color-light); transform: scale(1.1); }
+        
+        /* --- 4. General Purpose & Responsiveness --- */
+        .btn { padding: 0.9rem 2rem; border: none; border-radius: var(--border-radius); font-weight: 600; font-size: 0.95rem; text-decoration: none; cursor: pointer; transition: all var(--transition-speed) ease; }
+        .btn-primary { background-color: var(--color-primary); color: var(--color-light); box-shadow: var(--shadow-md); }
+        .btn-primary:hover { background-color: var(--color-primary-dark); transform: translateY(-3px); box-shadow: var(--shadow-lg); }
+        
+        /* --- 5. Services Accordion Page --- */
+        .services-accordion-page {
+            display: flex;
+            align-items: center;
+            min-height: 100vh;
+            padding: 8rem 2rem 4rem 2rem;
+            background-color: var(--color-dark);
+        }
+        .services-accordion-container {
+            width: 100%;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .services-accordion-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+        .services-accordion-title {
+            font-family: var(--font-display);
+            font-size: clamp(3rem, 7vw, 4.5rem);
+            color: var(--color-light);
+            line-height: 1.1;
+        }
+        .service-accordion-item {
+            border-bottom: 1px solid #2d3748;
+            overflow: hidden;
+        }
+        .service-accordion-item:last-child {
+            border-bottom: none;
+        }
+        .accordion-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 2rem 1rem;
+            cursor: pointer;
+            position: relative;
+        }
+        .accordion-item-header h3 {
+            font-size: 1.5rem;
+            font-weight: 500;
+            color: var(--color-grey-text);
+            transition: color var(--transition-speed-fast) ease;
+        }
+        .accordion-item-header:hover h3 {
+            color: var(--color-light);
+        }
+        .service-accordion-item.active .accordion-item-header {
+            background-color: var(--color-dark-accent);
+            box-shadow: inset 0 0 15px rgba(0, 123, 255, 0.2);
+        }
+        .service-accordion-item.active .accordion-item-header h3 {
+            color: var(--color-light);
+        }
+        .accordion-item-header .icon {
+            font-size: 1.2rem;
+            transition: transform var(--transition-speed) ease;
+        }
+        .service-accordion-item.active .accordion-item-header .icon {
+            transform: rotate(180deg);
+            color: var(--color-primary);
+        }
+        .accordion-item-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1), padding 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 0 1rem;
+        }
+        .accordion-content-inner {
+            padding-bottom: 2rem;
+            display: flex;
+            gap: 2rem;
+            align-items: flex-start;
+        }
+        .accordion-content-inner > * {
+            opacity: 0;
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+        .service-accordion-item.active .accordion-content-inner > * {
+            opacity: 1;
+        }
+        .service-accordion-item.active .accordion-content-text {
+            transition-delay: 0.2s;
+        }
+        .service-accordion-item.active .accordion-content-image {
+            transition-delay: 0.3s;
+        }
+        .accordion-content-text {
+            flex-basis: 60%;
+        }
+        .accordion-content-text p {
+            color: var(--color-grey-text);
+            margin-bottom: 1.5rem;
+        }
+        .accordion-content-image {
+            flex-basis: 40%;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            aspect-ratio: 4/3;
+        }
+        .accordion-content-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            animation: kenburns 15s ease-in-out infinite alternate;
+        }
+        @keyframes kenburns {
+            from { transform: scale(1) translateX(-2%) translateY(2%); }
+            to { transform: scale(1.1) translateX(2%) translateY(-2%); }
+        }
+        
+        /* --- 6. Service Detail Sub-Screen --- */
+        .service-detail-screen {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--color-dark-accent);
+            z-index: 2000;
+            overflow-y: auto;
+        }
+        .service-detail-header {
+            display: flex;
+            align-items: center;
+            padding: 1rem 2rem;
+            background-color: rgba(19, 24, 35, 0.8);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        .service-detail-back-btn {
+            background: none;
+            border: none;
+            color: var(--color-light);
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .service-detail-title {
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            margin: 0 auto;
+            transform: translateX(-24px); /* Offset for back button */
+        }
+        .service-detail-hero {
+            height: 40vh;
+            position: relative;
+            display: flex;
+            align-items: flex-end;
+            padding: 2rem;
+        }
+        .service-detail-hero-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .service-detail-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to top, var(--color-dark-accent), transparent);
+        }
+        .service-detail-hero-title {
+            position: relative;
+            z-index: 2;
+            font-family: var(--font-display);
+            font-size: clamp(2.5rem, 6vw, 4rem);
+        }
+        .service-detail-body {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 4rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+        .service-detail-nav {
+            position: sticky;
+            top: 100px; /* Header height + spacing */
+            align-self: start;
+        }
+        .service-detail-nav-list {
+            list-style: none;
+            padding: 0;
+        }
+        .service-detail-nav-link {
+            display: block;
+            padding: 1.5rem 1.25rem;
+            text-decoration: none;
+            color: var(--color-grey-text);
+            font-weight: 500;
+            font-size: 1.1rem;
+            border-left: 3px solid #2d3748;
+            transition: all var(--transition-speed-fast) ease;
+        }
+        .service-detail-nav-link:hover {
+            color: var(--color-light);
+            border-left-color: var(--color-primary-dark);
+        }
+        .service-detail-nav-link.active {
+            color: var(--color-primary);
+            border-left-color: var(--color-primary);
+            transform: translateX(5px);
+        }
+        .service-detail-content-area {
+            position: relative; 
+            min-height: 400px;
+        }
+        .service-detail-content-area > section {
+            display: none;
+        }
+        .service-detail-content-area > section.active {
+            display: block;
+            animation: fadeInUp 0.5s ease-out;
+        }
+        .service-detail-content-area h2 {
+            font-family: var(--font-display);
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #2d3748;
+        }
+        .service-detail-content-area p, .service-detail-content-area li {
+            color: var(--color-grey-text);
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.8;
+        }
+        .service-detail-content-area ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        .service-detail-content-area .feature-card {
+            background-color: var(--color-dark);
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            border: 1px solid #2d3748;
+            display: flex;
+            align-items: flex-start;
+            gap: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        .feature-card .fa-check-circle {
+            color: var(--color-primary);
+            font-size: 1.5rem;
+            margin-top: 5px;
+        }
+        .feature-card p {
+            margin: 0;
+            line-height: 1.6;
+        }
+        .feature-card strong {
+            color: var(--color-light);
+        }
+        .faq-item {
+            border-bottom: 1px solid #2d3748;
+        }
+        .faq-question {
+            padding: 1.5rem 0;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .faq-question h4 {
+            font-size: 1.2rem;
+            font-weight: 500;
+        }
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease;
+        }
+        .faq-answer p {
+            padding-bottom: 1.5rem;
+        }
+
+        @media (max-width: 900px) {
+            .service-detail-body { grid-template-columns: 1fr; gap: 2rem; }
+            .service-detail-nav { position: static; }
+        }
+        @media (max-width: 768px) {
+            .desktop-nav, .header-actions .desktop-cta-btn { display: none; }
+            .app-header { padding: 1rem; }
+            .services-accordion-page { padding-left: 1rem; padding-right: 1rem; }
+            .services-accordion-page { padding-top: 7rem; }
+            .accordion-content-inner { flex-direction: column-reverse; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="app-header main-header">
+        <a href="#" class="header-brand-name">MODE</a>
+        <nav class="desktop-nav">
+            <a class="nav-item" data-target="homepage-content">Home</a>
+            <a class="nav-item active" data-target="services-page-content">Services</a>
+            <a class="nav-item" data-target="locations-page-content">Locations</a>
+            <a class="nav-item" data-target="contact-page-content">Contact</a>
+        </nav>
+        <div class="header-actions">
+            <a href="#" class="social-link" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+            <a href="#" class="social-link" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+            <a href="#" class="btn btn-primary desktop-cta-btn">Get a Free Estimate</a>
+        </div>
+    </header>
+
+    <!-- Page Container: Services -->
+    <main id="services-page-content">
+        <section class="services-accordion-page">
+            <div class="services-accordion-container">
+                <div class="services-accordion-header">
+                    <h1 class="services-accordion-title">Our Exterior Cleaning Services</h1>
+                </div>
+                <div class="services-accordion">
+                    <!-- Accordion items will be injected by JS -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Service Detail Sub-Screen -->
+    <div class="service-detail-screen" id="service-detail-screen">
+        <header class="service-detail-header">
+            <button class="service-detail-back-btn"><i class="fas fa-arrow-left"></i> Back</button>
+            <h2 class="service-detail-title">Service Details</h2>
+        </header>
+        <div class="service-detail-hero">
+            <img id="detail-hero-bg" src="" alt="" class="service-detail-hero-bg">
+            <h1 id="detail-hero-title" class="service-detail-hero-title"></h1>
+        </div>
+        <div class="service-detail-body">
+            <nav class="service-detail-nav">
+                <ul class="service-detail-nav-list">
+                    <li><a href="#" class="service-detail-nav-link active" data-target="overview">Overview</a></li>
+                    <li><a href="#" class="service-detail-nav-link" data-target="details">Details</a></li>
+                    <li><a href="#" class="service-detail-nav-link" data-target="why-us">The MODE Difference</a></li>
+                    <li><a href="#" class="service-detail-nav-link" data-target="faq">FAQs</a></li>
+                </ul>
+            </nav>
+            <div class="service-detail-content-area">
+                <!-- Content sections will be dynamically populated by JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 
+    ====================================================================
+    MASTER JAVASCRIPT
+    All scripts from the individual sections have been merged here.
+    ====================================================================
+    -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // --- PAGE NAVIGATION ---
+            const navLinks = document.querySelectorAll('.nav-item');
+            const pageContents = document.querySelectorAll('main');
+
+            function switchPage(targetId) {
+                // This is a placeholder for actual page navigation
+                alert(`Navigating to ${targetId.replace('-page-content', '')} page.`);
+            }
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    // In a real multi-page site, this would be window.location.href = '...';
+                    // For this demo, we just alert.
+                    if (link.dataset.target !== 'services-page-content') {
+                        switchPage(link.dataset.target);
+                    }
+                });
+            });
+
+            // --- SERVICES DATA ---
+            const servicesData = {
+                house: { title: 'House & Roof Washing', description: 'Safely remove algae, moss, and stains to protect and beautify your home\'s most critical assets.', image: 'assets/images/services/house-roof-washing.webp', icon: 'fa-house-chimney-window' },
+                solar: { title: 'Solar Panel Cleaning', description: 'Boost your energy efficiency and protect your investment with our professional, streak-free cleaning.', image: 'assets/images/services/solar-panel-cleaning.webp', icon: 'fa-solar-panel' },
+                gutter: { title: 'Gutter Cleaning', description: 'Prevent water damage and protect your foundation by ensuring your gutters are clear and free-flowing.', image: 'assets/images/services/gutter-cleaning.webp', icon: 'fa-wind' },
+                pressure: { title: 'Pressure Washing', description: 'Revitalize driveways, patios, and walkways by erasing years of dirt, grime, and discoloration.', image: 'assets/images/services/residential-pressure-washing.webp', icon: 'fa-spray-can-sparkles' },
+                bird: { title: 'Bird Proofing', description: 'Protect your property from pests and damage with humane and effective bird deterrent solutions.', image: 'assets/images/services/bird-proofing.webp', icon: 'fa-dove' },
+                window: { title: 'Window Cleaning', description: 'Let the light in with our professional exterior window cleaning for a crystal-clear, spotless finish.', image: 'assets/images/services/window-cleaning.webp', icon: 'fa-igloo' }
+            };
+            
+            // --- Detailed content for each service ---
+            const serviceDetailData = {
+                house: {
+                    heroTitle: 'House & Roof Washing',
+                    heroBg: 'assets/images/services/house-roof-washing.webp',
+                    overview: {
+                        title: 'Restore Your Home\'s Beauty',
+                        content: `<p>Your home is your biggest investment. Over time, dirt, grime, algae, and mildew can build up on your siding and roof, diminishing its curb appeal and causing potential damage. Our professional services safely and effectively remove these contaminants, revealing the true beauty of your property.</p><p>We use a combination of low-pressure cleaning (soft washing) and eco-friendly solutions to ensure a deep clean without the risk of damage that high-pressure methods can cause.</p>`
+                    },
+                    details: {
+                        title: 'What We Clean',
+                        content: `<div class="feature-card"><i class="fas fa-check-circle"></i><p><strong>Vinyl Siding:</strong> Removes green algae, mold, and dirt stains.</p></div><div class="feature-card"><i class="fas fa-check-circle"></i><p><strong>Brick & Stone:</strong> Gently lifts away years of grime without damaging mortar.</p></div><div class="feature-card"><i class="fas fa-check-circle"></i><p><strong>Asphalt Shingle Roofs:</strong> Eliminates black streaks (Gloeocapsa magma) to extend roof life.</p></div>`
+                    },
+                    whyUs: {
+                        title: 'The MODE Difference',
+                        content: `<div class="feature-card"><i class="fas fa-check-circle"></i><p><strong>Soft Wash Experts:</strong> We protect your home by using industry-approved low-pressure techniques.</p></div><div class="feature-card"><i class="fas fa-check-circle"></i><p><strong>Eco-Friendly Solutions:</strong> Our cleaning agents are safe for your family, pets, and landscaping.</p></div><div class="feature-card"><i class="fas fa-check-circle"></i><p><strong>100% Satisfaction Guarantee:</strong> We're not happy until you are absolutely thrilled with the results.</p></div>`
+                    },
+                    faq: {
+                        title: 'Frequently Asked Questions',
+                        content: `<div class="faq-item"><div class="faq-question"><h4>Is pressure washing safe for my siding?</h4><i class="fas fa-plus"></i></div><div class="faq-answer"><p>Yes, when done correctly. We use a technique called soft washing, which relies on specialized cleaning solutions and low pressure—similar to a garden hose—to clean delicate surfaces like vinyl siding without causing damage.</p></div></div><div class="faq-item"><div class="faq-question"><h4>How often should I have my house washed?</h4><i class="fas fa-plus"></i></div><div class="faq-answer"><p>We typically recommend a professional house wash every 1 to 2 years to prevent the long-term buildup of contaminants and keep your home looking its best.</p></div></div>`
+                    }
+                },
+                solar: {
+                    heroTitle: 'Solar Panel Cleaning',
+                    heroBg: 'assets/images/services/solar-panel-cleaning.webp',
+                    overview: {
+                        title: 'Maximize Your Energy Output',
+                        content: `<p>Dirty solar panels can reduce their efficiency by up to 30%. Dust, pollen, bird droppings, and grime block sunlight from reaching the solar cells. Our professional solar panel cleaning service ensures your system operates at peak performance, maximizing your energy production and saving you money.</p><p>We use specialized, pure-water cleaning systems and soft brushes designed specifically for solar panels, guaranteeing a spot-free finish without any risk of scratching or damage.</p>`
+                    },
+                    details: {
+                        title: 'Our Cleaning Process',
+                        content: `<div class="feature-card"><i class="fas fa-check-circle"></i><p><strong>Pure Water System:</strong> We use deionized water that leaves no mineral deposits or streaks behind.</p></div><div class="feature-card"><i class="fas fa-check-circle"></i><p><strong>Specialized Brushes:</strong> Our soft-bristle brushes safely scrub away all dirt and debris without harming the panel surface.</p></div><div class="feature-card"><i class="fas fa-check-circle"></i><p><strong>Safety First:</strong> Our team is trained to work safely on roofs, using proper equipment and procedures.</p></div>`
+                    },
+                    whyUs: {
+                        title: 'The MODE Difference',
+                        content: `<div class="feature-card"><i class="fas fa-check-circle"></i><p><strong>Increased Efficiency:</strong> A clean panel is an efficient panel. Get the most out of your investment.</p></div><div class="feature-card"><i class="fas fa-check-circle"></i><p><strong>Protect Your Warranty:</strong> Many solar panel warranties require regular cleaning. We help you stay compliant.</p></div><div class="feature-card"><i class="fas fa-check-circle"></i><p><strong>Experienced Technicians:</strong> We know how to handle your valuable solar array with the utmost care.</p></div>`
+                    },
+                    faq: {
+                        title: 'Frequently Asked Questions',
+                        content: `<div class="faq-item"><div class="faq-question"><h4>Can't I just hose them down myself?</h4><i class="fas fa-plus"></i></div><div class="faq-answer"><p>Using tap water can leave hard water spots that actually attract more dirt. Our pure water system ensures a perfect, spot-free clean. Plus, working on a roof can be dangerous without the proper safety equipment.</p></div></div><div class="faq-item"><div class="faq-question"><h4>How often should my solar panels be cleaned?</h4><i class="fas fa-plus"></i></div><div class="faq-answer"><p>We recommend cleaning them at least once or twice a year, especially after the spring pollen season or in dusty areas, to maintain optimal performance.</p></div></div>`
+                    }
+                },
+                gutter: {
+                    heroTitle: 'Gutter Cleaning',
+                    heroBg: 'assets/images/services/gutter-cleaning.webp',
+                    overview: {
+                        title: 'Protect Your Foundation',
+                        content: `<p>Clogged gutters are more than just an eyesore; they can lead to serious and expensive water damage to your roof, walls, and foundation. Our gutter cleaning service ensures that rainwater is channeled safely away from your home, protecting its structural integrity.</p><p>We thoroughly remove leaves, twigs, and debris from your gutters and downspouts, ensuring they are free-flowing and functioning as they should.</p>`
+                    },
+                    details: {
+                        title: 'What We Do',
+                        content: `<div class="feature-card"><i class="fas fa-check-circle"></i><p><strong>Debris Removal:</strong> We clear all debris from gutters and roof valleys by hand.</p></div><div class="feature-card"><i class="fas fa-check-circle"></i><p><strong>Downspout Flushing:</strong> We ensure all downspouts are clear of blockages for proper drainage.</p></div><div class="feature-card"><i class="fas fa-check-circle"></i><p><strong>System Inspection:</strong> We check for any potential issues like loose spikes or damaged sections.</p></div>`
+                    },
+                    whyUs: {
+                        title: 'The MODE Difference',
+                        content: `<div class="feature-card"><i class="fas fa-check-circle"></i><p><strong>Thorough & Tidy:</strong> We bag all debris and leave your property cleaner than we found it.</p></div><div class="feature-card"><i class="fas fa-check-circle"></i><p><strong>Safety is Paramount:</strong> Our trained team uses professional-grade ladders and safety equipment.</p></div><div class="feature-card"><i class="fas fa-check-circle"></i><p><strong>Preventative Maintenance:</strong> Regular cleaning prevents costly repairs down the line.</p></div>`
+                    },
+                    faq: {
+                        title: 'Frequently Asked Questions',
+                        content: `<div class="faq-item"><div class="faq-question"><h4>Why is gutter cleaning so important?</h4><i class="fas fa-plus"></i></div><div class="faq-answer"><p>Clogged gutters can cause water to overflow, leading to roof leaks, rotting fascia boards, foundation damage, and even pest infestations. It's a critical part of home maintenance.</p></div></div>`
+                    }
+                },
+                pressure: {
+                    heroTitle: 'Pressure Washing',
+                    heroBg: 'assets/images/services/residential-pressure-washing.webp',
+                    overview: {
+                        title: 'Renew Your Hardscapes',
+                        content: `<p>Instantly boost your home's curb appeal by removing years of built-up dirt, grime, oil stains, and algae from your concrete and other hard surfaces. Our professional pressure washing services revitalize your property, making it look clean, safe, and well-maintained.</p><p>We use commercial-grade equipment and the correct pressure settings for each surface to deliver a powerful clean without causing damage.</p>`
+                    },
+                    details: {
+                        title: 'Surfaces We Revitalize',
+                        content: `<div class="feature-card"><i class="fas fa-check-circle"></i><p><strong>Driveways & Walkways:</strong> Erase oil stains, tire marks, and discoloration.</p></div><div class="feature-card"><i class="fas fa-check-circle"></i><p><strong>Patios & Pool Decks:</strong> Remove slippery algae and mildew for a safer, more beautiful outdoor space.</p></div><div class="feature-card"><i class="fas fa-check-circle"></i><p><strong>Fences & Decks:</strong> Prep for staining or restore the natural beauty of the wood or vinyl.</p></div>`
+                    },
+                    whyUs: {
+                        title: 'The MODE Difference',
+                        content: `<div class="feature-card"><i class="fas fa-check-circle"></i><p><strong>Professional Equipment:</strong> Our surface cleaners provide an even, streak-free finish that DIY machines can't match.</p></div><div class="feature-card"><i class="fas fa-check-circle"></i><p><strong>Expert Technicians:</strong> We know the right pressure and techniques for every type of surface.</p></div><div class="feature-card"><i class="fas fa-check-circle"></i><p><strong>Instant Results:</strong> Pressure washing provides one of the most dramatic "before and after" transformations for your home.</p></div>`
+                    },
+                    faq: {
+                        title: 'Frequently Asked Questions',
+                        content: `<div class="faq-item"><div class="faq-question"><h4>Will pressure washing damage my concrete?</h4><i class="fas fa-plus"></i></div><div class="faq-answer"><p>When performed by a trained professional, no. We use the appropriate pressure and nozzles to clean effectively without etching or damaging the surface.</p></div></div>`
+                    }
+                },
+                bird: {
+                    heroTitle: 'Bird Proofing',
+                    heroBg: 'assets/images/services/bird-proofing.webp',
+                    overview: {
+                        title: 'Protect Your Property',
+                        content: `<p>Birds, especially pigeons, can cause significant damage to your property and create health hazards. Their droppings are acidic and can damage building materials, while their nesting can clog drains and vents. Our bird proofing solutions are designed to humanely deter birds from roosting and nesting on your property.</p><p>We specialize in installing effective, long-lasting deterrents that protect your investment, particularly under solar panel arrays where birds love to nest.</p>`
+                    },
+                    details: {
+                        title: 'Our Deterrent Solutions',
+                        content: `<div class="feature-card"><i class="fas fa-check-circle"></i><p><strong>Solar Panel Mesh:</strong> We install a durable, specialized mesh around your solar array to prevent birds from nesting underneath.</p></div><div class="feature-card"><i class="fas fa-check-circle"></i><p><strong>Bird Spikes & Netting:</strong> Humane solutions for ledges, eaves, and other common roosting spots.</p></div><div class="feature-card"><i class="fas fa-check-circle"></i><p><strong>Cleanup & Sanitization:</strong> We safely remove hazardous nesting materials and droppings before installation.</p></div>`
+                    },
+                    whyUs: {
+                        title: 'The MODE Difference',
+                        content: `<div class="feature-card"><i class="fas fa-check-circle"></i><p><strong>Humane Methods:</strong> Our solutions deter birds without harming them.</p></div><div class="feature-card"><i class="fas fa-check-circle"></i><p><strong>Long-Term Protection:</strong> We use high-quality materials designed to last for years.</p></div><div class="feature-card"><i class="fas fa-check-circle"></i><p><strong>Protect Your Health & Property:</strong> Prevent the spread of disease and costly damage from bird droppings.</p></div>`
+                    },
+                    faq: {
+                        title: 'Frequently Asked Questions',
+                        content: `<div class="faq-item"><div class="faq-question"><h4>Why do birds nest under solar panels?</h4><i class="fas fa-plus"></i></div><div class="faq-answer"><p>The space under solar panels provides shelter from predators and the elements, making it an ideal nesting spot for pigeons and other birds. This can damage wiring and reduce airflow, potentially harming your system.</p></div></div>`
+                    }
+                },
+                window: {
+                    heroTitle: 'Window Cleaning',
+                    heroBg: 'assets/images/services/window-cleaning.webp',
+                    overview: {
+                        title: 'A Brighter, Clearer View',
+                        content: `<p>Clean windows can dramatically improve the appearance of your home, both inside and out. Our professional window cleaning service removes dirt, dust, hard water spots, and grime, leaving you with a crystal-clear, streak-free view.</p><p>Using professional-grade tools and purified water, we clean not just the glass, but the frames and sills as well, for a complete and polished look.</p>`
+                    },
+                    details: {
+                        title: 'What\'s Included',
+                        content: `<div class="feature-card"><i class="fas fa-check-circle"></i><p><strong>Exterior Glass Cleaning:</strong> We leave every window spotless and streak-free.</p></div><div class="feature-card"><i class="fas fa-check-circle"></i><p><strong>Frame & Sill Wipedown:</strong> We clean the entire window unit, not just the glass.</p></div><div class="feature-card"><i class="fas fa-check-circle"></i><p><strong>Screen Cleaning:</strong> We can also clean your window screens for a completely clear view.</p></div>`
+                    },
+                    whyUs: {
+                        title: 'The MODE Difference',
+                        content: `<div class="feature-card"><i class="fas fa-check-circle"></i><p><strong>Purified Water Technology:</strong> Our pure water system ensures a spot-free rinse that dries perfectly clear.</p></div><div class="feature-card"><i class="fas fa-check-circle"></i><p><strong>Professional Results:</strong> We have the tools and techniques to reach every window safely and effectively.</p></div><div class="feature-card"><i class="fas fa-check-circle"></i><p><strong>Enhance Your Home:</strong> Clean windows improve curb appeal and let more natural light into your home.</p></div>`
+                    },
+                    faq: {
+                        title: 'Frequently Asked Questions',
+                        content: `<div class="faq-item"><div class="faq-question"><h4>Do you clean inside windows too?</h4><i class="fas fa-plus"></i></div><div class="faq-answer"><p>Our primary service is exterior window cleaning, which provides the biggest impact on curb appeal. However, we can provide quotes for interior window cleaning upon request.</p></div></div>`
+                    }
+                }
+            };
+
+            // --- SERVICES ACCORDION SCRIPT ---
+            const accordionContainer = document.querySelector('.services-accordion');
+            if (accordionContainer) {
+                Object.keys(servicesData).forEach(key => {
+                    const service = servicesData[key];
+                    const item = document.createElement('div');
+                    item.className = 'service-accordion-item';
+                    item.innerHTML = `
+                        <div class="accordion-item-header">
+                            <h3>${service.title}</h3>
+                            <i class="fas fa-chevron-down icon"></i>
+                        </div>
+                        <div class="accordion-item-content">
+                            <div class="accordion-content-inner">
+                                <div class="accordion-content-text">
+                                    <p>${service.description}</p>
+                                    <a href="#" class="btn btn-primary" data-service-key="${key}">Learn More</a>
+                                </div>
+                                <div class="accordion-content-image">
+                                    <img src="${service.image}" alt="${service.title}">
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    accordionContainer.appendChild(item);
+                });
+
+                const accordionItems = document.querySelectorAll('.service-accordion-item');
+                accordionItems.forEach(item => {
+                    const header = item.querySelector('.accordion-item-header');
+                    header.addEventListener('click', () => {
+                        const currentlyActive = document.querySelector('.service-accordion-item.active');
+                        if (currentlyActive && currentlyActive !== item) {
+                            currentlyActive.classList.remove('active');
+                            currentlyActive.querySelector('.accordion-item-content').style.maxHeight = 0;
+                        }
+
+                        item.classList.toggle('active');
+                        const content = item.querySelector('.accordion-item-content');
+                        if (item.classList.contains('active')) {
+                            content.style.maxHeight = content.scrollHeight + "px";
+                        } else {
+                            content.style.maxHeight = 0;
+                        }
+                    });
+                });
+            }
+
+            // --- SERVICE DETAIL SUB-SCREEN SCRIPT ---
+            const detailScreen = document.getElementById('service-detail-screen');
+            const backBtn = detailScreen.querySelector('.service-detail-back-btn');
+            const learnMoreBtns = document.querySelectorAll('.btn[data-service-key]');
+            const detailNavLinks = detailScreen.querySelectorAll('.service-detail-nav-link');
+            const detailContentArea = detailScreen.querySelector('.service-detail-content-area');
+            const heroTitle = detailScreen.querySelector('#detail-hero-title');
+            const heroBg = detailScreen.querySelector('#detail-hero-bg');
+
+            function populateAndShowDetailScreen(serviceKey) {
+                const data = serviceDetailData[serviceKey];
+                if (!data) return;
+
+                // Populate hero
+                heroTitle.textContent = data.heroTitle;
+                heroBg.src = data.heroBg;
+                heroBg.alt = data.heroTitle;
+
+                // Populate content area
+                let contentHTML = '';
+                Object.keys(data).forEach(key => {
+                    if (key !== 'heroTitle' && key !== 'heroBg') {
+                        contentHTML += `<section id="${key}"><h2>${data[key].title}</h2>${data[key].content}</section>`;
+                    }
+                });
+                detailContentArea.innerHTML = contentHTML;
+
+                // Show screen & reset state
+                detailScreen.style.display = 'block';
+                document.body.style.overflow = 'hidden';
+                detailScreen.scrollTop = 0; // Scroll to top of the sub-screen
+
+                // Reset tabs to Overview
+                detailNavLinks.forEach(l => l.classList.remove('active'));
+                detailScreen.querySelector('.service-detail-nav-link[data-target="overview"]').classList.add('active');
+                
+                const detailContentSections = detailScreen.querySelectorAll('.service-detail-content-area > section');
+                detailContentSections.forEach(section => {
+                    section.classList.toggle('active', section.id === 'overview');
+                });
+
+
+                // Re-attach FAQ listeners
+                setupFaqAccordion();
+            }
+
+            learnMoreBtns.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const serviceKey = btn.dataset.serviceKey;
+                    populateAndShowDetailScreen(serviceKey);
+                });
+            });
+
+            backBtn.addEventListener('click', () => {
+                detailScreen.style.display = 'none';
+                document.body.style.overflow = '';
+            });
+
+            detailNavLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetId = link.getAttribute('data-target');
+
+                    detailNavLinks.forEach(l => l.classList.remove('active'));
+                    link.classList.add('active');
+
+                    const detailContentSections = detailScreen.querySelectorAll('.service-detail-content-area > section');
+                    detailContentSections.forEach(section => {
+                        section.classList.toggle('active', section.id === targetId);
+                    });
+                });
+            });
+
+            function setupFaqAccordion() {
+                const faqItems = detailScreen.querySelectorAll('.faq-item');
+                faqItems.forEach(item => {
+                    const question = item.querySelector('.faq-question');
+                    question.addEventListener('click', () => {
+                        const answer = item.querySelector('.faq-answer');
+                        const icon = item.querySelector('i');
+                        const isOpen = answer.style.maxHeight && answer.style.maxHeight !== '0px';
+
+                        if (isOpen) {
+                            answer.style.maxHeight = null;
+                            icon.classList.remove('fa-minus');
+                            icon.classList.add('fa-plus');
+                        } else {
+                            answer.style.maxHeight = answer.scrollHeight + 'px';
+                            icon.classList.remove('fa-plus');
+                            icon.classList.add('fa-minus');
+                        }
+                    });
+                });
+            }
+        });
+    </script>
+
+</body>
+</html>

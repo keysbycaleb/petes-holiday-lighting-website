@@ -105,27 +105,33 @@
   "services": {
     "House/Roof Wash": {
       "keywords": ["house", "roofs", "siding", "stucco", "soft wash", "soft washing", "house wash", "algae", "moss", "mildew", "streaks", "hous", "ruff", "roff", "exterior", "facade", "artillery fungus"],
-      "pageUrl": "pages/services/roof-washing.html"
+      "pageUrl": "pages/services/roof-washing.html",
+      "imageUrl": "assets/images/services/house-roof-washing.webp"
     },
     "Solar Panel Cleaning": {
       "keywords": ["solar", "panel", "panels", "soler", "pannel", "pannels", "photovoltaic"],
-      "pageUrl": "pages/services/solar-pannel-cleaning.html"
+      "pageUrl": "pages/services/solar-pannel-cleaning.html",
+      "imageUrl": "assets/images/services/solar-panel-cleaning.webp"
     },
     "Window Cleaning": {
       "keywords": ["window", "windows", "glass", "windo", "panes", "sills", "window wash"],
-      "pageUrl": "pages/services/window-cleaning.html"
+      "pageUrl": "pages/services/window-cleaning.html",
+      "imageUrl": "assets/images/services/window-cleaning.webp"
     },
     "Gutter Cleaning": {
       "keywords": ["gutter", "gutters", "clogged", "unclog", "guter", "guttr", "downspout", "eavestrough"],
-      "pageUrl": "pages/services/gutter-cleaning.html"
+      "pageUrl": "pages/services/gutter-cleaning.html",
+      "imageUrl": "assets/images/services/gutter-cleaning.webp"
     },
     "Bird Proofing": {
       "keywords": ["bird proofing", "bird", "birds", "pigeon", "pigeons", "proofing", "berd", "pidgeon", "nesting", "deterrent", "spikes", "remove birds"],
-      "pageUrl": "pages/services/bird-proofing.html"
+      "pageUrl": "pages/services/bird-proofing.html",
+      "imageUrl": "assets/images/services/bird-proofing.webp"
     },
     "Pressure Washing": {
       "keywords": ["pressure washing", "pressure", "driveway", "patio", "concrete", "deck", "fence", "presure", "preshure", "walkway", "sidewalk", "hardscape", "power wash", "brick", "pavers", "efflorescence"],
-      "pageUrl": "pages/services/residential-pressure-washing.html"
+      "pageUrl": "pages/services/residential-pressure-washing.html",
+      "imageUrl": "assets/images/services/residential-pressure-washing.webp"
     }
   },
   "conversationFlows": {

@@ -144,7 +144,9 @@ document.addEventListener('DOMContentLoaded', () => {
             targetPage = document.getElementById('page-service-detail-template');
             const pageContentHTML = await fetchPage(pageData.target);
             
-            targetPage.querySelector('.header-title').textContent = pageData.title;
+            // The main header title is now static, so we only update the hero title.
+            const serviceTitle = pageData.title.replace(' Details', '').replace(' Cleaning', '').replace('Washing', 'Wash');
+            targetPage.querySelector('.service-detail-hero-title').textContent = serviceTitle;
             targetPage.querySelector('.service-detail-hero').style.backgroundImage = `url('${pageData.image}')`;
             
             const contentWrapper = targetPage.querySelector('.service-detail-content-wrapper');
@@ -227,14 +229,23 @@ document.addEventListener('DOMContentLoaded', () => {
         if (backButton) {
             e.preventDefault();
             const currentPage = document.querySelector('.page.active');
-            pageHistory.pop();
-            const previousPageId = pageHistory[pageHistory.length - 1] || 'page-home';
-            showPage(previousPageId);
-            if (currentPage && currentPage.classList.contains('location-detail-page')) {
-                setTimeout(() => currentPage.remove(), 400);
+            
+            // If on the main service detail page, always go back to the service list.
+            if (currentPage && currentPage.id === 'page-service-detail-template') {
+                pageHistory = ['page-services']; // Reset history to the services page
+                showPage('page-services');
+            } else {
+                // For all other pages (like location details), use the history.
+                pageHistory.pop();
+                const previousPageId = pageHistory[pageHistory.length - 1] || 'page-home';
+                showPage(previousPageId);
+                if (currentPage && currentPage.classList.contains('location-detail-page')) {
+                    setTimeout(() => currentPage.remove(), 400);
+                }
             }
             return;
         }
+
 
         if (link) {
             e.preventDefault();
@@ -243,12 +254,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // This handles the chatbot link click to navigate the SPA
             if (link.closest('.chatbot-message')) {
-                const page = document.querySelector('.page.active');
                 const serviceDetails = {
                     type: 'service',
                     target: targetId,
-                    title: link.textContent.trim(),
-                    image: `assets/images/services/${targetId.split('/').pop().replace('.html', '')}.webp`
+                    title: link.dataset.serviceTitle || link.textContent.trim(),
+                    image: link.dataset.imageUrl // Use the reliable data attribute
                 };
                 pageHistory.push(targetId);
                 showPage(targetId, serviceDetails);
@@ -1075,8 +1085,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 } else if (normInput.includes('detail')) {
                     const serviceInfo = botBrain.services[service];
                     const pageUrl = serviceInfo.pageUrl;
-                    const imageName = service.toLowerCase().replace(/\//g, '').replace(/ /g, '-');
-                    const linkHTML = `<a href="#" data-target="${pageUrl}" data-service-title="${service}" data-image-url="assets/images/services/${imageName}.webp">${service} Details</a>`;
+                    const imageUrl = serviceInfo.imageUrl;
+                    const linkHTML = `<a href="#" data-target="${pageUrl}" data-service-title="${service}" data-image-url="${imageUrl}">${service} Details</a>`;
                     addMessage(`You got it. Click here for more information: ${linkHTML}`, 'bot');
                     endConversation(true);
                 } else {

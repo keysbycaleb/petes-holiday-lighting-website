@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mode Pressure Washing - Complete Homepage</title>
+
+    <!-- Google Fonts: Poppins for body/UI, Oswald for impactful headlines -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Oswald:wght@700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    
+    <!-- 
+    ====================================================================
+    MASTER STYLESHEET
+    All styles from the individual sections have been merged here.
+    ====================================================================
+    -->
+    <style>
+        /* --- 1. CSS Variables & Root Setup --- */
+        :root {
+            --font-primary: 'Poppins', sans-serif;
+            --font-display: 'Oswald', sans-serif;
+
+            --color-primary: #007BFF;
+            --color-primary-dark: #0056b3;
+            --color-primary-light: rgba(0, 123, 255, 0.1);
+            --color-dark: #1a202c;
+            --color-dark-accent: #131823;
+            --color-light: #ffffff;
+            --color-grey-text: #a0aec0;
+            --color-star: #ffc107;
+
+            --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.2), 0 4px 6px -4px rgba(0, 0, 0, 0.2);
+            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 8px 10px -6px rgba(0, 0, 0, 0.4);
+            --shadow-glow: 0 0 30px rgba(0, 123, 255, 0.4);
+            
+            --border-radius: 16px;
+            --transition-speed: 0.4s;
+            --transition-speed-fast: 0.2s;
+        }
+
+        /* --- 2. Global Resets & Base Styles --- */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-primary);
+            background-color: var(--color-dark);
+            color: var(--color-light);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            overflow-x: hidden;
+        }
+        
+        /* --- Animation for content fade-in on scroll --- */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- 3. Header Styling --- */
+        .app-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 2rem;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            transition: all var(--transition-speed) ease;
+        }
+
+        .header-brand-name {
+            font-family: var(--font-display);
+            font-size: 2rem;
+            text-decoration: none;
+            color: var(--color-light);
+            letter-spacing: 1px;
+        }
+
+        .desktop-nav { display: flex; gap: 2.5rem; }
+        .desktop-nav .nav-item { text-decoration: none; color: rgba(255, 255, 255, 0.8); font-weight: 500; position: relative; transition: color var(--transition-speed) ease; cursor: pointer; }
+        .desktop-nav .nav-item::after { content: ''; position: absolute; bottom: -5px; left: 0; width: 100%; height: 2px; background-color: var(--color-light); transform: scaleX(0); transform-origin: right; transition: transform var(--transition-speed) ease-in-out; }
+        .desktop-nav .nav-item:hover, .desktop-nav .nav-item.active { color: var(--color-light); }
+        .desktop-nav .nav-item:hover::after, .desktop-nav .nav-item.active::after { transform: scaleX(1); transform-origin: left; }
+        .header-actions { display: flex; align-items: center; gap: 1.5rem; }
+        .header-actions .social-link { color: rgba(255, 255, 255, 0.8); font-size: 1.2rem; transition: all var(--transition-speed) ease; }
+        .header-actions .social-link:hover { color: var(--color-light); transform: scale(1.1); }
+
+        /* --- 4. Hero Section --- */
+        .hero { position: relative; height: 100vh; display: flex; align-items: center; justify-content: center; text-align: center; color: var(--color-light); overflow: hidden; }
+        .hero-background { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-image: url('assets/images/services/hero-image.png'); background-size: cover; background-position: center; z-index: 1; animation: zoom-in 20s ease-in-out infinite; }
+        .hero::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to top, rgba(0,0,0,0.7), rgba(0,0,0,0.3)); z-index: 2; }
+        @keyframes zoom-in { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
+        .hero-content { position: relative; z-index: 3; max-width: 800px; padding: 0 1rem; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; animation: fadeInUp 1.2s 0.3s ease-out forwards; opacity: 0; }
+        .home-hero-title { font-family: var(--font-display); font-size: clamp(3rem, 7vw, 5.5rem); line-height: 1.1; text-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+        .home-hero-subtitle { font-size: 1.2rem; max-width: 60ch; color: var(--color-grey-text); text-shadow: 0 2px 5px rgba(0,0,0,0.5); }
+        .hero-search-bar { position: relative; width: 100%; max-width: 600px; margin-top: 1.5rem; }
+        #hero-search-input { width: 100%; padding: 1.2rem 1.5rem 1.2rem 3.5rem; font-size: 1.1rem; border-radius: 50px; border: 2px solid rgba(255, 255, 255, 0.3); background-color: rgba(255, 255, 255, 0.1); color: var(--color-light); backdrop-filter: blur(10px); transition: all var(--transition-speed) ease; }
+        #hero-search-input::placeholder { color: var(--color-grey-text); }
+        #hero-search-input:focus { outline: none; border-color: var(--color-primary); background-color: rgba(255, 255, 255, 0.2); box-shadow: 0 0 0 4px rgba(0, 123, 255, 0.3); }
+        .hero-search-bar .fa-search { position: absolute; left: 1.5rem; top: 50%; transform: translateY(-50%); color: var(--color-grey-text); font-size: 1.2rem; }
+        .google-rating { display: flex; align-items: center; gap: 0.75rem; font-size: 1rem; font-weight: 500; margin-top: 1rem; }
+        .google-rating .stars { color: var(--color-star); }
+
+        /* --- 5. Services Section (Homepage Preview) --- */
+        .services-section-immersive { padding: 6rem 2rem; background-color: var(--color-dark); overflow: hidden; }
+        .services-container { max-width: 1200px; margin: 0 auto; }
+        .section-header { text-align: center; margin-bottom: 4rem; }
+        .section-title { font-family: var(--font-display); font-size: clamp(2.5rem, 5vw, 3.5rem); color: var(--color-light); margin-bottom: 1rem; position: relative; display: inline-block; }
+        .section-title::after { content: ''; position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%); width: 60px; height: 4px; background-color: var(--color-primary); border-radius: 2px; }
+        .section-subtitle { font-size: 1.1rem; color: var(--color-grey-text); max-width: 65ch; margin: 0 auto; }
+        .services-interactive-layout { display: grid; grid-template-columns: 1fr 2fr; gap: 3rem; min-height: 500px; align-items: center; }
+        .services-list { display: flex; flex-direction: column; gap: 0.5rem; }
+        .service-list-item { display: flex; align-items: center; gap: 1rem; padding: 1rem 1.5rem; border-radius: var(--border-radius); text-decoration: none; color: var(--color-grey-text); font-weight: 500; font-size: 1.1rem; border: 2px solid transparent; transition: all var(--transition-speed-fast) ease; }
+        .service-list-item:hover { background-color: #2d3748; color: var(--color-light); }
+        .service-list-item.active { color: var(--color-light); background-color: var(--color-primary-light); border-color: var(--color-primary); }
+        .service-list-item .fa-fw { font-size: 1.3rem; }
+        .service-details-pane { position: relative; border-radius: var(--border-radius); overflow: hidden; height: 500px; box-shadow: var(--shadow-lg); }
+        .service-detail-image { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; transition: opacity var(--transition-speed) ease, transform 10s ease-in-out; transform: scale(1.05); }
+        .service-details-pane:hover .service-detail-image { transform: scale(1); }
+        .service-detail-content { position: absolute; bottom: 0; left: 0; right: 0; padding: 2.5rem; background: linear-gradient(to top, rgba(0,0,0,0.9), transparent); color: var(--color-light); transition: opacity var(--transition-speed) ease; }
+        .service-details-pane.is-switching .service-detail-image, .service-details-pane.is-switching .service-detail-content { opacity: 0; }
+        .service-detail-title { font-size: 1.8rem; font-weight: 600; margin-bottom: 0.5rem; }
+        .service-detail-description { font-size: 1rem; color: var(--color-grey-text); max-width: 50ch; }
+
+        /* --- 6. Testimonials Section --- */
+        .testimonials-section { padding: 6rem 2rem; background-color: var(--color-dark); }
+        .testimonials-container { max-width: 1200px; margin: 0 auto; }
+        .testimonials-layout { display: grid; grid-template-columns: 1fr 2fr; gap: 3rem; align-items: flex-start; }
+        .reviews-list { background-color: #2d3748; border-radius: var(--border-radius); padding: 1rem; }
+        .review-item { padding: 1.5rem; border-radius: 12px; cursor: pointer; border-left: 4px solid transparent; transition: background-color 0.3s ease, border-color 0.3s ease; }
+        .review-item:hover { background-color: rgba(0,0,0,0.2); }
+        .review-item.active { background-color: var(--color-primary-light); border-left-color: var(--color-primary); }
+        .review-author { font-weight: 600; font-size: 1.1rem; color: var(--color-light); margin-bottom: 0.25rem; }
+        .review-headline { font-size: 0.9rem; color: var(--color-grey-text); }
+        .review-display { }
+        .video-placeholder { position: relative; border-radius: var(--border-radius); overflow: hidden; box-shadow: var(--shadow-lg); aspect-ratio: 16 / 9; background-size: cover; background-position: center; margin-bottom: 2rem; transition: background-image var(--transition-speed) ease; }
+        .video-placeholder::after { content: '\f04b'; font-family: 'Font Awesome 6 Free'; font-weight: 900; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 3rem; color: rgba(255, 255, 255, 0.8); background-color: rgba(0, 0, 0, 0.3); width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(5px); border: 2px solid rgba(255, 255, 255, 0.5); transition: all 0.3s ease; cursor: pointer; }
+        .video-placeholder:hover::after { background-color: rgba(0, 123, 255, 0.7); transform: translate(-50%, -50%) scale(1.1); }
+        .review-full-text { font-size: 1.2rem; font-style: italic; line-height: 1.6; color: var(--color-grey-text); transition: opacity var(--transition-speed) ease; }
+        .is-switching { opacity: 0; transform: translateY(10px); }
+
+        /* --- 7. CTA Section --- */
+        .cta-section { padding: 6rem 2rem; background-color: var(--color-dark-accent); text-align: center; position: relative; overflow: hidden; }
+        .cta-section::before { content: ''; position: absolute; top: 0; left: 0; width: 200%; height: 100%; background: linear-gradient(115deg, var(--color-dark) 25%, var(--color-dark-accent) 50%, var(--color-dark) 75%); background-size: 200% 100%; animation: gradient-scroll 15s linear infinite; z-index: 1; }
+        @keyframes gradient-scroll { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
+        .cta-container { max-width: 800px; margin: 0 auto; position: relative; z-index: 2; }
+        .cta-content {}
+        .cta-icon { font-size: 3rem; color: var(--color-primary); margin-bottom: 1.5rem; }
+        .cta-title { font-family: var(--font-display); font-size: clamp(2.5rem, 6vw, 4rem); color: var(--color-light); line-height: 1.1; margin-bottom: 1.5rem; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
+        .cta-subtitle { font-size: 1.1rem; color: var(--color-grey-text); max-width: 60ch; margin: 0 auto 2.5rem auto; }
+        .btn-cta { padding: 1.2rem 3rem; border: none; border-radius: 50px; font-weight: 600; font-size: 1.1rem; text-decoration: none; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 0.75rem; transition: all var(--transition-speed) cubic-bezier(0.25, 0.8, 0.25, 1); background: var(--color-primary); color: var(--color-light); box-shadow: var(--shadow-glow); animation: pulse 2.5s infinite; }
+        .btn-cta:hover { background-color: var(--color-primary-dark); transform: translateY(-5px) scale(1.05); box-shadow: 0 0 40px rgba(0, 123, 255, 0.6); animation-play-state: paused; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.03); } 100% { transform: scale(1); } }
+        
+        /* --- 8. General Purpose & Responsiveness --- */
+        .btn { padding: 0.9rem 2rem; border: none; border-radius: var(--border-radius); font-weight: 600; font-size: 0.95rem; text-decoration: none; cursor: pointer; transition: all var(--transition-speed) ease; }
+        .btn-primary { background-color: var(--color-primary); color: var(--color-light); box-shadow: var(--shadow-md); }
+        .btn-primary:hover { background-color: var(--color-primary-dark); transform: translateY(-3px); box-shadow: var(--shadow-lg); }
+        
+        @media (max-width: 900px) {
+            .services-interactive-layout, .testimonials-layout { grid-template-columns: 1fr; gap: 2rem; }
+            .service-details-pane { height: 400px; }
+            .services-list { flex-direction: row; flex-wrap: wrap; justify-content: center; }
+            .service-list-item { font-size: 0.9rem; padding: 0.75rem 1rem; }
+        }
+        @media (max-width: 768px) {
+            .desktop-nav, .header-actions .desktop-cta-btn { display: none; }
+            .app-header { padding: 1rem; }
+            .home-hero-subtitle { font-size: 1rem; }
+            .services-section-immersive, .testimonials-section, .cta-section { padding-left: 1rem; padding-right: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="app-header main-header">
+        <a href="#" class="header-brand-name">MODE</a>
+        <nav class="desktop-nav">
+            <a class="nav-item active" data-target="homepage-content">Home</a>
+            <a class="nav-item" data-target="services-page-content">Services</a>
+            <a class="nav-item" data-target="locations-page-content">Locations</a>
+            <a class="nav-item" data-target="contact-page-content">Contact</a>
+        </nav>
+        <div class="header-actions">
+            <a href="#" class="social-link" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+            <a href="#" class="social-link" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+            <a href="#" class="btn btn-primary desktop-cta-btn">Get a Free Estimate</a>
+        </div>
+    </header>
+
+    <!-- Page Container: Home -->
+    <main id="homepage-content">
+        <!-- SECTION 1: HERO -->
+        <section class="hero">
+            <div class="hero-background"></div>
+            <div class="hero-content">
+                <h1 class="home-hero-title">Your Property's Potential, Unlocked.</h1>
+                <p class="home-hero-subtitle">Expert pressure washing and exterior cleaning for a pristine, protected, and valuable home.</p>
+                <form class="hero-search-bar" id="hero-search-form">
+                    <i class="fa-solid fa-search"></i>
+                    <input type="text" id="hero-search-input" placeholder="How can we help? (e.g., 'roof cleaning')">
+                </form>
+                <div class="google-rating">
+                    <div class="stars">
+                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
+                    </div>
+                    <span>4.7 stars on Google</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: SERVICES PREVIEW -->
+        <section class="services-section-immersive">
+            <div class="services-container">
+                <div class="section-header">
+                    <h2 class="section-title">Our Services</h2>
+                    <p class="section-subtitle">From sparkling windows to spotless roofs, we provide a complete range of exterior cleaning services to enhance your property's curb appeal and longevity.</p>
+                </div>
+                <div class="services-interactive-layout">
+                    <nav class="services-list" id="services-list"></nav>
+                    <div class="service-details-pane">
+                        <img src="" alt="Service detail image" class="service-detail-image" id="service-image">
+                        <div class="service-detail-content">
+                            <h3 class="service-detail-title" id="service-title"></h3>
+                            <p class="service-detail-description" id="service-description"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: TESTIMONIALS -->
+        <section class="testimonials-section">
+            <div class="testimonials-container">
+                <div class="section-header">
+                    <h2 class="section-title">Stories From Our Customers</h2>
+                </div>
+                <div class="testimonials-layout">
+                    <div class="reviews-list" id="reviews-list"></div>
+                    <div class="review-display">
+                        <div class="video-placeholder" id="video-placeholder"></div>
+                        <p class="review-full-text" id="review-full-text"></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: CALL TO ACTION -->
+        <section class="cta-section">
+            <div class="cta-container">
+                <div class="cta-content">
+                    <div class="cta-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+                    <h2 class="cta-title">Ready for a Transformation?</h2>
+                    <p class="cta-subtitle">Let's restore your home's curb appeal and protect your investment. Get a free, no-obligation estimate from our experts today and see the MODE difference.</p>
+                    <a href="#" class="btn-cta">
+                        <i class="fa-solid fa-calculator"></i>
+                        <span>Get My Free Estimate</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 
+    ====================================================================
+    MASTER JAVASCRIPT
+    All scripts from the individual sections have been merged here.
+    ====================================================================
+    -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // --- PAGE NAVIGATION ---
+            const navLinks = document.querySelectorAll('.nav-item');
+            const pageContents = document.querySelectorAll('main[id$="-content"]');
+
+            function switchPage(targetId) {
+                pageContents.forEach(page => { page.style.display = 'none'; });
+                const targetPage = document.getElementById(targetId);
+                if (targetPage) { targetPage.style.display = 'block'; }
+                navLinks.forEach(link => { link.classList.toggle('active', link.dataset.target === targetId); });
+            }
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetId = e.currentTarget.dataset.target;
+                    switchPage(targetId);
+                });
+            });
+
+            // --- SERVICES DATA ---
+            const servicesData = {
+                house: { title: 'House & Roof Washing', description: 'Safely remove algae, moss, and stains to protect and beautify your home\'s most critical assets.', image: 'assets/images/services/house-roof-washing.webp', icon: 'fa-house-chimney-window' },
+                solar: { title: 'Solar Panel Cleaning', description: 'Boost your energy efficiency and protect your investment with our professional, streak-free cleaning.', image: 'assets/images/services/solar-panel-cleaning.webp', icon: 'fa-solar-panel' },
+                gutter: { title: 'Gutter Cleaning', description: 'Prevent water damage and protect your foundation by ensuring your gutters are clear and free-flowing.', image: 'assets/images/services/gutter-cleaning.webp', icon: 'fa-wind' },
+                pressure: { title: 'Pressure Washing', description: 'Revitalize driveways, patios, and walkways by erasing years of dirt, grime, and discoloration.', image: 'assets/images/services/residential-pressure-washing.webp', icon: 'fa-spray-can-sparkles' },
+                bird: { title: 'Bird Proofing', description: 'Protect your property from pests and damage with humane and effective bird deterrent solutions.', image: 'assets/images/services/bird-proofing.webp', icon: 'fa-dove' },
+                window: { title: 'Window Cleaning', description: 'Let the light in with our professional exterior window cleaning for a crystal-clear, spotless finish.', image: 'assets/images/services/window-cleaning.webp', icon: 'fa-igloo' }
+            };
+
+            // --- SERVICES SECTION SCRIPT (Homepage Preview) ---
+            const servicesListContainer = document.querySelector('#services-list');
+            if (servicesListContainer) {
+                const serviceImageEl = document.getElementById('service-image');
+                const serviceTitleEl = document.getElementById('service-title');
+                const serviceDescriptionEl = document.getElementById('service-description');
+                const serviceDetailsPane = document.querySelector('.service-details-pane');
+                let currentService = '';
+
+                function updateServiceDetails(serviceKey) {
+                    if (currentService === serviceKey || !servicesData[serviceKey]) return;
+                    const data = servicesData[serviceKey];
+                    currentService = serviceKey;
+                    serviceDetailsPane.classList.add('is-switching');
+                    setTimeout(() => {
+                        serviceImageEl.src = data.image;
+                        serviceTitleEl.textContent = data.title;
+                        serviceDescriptionEl.textContent = data.description;
+                        serviceDetailsPane.classList.remove('is-switching');
+                    }, 200);
+                }
+                
+                Object.keys(servicesData).forEach((key, index) => {
+                    const service = servicesData[key];
+                    const item = document.createElement('a');
+                    item.href = "#";
+                    item.className = 'service-list-item';
+                    item.dataset.service = key;
+                    item.innerHTML = `<i class="fa-solid ${service.icon} fa-fw"></i><span>${service.title}</span>`;
+                    if (index === 0) {
+                        item.classList.add('active');
+                        updateServiceDetails(key);
+                    }
+                    item.addEventListener('mouseover', () => {
+                        document.querySelector('.service-list-item.active').classList.remove('active');
+                        item.classList.add('active');
+                        updateServiceDetails(key);
+                    });
+                    servicesListContainer.appendChild(item);
+                });
+            }
+
+            // --- TESTIMONIALS SECTION SCRIPT ---
+            const testimonialsData = [
+                { author: "Patti L.", headline: "Incredible customer care.", quote: "We hired Mode to install pigeon proofing... That level of customer care is rare. Highly recommend this company.", video_bg: "https://placehold.co/1600x900/2d3748/a0aec0?text=Patti+L." },
+                { author: "Michael R.", headline: "Our driveway looks brand new!", quote: "The team was incredibly professional and efficient. Our driveway looks brand new, and the house siding has never been cleaner. Worth every penny!", video_bg: "https://placehold.co/1600x900/1a202c/a0aec0?text=Michael+R." },
+                { author: "Sarah J.", headline: "Energy output increased immediately.", quote: "I was amazed at the difference the solar panel cleaning made. My energy output increased immediately. Fantastic service and great communication.", video_bg: "https://placehold.co/1600x900/2d3748/a0aec0?text=Sarah+J." },
+                { author: "David Chen", headline: "Outstanding job on our windows.", quote: "They did an outstanding job on our windows and gutters. The attention to detail was impressive. Will definitely be using their services again.", video_bg: "https://placehold.co/1600x900/1a202c/a0aec0?text=David+C." }
+            ];
+            const reviewsListContainer = document.querySelector('#reviews-list');
+            if(reviewsListContainer) {
+                const videoPlaceholderEl = document.getElementById('video-placeholder');
+                const reviewTextEl = document.getElementById('review-full-text');
+
+                function updateTestimonialDisplay(index) {
+                    const data = testimonialsData[index];
+                    videoPlaceholderEl.classList.add('is-switching');
+                    reviewTextEl.classList.add('is-switching');
+                    setTimeout(() => {
+                        videoPlaceholderEl.style.backgroundImage = `url(${data.video_bg})`;
+                        reviewTextEl.textContent = `“${data.quote}”`;
+                        videoPlaceholderEl.classList.remove('is-switching');
+                        reviewTextEl.classList.remove('is-switching');
+                    }, 200);
+                    document.querySelectorAll('.review-item').forEach((item, i) => {
+                        item.classList.toggle('active', i === index);
+                    });
+                }
+
+                testimonialsData.forEach((testimonial, index) => {
+                    const item = document.createElement('div');
+                    item.className = 'review-item';
+                    item.innerHTML = `<h3 class="review-author">${testimonial.author}</h3><p class="review-headline">${testimonial.headline}</p>`;
+                    item.addEventListener('click', () => updateTestimonialDisplay(index));
+                    reviewsListContainer.appendChild(item);
+                });
+                updateTestimonialDisplay(0);
+            }
+        });
+    </script>
+
+</body>
+</html>
