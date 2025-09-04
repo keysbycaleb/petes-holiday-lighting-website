@@ -1040,3 +1040,22 @@ body.show-chatbot .chatbot-container {
     0%, 80%, 100% { transform: scale(0); }
     40% { transform: scale(1.0); }
 }
+
+/* --- RESPONSIVE FIXES --- */
+@media (max-height: 700px) {
+    :root {
+        --bottom-nav-height: 50px;
+    }
+    .nav-item i {
+        font-size: 20px;
+    }
+    .nav-item span {
+        font-size: 9px;
+    }
+    .chatbot-toggler {
+        bottom: calc(var(--bottom-nav-height) + 10px);
+        right: 10px;
+        width: 45px;
+        height: 45px;
+    }
+}
