@@ -222,8 +222,7 @@ document.addEventListener('DOMContentLoaded', () => {
         setupScrollAnimations(targetPage);
         updateBottomNavUI(pageId, isDetailPage);
 
-        const pageContentEl = targetPage.querySelector('.page-content');
-        if (pageContentEl) pageContentEl.scrollTop = 0;
+        window.scrollTo({ top: 0, behavior: 'auto' });
     };
 
 
