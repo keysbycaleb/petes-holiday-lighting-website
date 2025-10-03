@@ -1,32 +1,22 @@
 {
-  "House/Roof Wash": {
-    "keywords": ["house wash", "wash my house", "house washing", "clean the outside of my house", "roof wash", "roof cleaning", "clean my roof", "siding wash", "wash my siding", "soft wash", "softwash", "algae", "moss", "mildew", "black streaks", "mold on my siding"],
-    "pageUrl": "pages/services/roof-washing.html",
-    "imageUrl": "assets/images/services/house-roof-washing.webp"
+  "Residential Lighting": {
+    "pageUrl": "pages/services/residential-lighting.html",
+    "imageUrl": "assets/images/lights/pic01.jpg",
+    "icon": "fa-house"
   },
-  "Solar Panel Cleaning": {
-    "keywords": ["solar panel cleaning", "clean my solar panels", "solar panel washing"],
-    "pageUrl": "pages/services/solar-pannel-cleaning.html",
-    "imageUrl": "assets/images/services/solar-panel-cleaning.webp"
+  "Commercial Lighting": {
+    "pageUrl": "pages/services/commercial-lighting.html",
+    "imageUrl": "assets/images/lights/pic02.jpg",
+    "icon": "fa-store"
   },
-  "Window Cleaning": {
-    "keywords": ["window cleaning", "wash my windows", "exterior windows", "clean my glass"],
-    "pageUrl": "pages/services/window-cleaning.html",
-    "imageUrl": "assets/images/services/window-cleaning.webp"
+  "Custom Designs": {
+    "pageUrl": "pages/services/custom-designs.html",
+    "imageUrl": "assets/images/lights/pic03.jpg",
+    "icon": "fa-drafting-compass"
   },
-  "Gutter Cleaning": {
-    "keywords": ["gutter cleaning", "clean my gutters", "clogged gutters"],
-    "pageUrl": "pages/services/gutter-cleaning.html",
-    "imageUrl": "assets/images/services/gutter-cleaning.webp"
-  },
-  "Bird Proofing": {
-    "keywords": ["bird proofing", "pigeon proofing", "stop birds", "bird control", "pigeon control"],
-    "pageUrl": "pages/services/bird-proofing.html",
-    "imageUrl": "assets/images/services/bird-proofing.webp"
-  },
-  "Pressure Washing": {
-    "keywords": ["pressure wash", "power wash", "driveway cleaning", "patio cleaning", "concrete cleaning", "deck cleaning", "fence cleaning"],
-    "pageUrl": "pages/services/residential-pressure-washing.html",
-    "imageUrl": "assets/images/services/residential-pressure-washing.webp"
+  "Maintenance & Takedown": {
+    "pageUrl": "pages/services/maintenance-takedown.html",
+    "imageUrl": "assets/images/lights/pic04.jpg",
+    "icon": "fa-toolbox"
   }
 }
