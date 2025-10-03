@@ -17,12 +17,11 @@
 
     <div class="app-container">
 
-        <!-- Page 1: Home -->
         <section class="page active" id="page-home">
              <header class="app-header main-header">
                 <a href="#" class="header-brand-name home-btn scroll-to-top">Pete's Holiday Lighting</a>
                 <div class="header-actions">
-                    <a href="tel:YOUR-PHONE-NUMBER" class="icon-btn mobile-only" aria-label="Call">
+                    <a href="tel:+19097503143" class="icon-btn mobile-only" aria-label="Call">
                         <i class="fa-solid fa-phone"></i>
                     </a>
                 </div>
@@ -142,7 +141,6 @@
             <footer class="app-footer"></footer>
         </section>
 
-        <!-- Page 2: Services -->
         <section class="page" id="page-services">
             <header class="app-header">
                 <a href="#" class="header-brand-name home-btn">Services</a>
@@ -150,13 +148,11 @@
             <main class="page-content">
                 <h2 class="page-title">Our Services</h2>
                 <div class="services-page-grid">
-                    <!-- Service cards will be dynamically inserted here by script.js -->
-                </div>
+                    </div>
             </main>
             <footer class="app-footer"></footer>
         </section>
 
-        <!-- Page 3: Locations -->
         <section class="page" id="page-locations">
             <header class="app-header">
                 <a href="#" class="header-brand-name home-btn">Locations</a>
@@ -171,18 +167,16 @@
                     <button class="btn-filter" id="open-filter-modal-btn"><i class="fa-solid fa-filter"></i></button>
                 </div>
                 <div class="location-card-grid" id="location-card-grid">
-                    <!-- Location cards will be dynamically inserted here -->
-                </div>
+                    </div>
             </main>
             <footer class="app-footer"></footer>
         </section>
 
-        <!-- Page 4: Contact -->
         <section class="page" id="page-contact">
             <header class="app-header">
                  <a href="#" class="header-brand-name home-btn">Pete's Holiday Lighting</a>
                 <div class="header-actions">
-                    <a href="tel:YOUR-PHONE-NUMBER" class="icon-btn mobile-only" aria-label="Call">
+                    <a href="tel:+19097503143" class="icon-btn mobile-only" aria-label="Call">
                         <i class="fa-solid fa-phone"></i>
                     </a>
                 </div>
@@ -249,7 +243,6 @@
             <footer class="app-footer"></footer>
         </section>
 
-        <!-- Dynamic Page for Service Details -->
         <section class="page service-detail-page" id="page-service-detail-template">
              <header class="app-header">
                 <button class="header-back-btn"><i class="fas fa-chevron-left"></i> &nbsp; Back</button>
@@ -269,16 +262,13 @@
                     </div>
                 </nav>
                 <div class="service-detail-content-wrapper">
-                    <!-- Content injected by JS -->
-                </div>
+                    </div>
                 <div class="service-detail-cta-container">
-                     <!-- CTA Injected by JS -->
-                </div>
+                     </div>
             </main>
             <footer class="app-footer"></footer>
         </section>
         
-        <!-- This is the template for the footer that will be cloned -->
         <template id="footer-template">
             <div class="footer-container">
                 <img src="assets/images/lights/logo.webp" alt="Pete's Holiday Lighting Logo" class="footer-logo">
@@ -289,9 +279,8 @@
                     <a href="#" class="nav-item" data-target="page-contact">Get a Quote</a>
                 </nav>
                 <div class="footer-socials">
-                    <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-                    <a href="#" aria-label="Yelp"><i class="fab fa-yelp"></i></a>
+                    <a href="https://www.instagram.com/petes_holiday_lighting/" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="tel:+19097503143" aria-label="Call"><i class="fa-solid fa-phone"></i></a>
                 </div>
                  <div class="footer-locations-accordion">
                     <div class="locations-header">
@@ -313,13 +302,11 @@
         </template>
     </div>
 
-    <!-- Filter Modal for Locations Page -->
     <div id="filter-modal-overlay"></div>
     <div id="filter-panel">
         <h4>Filter by County</h4>
         <div class="filter-options-grid" id="filter-options-container">
-            <!-- County checkboxes will be injected here -->
-        </div>
+            </div>
         <div class="filter-actions">
             <button id="clear-filters-btn" class="btn-filter-action">Clear</button>
             <button id="apply-filters-btn" class="btn-filter-action">Apply</button>
@@ -350,4 +337,3 @@
 
 </body>
 </html>
-
