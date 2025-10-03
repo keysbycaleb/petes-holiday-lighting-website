@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     // --- App Elements ---
     const appContainer = document.querySelector('.app-container');
+    const serviceDetailPage = document.getElementById('page-service-detail-template');
 
     // --- Page Navigation & History ---
     let pageHistory = ['page-home'];
@@ -13,12 +14,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (pageId === 'page-home') {
             const ctaButton = document.querySelector('#page-home .hero .btn-primary');
             if (ctaButton) {
-                // Ensure animation can be re-triggered
                 ctaButton.classList.remove('bouncing');
-                // Use a timeout to allow the browser to process the class removal before adding it again
-                setTimeout(() => {
-                    ctaButton.classList.add('bouncing');
-                }, 10);
+                setTimeout(() => ctaButton.classList.add('bouncing'), 10);
             }
         }
 
@@ -35,19 +32,16 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         
         nextPage.classList.add('active');
-        window.scrollTo(0, 0);
+        // On page show, we should be at the top. This is an instant scroll.
+        window.scrollTo(0, 0); 
         updateBottomNavUI(pageId);
 
-        // Setup animations for the new page
         setupScrollAnimations(nextPage);
         setupTestimonialCarousel(nextPage);
 
-        // Animate service cards when the services page is shown
         if (pageId === 'page-services') {
             const serviceCards = nextPage.querySelectorAll('.service-page-card');
-            // First, remove the animate class to reset them
             serviceCards.forEach(card => card.classList.remove('animate'));
-            // Then, use a short timeout to re-add it, forcing the animation to replay
             setTimeout(() => {
                 serviceCards.forEach(card => card.classList.add('animate'));
             }, 50);
@@ -93,8 +87,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const updateBottomNavUI = (currentPageId) => {
         document.querySelectorAll('.bottom-nav .nav-item').forEach(item => {
-            const isActive = item.dataset.target === currentPageId;
-            item.classList.toggle('active', isActive);
+            item.classList.toggle('active', item.dataset.target === currentPageId);
         });
     };
 
@@ -104,7 +97,6 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('scroll', () => {
         let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
         
-        // Header hide/show logic
         document.body.classList.toggle('header-hidden', scrollTop > lastScrollTop && scrollTop > 50);
         lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
 
@@ -112,6 +104,20 @@ document.addEventListener('DOMContentLoaded', () => {
         if (homeHeader) {
             homeHeader.classList.toggle('scrolled', scrollTop > 50);
         }
+        
+        const serviceTabs = document.querySelector('.service-detail-page.active .service-detail-tabs');
+        if (serviceTabs) {
+            const heroSection = document.querySelector('.service-detail-page.active .service-detail-hero');
+            const heroHeight = heroSection ? heroSection.offsetHeight : 0;
+            const headerHeight = 64; 
+            
+            if (scrollTop > (heroHeight - headerHeight)) {
+                serviceTabs.classList.add('sticky');
+            } else {
+                serviceTabs.classList.remove('sticky');
+            }
+        }
+
     }, { passive: true });
 
 
@@ -133,7 +139,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     card.className = 'service-page-card';
                     card.dataset.target = 'page-service-detail-template';
                     card.dataset.serviceKey = key;
-                    // Correct the path relative to the CSS file
                     const imageUrl = `../${service.imageUrl}`;
                     card.style.setProperty('--bg-image', `url('${imageUrl}')`);
                     
@@ -154,14 +159,21 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- SERVICE DETAIL PAGE LOGIC ---
-    const serviceDetailPage = document.getElementById('page-service-detail-template');
-    
+    let isServicePageLoading = false;
+
     async function loadServiceDetailPage(serviceKey) {
+        if (isServicePageLoading) return;
+        isServicePageLoading = true;
+
         const titleEl = serviceDetailPage.querySelector('.header-title');
         const heroTitleEl = serviceDetailPage.querySelector('.service-detail-hero-title');
         const heroEl = serviceDetailPage.querySelector('.service-detail-hero');
         const contentWrapper = serviceDetailPage.querySelector('.service-detail-content-wrapper');
-        const ctaContainer = serviceDetailPage.querySelector('.service-detail-cta-container');
+
+        // Reset tabs to default active state ('overview')
+        serviceDetailPage.querySelectorAll('.service-detail-tab').forEach(t => t.classList.remove('active'));
+        const overviewTab = serviceDetailPage.querySelector('.service-detail-tab[data-target="overview"]');
+        if (overviewTab) overviewTab.classList.add('active');
 
         try {
             const servicesRes = await fetch('js/services.json');
@@ -170,82 +182,146 @@ document.addEventListener('DOMContentLoaded', () => {
             
             const contentRes = await fetch(serviceData.pageUrl);
             const htmlText = await contentRes.text();
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(htmlText, 'text/html');
+            const doc = new DOMParser().parseFromString(htmlText, 'text/html');
 
             titleEl.textContent = serviceKey;
-            
-            const overviewH4 = doc.querySelector('[data-section="overview"] h4');
-            heroTitleEl.textContent = overviewH4 ? overviewH4.textContent : serviceKey;
-            if(overviewH4) overviewH4.remove();
-
-            heroEl.style.backgroundImage = `url('${serviceData.imageUrl}')`;
+            heroTitleEl.textContent = serviceKey;
+            heroEl.style.backgroundImage = `url('../${serviceData.imageUrl}')`;
             
             contentWrapper.innerHTML = '';
-            ['overview', 'details', 'why-us', 'faq'].forEach(section => {
-                 const sectionContent = doc.querySelector(`[data-section="${section}"]`);
-                 if (sectionContent) {
-                    sectionContent.style.display = section === 'overview' ? 'block' : 'none';
-                    contentWrapper.appendChild(sectionContent);
-                 }
+            contentWrapper.style.minHeight = ''; // Clear minHeight
+            ['overview', 'details', 'why-us', 'faq'].forEach(sectionName => {
+                const sectionContent = doc.querySelector(`[data-section="${sectionName}"]`);
+                if (sectionContent) {
+                    const finalSection = document.createElement('div');
+                    finalSection.dataset.section = sectionName;
+                    const titleEl = sectionContent.querySelector('h4.sub-title');
+                    let titleText = (sectionName === 'overview') ? "Summary" : (titleEl ? titleEl.textContent : null);
+                    if (titleEl) titleEl.remove();
+                    
+                    if (titleText) {
+                        const newTitle = document.createElement('h4');
+                        newTitle.className = 'section-title';
+                        newTitle.textContent = titleText;
+                        finalSection.appendChild(newTitle);
+                    }
+
+                    const cardSelectors = { details: 'li', 'why-us': '.why-us-card', faq: '.faq-item' };
+                    const elementsToCardify = sectionContent.querySelectorAll(cardSelectors[sectionName]);
+
+                    if (elementsToCardify.length > 0) {
+                        const cardContainer = document.createElement('div');
+                        cardContainer.className = 'info-card-container';
+                        elementsToCardify.forEach(el => {
+                            if (el.textContent.trim()) {
+                                const card = document.createElement('div');
+                                card.className = 'info-card';
+                                card.innerHTML = el.outerHTML;
+                                cardContainer.appendChild(card);
+                            }
+                        });
+                        finalSection.appendChild(cardContainer);
+                    } else {
+                        finalSection.innerHTML += sectionContent.innerHTML;
+                    }
+                    finalSection.style.display = 'none';
+                    contentWrapper.appendChild(finalSection);
+                }
             });
-
-            const ctaContent = doc.querySelector('.cta-footer');
-            if (ctaContent) {
-                 ctaContainer.innerHTML = ctaContent.outerHTML;
-            }
-
-            setupServiceDetailTabs();
-            setupFaqAccordion(contentWrapper);
+            
             showPage('page-service-detail-template');
+            
+            // Activate the default tab after a short delay to allow rendering
+            setTimeout(() => {
+                const initialTab = serviceDetailPage.querySelector('.service-detail-tab.active');
+                if(initialTab) activateTab(initialTab, true);
+                isServicePageLoading = false;
+            }, 100);
 
         } catch (error) {
             console.error(`Failed to load service detail for ${serviceKey}:`, error);
-        }
-    }
-
-    function setupServiceDetailTabs() {
-        const tabs = serviceDetailPage.querySelectorAll('.service-detail-tab');
-        const highlighter = serviceDetailPage.querySelector('.tab-highlighter');
-        const contentSections = serviceDetailPage.querySelectorAll('.service-detail-content-wrapper > div');
-
-        function activateTab(tab) {
-            tabs.forEach(t => t.classList.remove('active'));
-            tab.classList.add('active');
-            
-            highlighter.style.width = `${tab.offsetWidth}px`;
-            highlighter.style.left = `${tab.offsetLeft}px`;
-
-            const targetSection = tab.dataset.target;
-            contentSections.forEach(section => {
-                section.style.display = section.dataset.section === targetSection ? 'block' : 'none';
-            });
-        }
-        
-        tabs.forEach(tab => {
-            tab.addEventListener('click', () => activateTab(tab));
-        });
-        
-        const initialActiveTab = serviceDetailPage.querySelector('.service-detail-tab.active');
-        if(initialActiveTab) {
-           setTimeout(() => activateTab(initialActiveTab), 50);
+            isServicePageLoading = false;
         }
     }
     
-    function setupFaqAccordion(container) {
-        const items = container.querySelectorAll('.faq-item');
-        items.forEach(item => {
-            const question = item.querySelector('.faq-question');
-            const answer = item.querySelector('.faq-answer');
-            if(question && answer){
-                question.addEventListener('click', () => {
-                    const isActive = item.classList.toggle('active');
-                    answer.style.maxHeight = isActive ? `${answer.scrollHeight}px` : '0px';
-                });
-            }
+    function animateInfoCards(sectionElement) {
+        if (!sectionElement) return;
+        const cards = sectionElement.querySelectorAll('.info-card');
+        cards.forEach((card, index) => {
+            card.style.animation = 'none';
+            void card.offsetWidth;
+            card.style.animation = `infoCardFadeInUp 0.6s cubic-bezier(0.165, 0.84, 0.44, 1) ${index * 0.1}s forwards`;
         });
     }
 
+    function activateTab(tab, isInitialLoad = false) {
+        if (!tab) return;
+        const highlighter = serviceDetailPage.querySelector('.tab-highlighter');
+        const contentWrapper = serviceDetailPage.querySelector('.service-detail-content-wrapper');
+        const allTabs = serviceDetailPage.querySelectorAll('.service-detail-tab');
+        const contentSections = serviceDetailPage.querySelectorAll('.service-detail-content-wrapper > div[data-section]');
+        const targetSectionName = tab.dataset.target;
+    
+        // --- Added Feature: Smooth scroll to top on tab change ---
+        if (!isInitialLoad) {
+            const heroSection = serviceDetailPage.querySelector('.service-detail-hero');
+            // Calculate the position where the tabs become sticky and scroll to it.
+            const targetScrollPosition = (heroSection ? heroSection.offsetHeight : 0) - 64; // 64 is header height
+            
+            // We only scroll if the user is further down the page than the target.
+            if (window.scrollY > targetScrollPosition) {
+                 window.scrollTo({
+                    top: targetScrollPosition,
+                    behavior: 'smooth'
+                });
+            }
+        }
+        // --- End of Added Feature ---
+    
+        allTabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        
+        highlighter.style.width = `${tab.offsetWidth}px`;
+        highlighter.style.left = `${tab.offsetLeft}px`;
+    
+        contentSections.forEach(section => {
+            section.style.display = section.dataset.section === targetSectionName ? 'block' : 'none';
+        });
+    
+        const activeSection = contentWrapper.querySelector(`[data-section="${targetSectionName}"]`);
+        if (activeSection) {
+            // Let content determine height automatically
+            contentWrapper.style.minHeight = '0px'; 
+            animateInfoCards(activeSection);
+        }
+    }
+
+    // --- EVENT DELEGATION FOR SERVICE DETAIL PAGE ---
+    if (serviceDetailPage) {
+        // Handle Tab Clicks
+        serviceDetailPage.addEventListener('click', (e) => {
+            const tab = e.target.closest('.service-detail-tab');
+            if (tab && !tab.classList.contains('active')) {
+                activateTab(tab);
+            }
+        });
+
+        // Handle FAQ Clicks
+        serviceDetailPage.addEventListener('click', (e) => {
+            const question = e.target.closest('.faq-question');
+            if (!question) return;
+
+            const faqItem = question.closest('.faq-item');
+            if (!faqItem) return;
+
+            const answer = faqItem.querySelector('.faq-answer');
+            if (!answer) return;
+
+            faqItem.classList.toggle('active');
+            answer.style.maxHeight = faqItem.classList.contains('active') ? `${answer.scrollHeight}px` : '0px';
+        });
+    }
+    
     // --- LOCATIONS PAGE LOGIC ---
     const locationsPage = document.getElementById('page-locations');
     if (locationsPage) {
@@ -257,9 +333,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const filterOptionsContainer = document.getElementById('filter-options-container');
         const applyFiltersBtn = document.getElementById('apply-filters-btn');
         const clearFiltersBtn = document.getElementById('clear-filters-btn');
-        
-        let allLocationsData = {};
-        let allCities = [];
+        let allLocationsData = {}, allCities = [];
 
         async function fetchLocations() {
             try {
@@ -289,8 +363,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         function populateFilterModal() {
             filterOptionsContainer.innerHTML = '';
-            const counties = Object.keys(allLocationsData);
-            counties.forEach(countyKey => {
+            Object.keys(allLocationsData).forEach(countyKey => {
                 const countyName = countyKey.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
                 const label = document.createElement('label');
                 label.className = 'filter-option-checkbox';
@@ -301,9 +374,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 `;
                  label.addEventListener('click', (e) => {
                     const checkbox = label.querySelector('input');
-                    if (e.target !== checkbox) {
-                       checkbox.checked = !checkbox.checked;
-                    }
+                    if (e.target !== checkbox) checkbox.checked = !checkbox.checked;
                     label.classList.toggle('checked', checkbox.checked);
                 });
                 filterOptionsContainer.appendChild(label);
@@ -312,47 +383,40 @@ document.addEventListener('DOMContentLoaded', () => {
         
         function applyFilters() {
             const searchTerm = searchBar.value.toLowerCase();
-            const selectedCounties = Array.from(filterOptionsContainer.querySelectorAll('input[type="checkbox"]:checked')).map(cb => cb.value);
-
+            const selectedCounties = Array.from(filterOptionsContainer.querySelectorAll('input:checked')).map(cb => cb.value);
             let tempFiltered = allCities;
 
             if (selectedCounties.length > 0) {
                 tempFiltered = selectedCounties.flatMap(county => allLocationsData[county]);
             }
-            
             if (searchTerm) {
                 tempFiltered = tempFiltered.filter(city => city.toLowerCase().includes(searchTerm));
             }
-
             renderGrid(tempFiltered.sort());
         }
         
         searchBar.addEventListener('input', applyFilters);
-
         openFilterBtn.addEventListener('click', () => {
             modalOverlay.classList.add('active');
             filterPanel.classList.add('active');
         });
-
         const closeFilterModal = () => {
             modalOverlay.classList.remove('active');
             filterPanel.classList.remove('active');
         };
-
         modalOverlay.addEventListener('click', closeFilterModal);
         applyFiltersBtn.addEventListener('click', () => {
             applyFilters();
             closeFilterModal();
         });
         clearFiltersBtn.addEventListener('click', () => {
-            filterOptionsContainer.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+            filterOptionsContainer.querySelectorAll('input').forEach(cb => {
                 cb.checked = false;
                 cb.parentElement.classList.remove('checked');
             });
             applyFilters();
             closeFilterModal();
         });
-
         fetchLocations();
     }
 
@@ -362,23 +426,13 @@ document.addEventListener('DOMContentLoaded', () => {
         if (stepsContainer) {
             const stepCards = stepsContainer.querySelectorAll('.step-card');
             if (stepCards.length === 0) return;
-    
             stepCards.forEach(card => card.classList.remove('is-visible'));
-    
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('is-visible');
-                    }
+                    if (entry.isIntersecting) entry.target.classList.add('is-visible');
                 });
-            }, {
-                rootMargin: '0px 0px -25% 0px',
-                threshold: 0
-            });
-    
-            stepCards.forEach(card => {
-                observer.observe(card);
-            });
+            }, { rootMargin: '0px 0px -25% 0px', threshold: 0 });
+            stepCards.forEach(card => observer.observe(card));
         }
     }
     
@@ -388,43 +442,28 @@ document.addEventListener('DOMContentLoaded', () => {
     function setupTestimonialCarousel(pageElement) {
         const track = pageElement.querySelector('.testimonial-carousel-track');
         if (!track) return;
+        if (testimonialInterval) clearInterval(testimonialInterval);
 
-        if (testimonialInterval) {
-            clearInterval(testimonialInterval);
-        }
-
-        // Use a timeout to ensure the element is rendered and has dimensions
         setTimeout(() => {
-            // Reset position before setup
             track.style.transition = 'none';
             track.style.transform = 'translateX(0px)';
-
             const slides = Array.from(track.children);
-            const originalSlideCount = slides.find(s => !s.classList.contains('clone')) ? slides.filter(s => !s.classList.contains('clone')).length : slides.length;
-
+            const originalSlideCount = slides.filter(s => !s.classList.contains('clone')).length;
             if (originalSlideCount <= 1) return;
-            
-            // Ensure clone doesn't already exist
             if (track.children.length === originalSlideCount) {
                 const firstClone = slides[0].cloneNode(true);
                 firstClone.classList.add('clone');
                 track.appendChild(firstClone);
             }
-
             let currentIndex = 0;
-
-            const advanceSlide = () => {
+            testimonialInterval = setInterval(() => {
                 const slideWidth = slides[0].getBoundingClientRect().width;
-                // If width is 0, the element is likely not visible, so don't do anything.
                 if (slideWidth === 0) return;
-
                 currentIndex++;
                 const gap = parseFloat(window.getComputedStyle(track).gap);
                 const offset = -currentIndex * (slideWidth + gap);
-
                 track.style.transition = 'transform 1.2s cubic-bezier(0.68, -0.6, 0.6, 1.6)';
                 track.style.transform = `translateX(${offset}px)`;
-
                 if (currentIndex === originalSlideCount) {
                     setTimeout(() => {
                         track.style.transition = 'none';
@@ -432,33 +471,26 @@ document.addEventListener('DOMContentLoaded', () => {
                         track.style.transform = `translateX(0px)`;
                     }, 1200);
                 }
-            };
-
-            testimonialInterval = setInterval(advanceSlide, 6000);
-        }, 100); // 100ms delay
+            }, 6000);
+        }, 100);
     }
-
-
 
     // --- FOOTER SETUP ---
     async function initializeFooters() {
         const template = document.getElementById('footer-template');
         if (!template) return;
-
         try {
             const response = await fetch('js/locations.json');
             const locationsData = await response.json();
             const allCities = Object.entries(locationsData).flatMap(([county, cities]) =>
                 cities.map(city => ({ name: city, county: county }))
             ).sort((a, b) => a.name.localeCompare(b.name));
-
             document.querySelectorAll('.app-footer').forEach(footer => {
                 if (footer.innerHTML.trim() === '') {
                     footer.innerHTML = template.innerHTML;
                     setupFooterPagination(footer, allCities);
                 }
             });
-
         } catch (error) {
             console.error("Failed to load location data for footers:", error);
             document.querySelectorAll('.app-footer').forEach(footer => {
@@ -475,75 +507,48 @@ document.addEventListener('DOMContentLoaded', () => {
         const gridContainer = footer.querySelector('.city-card-grid');
         const locationsHeader = footer.querySelector('.locations-header');
         const locationsContainer = footer.querySelector('.locations-list-container');
-        
         if (!gridContainer || !locationsHeader || !locationsContainer) return;
         
-        const itemsPerPage = 6;
+        const itemsPerPage = 6, totalPages = Math.ceil(allCities.length / itemsPerPage);
         let currentPage = 1;
-        const totalPages = Math.ceil(allCities.length / itemsPerPage);
 
         const renderFooterPage = (page) => {
-            const start = (page - 1) * itemsPerPage;
-            const end = start + itemsPerPage;
-            const pageItems = allCities.slice(start, end);
-            
-            gridContainer.innerHTML = pageItems.map((city, index) => {
+            const start = (page - 1) * itemsPerPage, end = start + itemsPerPage;
+            gridContainer.innerHTML = allCities.slice(start, end).map((city, index) => {
                 const imgIndex = ((start + index) % 15) + 1;
                 const imgUrl = `../assets/images/lights/pic${String(imgIndex).padStart(2, '0')}.jpg`;
-                const card = document.createElement('a');
-                card.href = '#';
-                card.dataset.target = 'page-locations';
-                card.className = 'city-card location-card';
-                card.style.setProperty('--bg-image', `url('${imgUrl}')`);
-                card.innerHTML = `<span>${city.name}</span>`;
-                return card.outerHTML;
+                return `<a href="#" data-target="page-locations" class="city-card location-card" style="--bg-image: url('${imgUrl}')"><span>${city.name}</span></a>`;
             }).join('');
         };
         
-        const controlsContainer = footer.querySelector('.pagination-controls');
-        const prevBtn = controlsContainer.querySelector('[data-pagination-prev]');
-        const nextBtn = controlsContainer.querySelector('[data-pagination-next]');
+        const controls = footer.querySelector('.pagination-controls'),
+              prevBtn = controls.querySelector('[data-pagination-prev]'),
+              nextBtn = controls.querySelector('[data-pagination-next]');
 
         const updateFooterControls = () => {
             prevBtn.disabled = currentPage === 1;
             nextBtn.disabled = currentPage === totalPages;
         };
-
         const handleButtonClick = (button) => {
             button.classList.add('bouncing');
-            setTimeout(() => {
-                button.classList.remove('bouncing');
-            }, 800); // Duration of the bounce animation
+            setTimeout(() => button.classList.remove('bouncing'), 800);
         };
         
         prevBtn.addEventListener('click', () => { 
-            if (currentPage > 1) { 
-                handleButtonClick(prevBtn);
-                currentPage--; 
-                renderFooterPage(currentPage); 
-                updateFooterControls(); 
-            }
+            if (currentPage > 1) { handleButtonClick(prevBtn); currentPage--; renderFooterPage(currentPage); updateFooterControls(); }
         });
         nextBtn.addEventListener('click', () => { 
-            if (currentPage < totalPages) { 
-                handleButtonClick(nextBtn);
-                currentPage++; 
-                renderFooterPage(currentPage); 
-                updateFooterControls(); 
-            }
+            if (currentPage < totalPages) { handleButtonClick(nextBtn); currentPage++; renderFooterPage(currentPage); updateFooterControls(); }
         });
         
         locationsHeader.addEventListener('click', () => {
             const isActive = locationsHeader.classList.toggle('active');
             locationsContainer.style.maxHeight = isActive ? `${locationsContainer.scrollHeight}px` : '0px';
-
             if (isActive) {
-                const animationDuration = 400; // Match CSS transition
-                const startTime = performance.now();
-
+                const animDuration = 400, startTime = performance.now();
                 function animateScroll(currentTime) {
-                    const elapsedTime = currentTime - startTime;
-                    if (elapsedTime < animationDuration) {
+                    const elapsed = currentTime - startTime;
+                    if (elapsed < animDuration) {
                         window.scrollTo(0, document.body.scrollHeight);
                         requestAnimationFrame(animateScroll);
                     } else {
@@ -553,87 +558,66 @@ document.addEventListener('DOMContentLoaded', () => {
                 requestAnimationFrame(animateScroll);
             }
         });
-
         renderFooterPage(1);
         updateFooterControls();
     }
     
-    // --- Vertical Timeline (Original) ---
-    function VerticalTimeline( element ) {
-		this.element = element;
-		this.blocks = this.element.getElementsByClassName("cd-timeline__block");
-		this.images = this.element.getElementsByClassName("cd-timeline__img");
-		this.contents = this.element.getElementsByClassName("cd-timeline__content");
-		this.offset = 0.75;
-		this.hideBlocks();
-	};
-
-	VerticalTimeline.prototype.hideBlocks = function() {
-		if ( !"classList" in document.documentElement ) { return; }
-		var self = this;
-		for( var i = 0; i < this.blocks.length; i++) {
-			(function(i){
-				if( self.blocks[i].getBoundingClientRect().top > window.innerHeight*self.offset ) {
-					self.images[i].classList.add("cd-timeline__img--hidden"); 
-					self.contents[i].classList.add("cd-timeline__content--hidden"); 
-				}
-			})(i);
-		}
-	};
-
-	VerticalTimeline.prototype.showBlocks = function() {
-		if ( ! "classList" in document.documentElement ) { return; }
-		var self = this;
-		for( var i = 0; i < this.blocks.length; i++) {
-			(function(i){
-				if( self.contents[i].classList.contains("cd-timeline__content--hidden") && self.blocks[i].getBoundingClientRect().top <= window.innerHeight*self.offset ) {
-					self.images[i].classList.add("cd-timeline__img--bounce-in");
-					self.contents[i].classList.add("cd-timeline__content--bounce-in");
-					self.images[i].classList.remove("cd-timeline__img--hidden");
-					self.contents[i].classList.remove("cd-timeline__content--hidden");
-				}
-			})(i);
-		}
-	};
-
-	var verticalTimelines = document.getElementsByClassName("js-cd-timeline"),
-		verticalTimelinesArray = [],
-		scrolling = false;
-	if( verticalTimelines.length > 0 ) {
-		for( var i = 0; i < verticalTimelines.length; i++) {
-			(function(i){
-				verticalTimelinesArray.push(new VerticalTimeline(verticalTimelines[i]));
-			})(i);
-		}
-
-		window.addEventListener("scroll", function(event) {
-			if( !scrolling ) {
-				scrolling = true;
-				(!window.requestAnimationFrame) ? setTimeout(checkTimelineScroll, 250) : window.requestAnimationFrame(checkTimelineScroll);
-			}
-		});
-	}
-
-	function checkTimelineScroll() {
-		verticalTimelinesArray.forEach(function(timeline){
-			timeline.showBlocks();
-		});
-		scrolling = false;
-	};
-
+    // --- Vertical Timeline ---
+    function VerticalTimeline(element) {
+        this.element = element;
+        this.blocks = this.element.getElementsByClassName("cd-timeline__block");
+        this.images = this.element.getElementsByClassName("cd-timeline__img");
+        this.contents = this.element.getElementsByClassName("cd-timeline__content");
+        this.offset = 0.75;
+        this.hideBlocks();
+    }
+    VerticalTimeline.prototype.hideBlocks = function() {
+        if (!("classList" in document.documentElement)) return;
+        for (let i = 0; i < this.blocks.length; i++) {
+            if (this.blocks[i].getBoundingClientRect().top > window.innerHeight * this.offset) {
+                this.images[i].classList.add("cd-timeline__img--hidden");
+                this.contents[i].classList.add("cd-timeline__content--hidden");
+            }
+        }
+    };
+    VerticalTimeline.prototype.showBlocks = function() {
+        if (!("classList" in document.documentElement)) return;
+        for (let i = 0; i < this.blocks.length; i++) {
+            if (this.contents[i].classList.contains("cd-timeline__content--hidden") && this.blocks[i].getBoundingClientRect().top <= window.innerHeight * this.offset) {
+                this.images[i].classList.add("cd-timeline__img--bounce-in");
+                this.contents[i].classList.add("cd-timeline__content--bounce-in");
+                this.images[i].classList.remove("cd-timeline__img--hidden");
+                this.contents[i].classList.remove("cd-timeline__content--hidden");
+            }
+        }
+    };
+    let verticalTimelines = document.getElementsByClassName("js-cd-timeline"),
+        verticalTimelinesArray = [],
+        scrolling = false;
+    if (verticalTimelines.length > 0) {
+        for (let i = 0; i < verticalTimelines.length; i++) {
+            verticalTimelinesArray.push(new VerticalTimeline(verticalTimelines[i]));
+        }
+        window.addEventListener("scroll", function(event) {
+            if (!scrolling) {
+                scrolling = true;
+                (!window.requestAnimationFrame) ? setTimeout(checkTimelineScroll, 250) : window.requestAnimationFrame(checkTimelineScroll);
+            }
+        });
+    }
+    function checkTimelineScroll() {
+        verticalTimelinesArray.forEach(timeline => timeline.showBlocks());
+        scrolling = false;
+    }
 
     // --- INITIALIZATION ---
     async function initializeApp() {
         await initializeFooters();
-        
         showPage('page-home');
-
-        // Force a check of animations on initial load
         setTimeout(() => {
             checkTimelineScroll();
             const homePage = document.getElementById('page-home');
             if (homePage) {
-                // Re-initialize animations for the home page specifically on load
                 setupScrollAnimations(homePage);
                 setupTestimonialCarousel(homePage);
             }

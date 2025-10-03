@@ -456,16 +456,16 @@ html, body {
     animation-timing-function: cubic-bezier(0.175, 0.885, 0.32, 1.275);
     animation-fill-mode: forwards;
 }
-.service-page-card:nth-child(1) { animation-delay: 0.10s; }
-.service-page-card:nth-child(2) { animation-delay: 0.25s; }
-.service-page-card:nth-child(3) { animation-delay: 0.40s; }
-.service-page-card:nth-child(4) { animation-delay: 0.55s; }
-.service-page-card:nth-child(5) { animation-delay: 0.70s; }
-.service-page-card:nth-child(6) { animation-delay: 0.85s; }
+.service-page-card:nth-child(1) { animation-delay: 0.1s; }
+.service-page-card:nth-child(2) { animation-delay: 0.2s; }
+.service-page-card:nth-child(3) { animation-delay: 0.3s; }
+.service-page-card:nth-child(4) { animation-delay: 0.4s; }
+.service-page-card:nth-child(5) { animation-delay: 0.5s; }
+.service-page-card:nth-child(6) { animation-delay: 0.6s; }
 
 @keyframes cardBounceIn {
     0% { transform: scale(0.5); opacity: 0; }
-    80% { transform: scale(1.05); opacity: 1; }
+    80% { transform: scale(1.02); opacity: 1; }
     100% { transform: scale(1); opacity: 1; }
 }
 
@@ -562,9 +562,18 @@ html, body {
     font-size: 2.2rem; font-weight: 700; color: #fff; line-height: 1.2;
     text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7); margin: 0;
 }
-.service-detail-tabs { background-color: var(--background-color); position: sticky; top: var(--header-height); z-index: 5; border-bottom: 1px solid var(--border-color); overflow-x: auto; -ms-overflow-style: none; scrollbar-width: none; }
-.service-detail-tabs::-webkit-scrollbar { display: none; }
-.service-detail-tabs-scroller { display: flex; justify-content: flex-start; padding: 0 var(--space-2); position: relative; }
+.service-detail-tabs { 
+    background-color: var(--background-color); 
+    z-index: 5; 
+    width: 100%;
+    border-bottom: 1px solid var(--border-color); 
+}
+.service-detail-tabs.sticky {
+    position: fixed;
+    top: var(--header-height);
+    box-shadow: var(--shadow-md);
+}
+.service-detail-tabs-scroller { display: flex; justify-content: center; padding: 0 var(--space-2); position: relative; }
 .service-detail-tab {
     background: none; border: none; color: var(--text-color-secondary);
     padding: var(--space-2); font-size: 0.9rem; font-weight: 600; cursor: pointer;
@@ -572,20 +581,44 @@ html, body {
 }
 .service-detail-tab.active { color: var(--primary-color); }
 .tab-highlighter { position: absolute; bottom: 0; height: 3px; background-color: var(--primary-color); border-radius: 3px; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-.service-detail-content-wrapper { padding: var(--space-3) var(--space-3); }
-.service-detail-content-wrapper > div { display: none; animation: fadeIn 0.4s; }
-.service-detail-content-wrapper > div.active { display: block; }
-.service-detail-content-wrapper > div[data-section] { padding: var(--space-3); border-radius: var(--border-radius); margin-bottom: var(--space-3); border: 1px solid var(--border-color); background-color: var(--card-bg); }
-.service-detail-content-wrapper .sub-title { font-size: 1.4rem; margin-bottom: var(--space-3); padding-bottom: var(--space-2); border-bottom: 1px solid var(--border-color); color: var(--dark-text); text-align: center; }
-.service-detail-content-wrapper p { color: var(--text-color-secondary); }
-.why-us-grid { display: grid; grid-template-columns: 1fr; gap: var(--space-2); }
-.faq-accordion { border-top: 1px solid var(--border-color); }
-.faq-item { border-bottom: 1px solid var(--border-color); }
-.faq-question { width: 100%; background: none; border: none; text-align: left; padding: var(--space-3) 0; font-size: 1rem; font-weight: 600; color: var(--dark-text); cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: var(--space-2); }
+
+.service-detail-page.active .service-detail-tabs.sticky ~ .service-detail-content-wrapper {
+    padding-top: 57px; /* Height of the tab bar */
+}
+
+.service-detail-content-wrapper { 
+    padding: var(--space-3) var(--space-3) var(--space-8) var(--space-3);
+    transition: min-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.service-detail-content-wrapper > div[data-section] { display: none; animation: fadeIn 0.4s; }
+.section-title { font-size: 1.4rem; margin-bottom: var(--space-3); padding-bottom: var(--space-2); border-bottom: 1px solid var(--border-color); color: var(--dark-text); text-align: center; font-family: var(--font-primary); font-weight: 600; }
+.service-detail-content-wrapper p, .service-detail-content-wrapper li { color: var(--text-color-secondary); line-height: 1.7; }
+
+.info-card-container { display: flex; flex-direction: column; gap: var(--space-2); }
+.info-card {
+    background-color: var(--card-bg);
+    border-radius: var(--border-radius);
+    padding: var(--space-3);
+    border: 1px solid var(--border-color);
+    opacity: 0;
+    transform: translateY(20px);
+}
+@keyframes infoCardFadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.info-card > * { margin: 0 !important; padding: 0 !important; border: 0 !important; }
+.info-card h5 { font-family: var(--font-display); font-size: 1.3rem; margin-bottom: var(--space-2) !important; color: var(--dark-text); }
+.info-card p { margin-top: var(--space-1) !important; }
+.info-card ul { list-style-position: inside; }
+
+.faq-item { border: none !important; }
+.faq-question { width: 100%; background: none; border: none; text-align: left; padding: 0 !important; font-size: 1rem; font-weight: 600; color: var(--dark-text); cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: var(--space-2); }
 .faq-question::after { content: '+'; font-family: var(--font-primary); font-weight: 700; transition: transform 0.3s ease; }
 .faq-item.active .faq-question::after { transform: rotate(45deg); }
 .faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; }
-.faq-answer p { padding-bottom: var(--space-2); }
+.faq-answer p { padding-top: var(--space-2) !important; }
 
 /* --- 11. Footer --- */
 .app-footer {
@@ -803,4 +836,3 @@ html, body {
         transform: translateX(0);
     }
 }
-
