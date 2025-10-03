@@ -17,6 +17,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 ctaButton.classList.remove('bouncing');
                 setTimeout(() => ctaButton.classList.add('bouncing'), 10);
             }
+            // Reset vertical timeline animation
+            if (verticalTimelinesArray.length > 0) {
+                verticalTimelinesArray.forEach(timeline => timeline.reset());
+                setTimeout(checkTimelineScroll, 50); // Re-check which blocks should be visible
+            }
         }
 
         if (!nextPage || (currentPage && currentPage.id === pageId)) return;
@@ -45,6 +50,15 @@ document.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => {
                 serviceCards.forEach(card => card.classList.add('animate'));
             }, 50);
+        }
+
+        if (pageId === 'page-locations') {
+            // Re-trigger location card animation by re-applying filters
+             const locationsPageLogic = document.getElementById('page-locations');
+             if(locationsPageLogic) {
+                const applyBtn = locationsPageLogic.querySelector('#apply-filters-btn');
+                if(applyBtn) applyBtn.click();
+             }
         }
     };
 
@@ -400,8 +414,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const label = e.target.closest('.filter-option-checkbox');
             if (!label) return;
 
-            console.log('Filter option clicked:', label.textContent.trim());
-
             // Use a timeout to allow the browser's default checkbox behavior to complete first
             setTimeout(() => {
                 const allCheckboxes = filterOptionsContainer.querySelectorAll('input[name="county"]');
@@ -432,7 +444,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 allCheckboxes.forEach(cb => {
                     cb.parentElement.classList.toggle('checked', cb.checked);
                 });
-                console.log('Checkbox states updated.');
             }, 0);
         });
 
@@ -442,8 +453,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const selectedCounties = Array.from(filterOptionsContainer.querySelectorAll('input[name="county"]:checked'))
                 .map(cb => cb.value)
                 .filter(val => val !== 'all'); // Exclude 'all' from the list
-            
-            console.log('Applying filters for counties:', selectedCounties);
             
             let tempFiltered = allCities;
 
@@ -482,8 +491,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 cb.checked = isAllCounties;
                 cb.parentElement.classList.toggle('checked', isAllCounties);
             });
-             console.log('Filters cleared, "All Counties" selected.');
-            // We don't apply filters or close modal here, user clicks "Apply"
         });
 
         fetchLocations();
@@ -526,6 +533,49 @@ document.addEventListener('DOMContentLoaded', () => {
         showPage('page-contact');
     });
 
+    // --- FORM SUBMISSION & SUCCESS MODAL ---
+    const contactForm = document.getElementById('contact-form');
+    const successModalOverlay = document.getElementById('form-success-modal-overlay');
+    const successModalPanel = document.getElementById('form-success-modal-panel');
+    const successReturnBtn = document.getElementById('form-success-return-btn');
+
+    if (contactForm) {
+        contactForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(contactForm);
+            fetch("/", {
+                method: "POST",
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: new URLSearchParams(formData).toString()
+            }).then(() => {
+                console.log("Form successfully submitted to Netlify");
+            }).catch((error) => {
+                console.error("Error submitting form to Netlify:", error);
+            });
+
+            // Show success modal immediately for good UX
+            successModalOverlay.classList.add('active');
+            successModalPanel.classList.add('active');
+            contactForm.reset();
+        });
+    }
+    
+    function closeSuccessModal() {
+        successModalOverlay.classList.remove('active');
+        successModalPanel.classList.remove('active');
+    }
+
+    if (successReturnBtn) {
+        successReturnBtn.addEventListener('click', () => {
+            closeSuccessModal();
+            pageHistory = ['page-home'];
+            showPage('page-home');
+        });
+    }
+    if (successModalOverlay) {
+        successModalOverlay.addEventListener('click', closeSuccessModal);
+    }
 
 
     // --- SCROLL ANIMATIONS SETUP ---
@@ -697,6 +747,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 this.images[i].classList.remove("cd-timeline__img--hidden");
                 this.contents[i].classList.remove("cd-timeline__content--hidden");
             }
+        }
+    };
+    VerticalTimeline.prototype.reset = function() {
+        for (let i = 0; i < this.blocks.length; i++) {
+            this.images[i].classList.remove("cd-timeline__img--bounce-in");
+            this.contents[i].classList.remove("cd-timeline__content--bounce-in");
+            this.images[i].classList.add("cd-timeline__img--hidden");
+            this.contents[i].classList.add("cd-timeline__content--hidden");
         }
     };
     let verticalTimelines = document.getElementsByClassName("js-cd-timeline"),

@@ -948,6 +948,74 @@ html, body {
     padding: var(--space-2) var(--space-3);
 }
 
+/* --- 13. Form Success Modal --- */
+#form-success-modal-overlay {
+    position: fixed; inset: 0; background-color: rgba(10, 10, 10, 0.5); 
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    z-index: 3900; 
+    opacity: 0; visibility: hidden; 
+    transition: opacity 0.3s ease;
+}
+#form-success-modal-overlay.active { opacity: 1; visibility: visible; }
+
+#form-success-modal-panel {
+    position: fixed; 
+    top: 50%; left: 50%; 
+    transform: translate(-50%, -50%) scale(0.95); 
+    background-color: #fff; 
+    border-radius: var(--border-radius); 
+    box-shadow: var(--shadow-lg); 
+    padding: var(--space-4); 
+    display: flex; flex-direction: column; 
+    align-items: center;
+    gap: var(--space-2); 
+    width: 90%; max-width: 400px; 
+    z-index: 4000; 
+    opacity: 0; visibility: hidden; 
+    transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    text-align: center;
+}
+#form-success-modal-panel.active { 
+    opacity: 1; visibility: visible; 
+    transform: translate(-50%, -50%) scale(1); 
+}
+
+.success-icon-wrapper {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-color: #75ce66;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 2.5rem;
+    margin-bottom: var(--space-2);
+    animation: success-icon-pop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    transform: scale(0);
+}
+
+@keyframes success-icon-pop {
+    from { transform: scale(0); }
+    to { transform: scale(1); }
+}
+
+#form-success-modal-content h3 {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    margin-bottom: var(--space-2);
+}
+
+#form-success-modal-content p {
+    color: var(--text-color-secondary);
+    line-height: 1.6;
+    margin-bottom: var(--space-4);
+}
+
+#form-success-return-btn {
+    width: 100%;
+}
+
 
 /* --- Scroll Animations --- */
 .cd-timeline__img--hidden, .cd-timeline__content--hidden {
