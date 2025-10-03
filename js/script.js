@@ -41,6 +41,17 @@ document.addEventListener('DOMContentLoaded', () => {
         // Setup animations for the new page
         setupScrollAnimations(nextPage);
         setupTestimonialCarousel(nextPage);
+
+        // Animate service cards when the services page is shown
+        if (pageId === 'page-services') {
+            const serviceCards = nextPage.querySelectorAll('.service-page-card');
+            // First, remove the animate class to reset them
+            serviceCards.forEach(card => card.classList.remove('animate'));
+            // Then, use a short timeout to re-add it, forcing the animation to replay
+            setTimeout(() => {
+                serviceCards.forEach(card => card.classList.add('animate'));
+            }, 50);
+        }
     };
 
     const goBack = () => {
@@ -122,12 +133,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     card.className = 'service-page-card';
                     card.dataset.target = 'page-service-detail-template';
                     card.dataset.serviceKey = key;
-                    card.style.backgroundImage = `url('${service.imageUrl}')`;
+                    // Correct the path relative to the CSS file
+                    const imageUrl = `../${service.imageUrl}`;
+                    card.style.setProperty('--bg-image', `url('${imageUrl}')`);
                     
                     card.innerHTML = `
-                        <div class="service-page-card-overlay"></div>
                         <div class="service-page-card-content">
-                            <i class="fa-solid ${service.icon} card-icon"></i>
                             <h3 class="card-title">${key}</h3>
                         </div>
                     `;

@@ -1,22 +1,27 @@
 {
-  "Residential Lighting": {
-    "pageUrl": "pages/services/residential-lighting.html",
-    "imageUrl": "assets/images/lights/pic01.jpg",
-    "icon": "fa-house"
+  "Setup": {
+    "pageUrl": "pages/services/setup.html",
+    "imageUrl": "assets/images/lights/pic03.jpg"
   },
-  "Commercial Lighting": {
-    "pageUrl": "pages/services/commercial-lighting.html",
-    "imageUrl": "assets/images/lights/pic02.jpg",
-    "icon": "fa-store"
+  "Teardown": {
+    "pageUrl": "pages/services/teardown.html",
+    "imageUrl": "assets/images/lights/pic05.jpg"
   },
-  "Custom Designs": {
-    "pageUrl": "pages/services/custom-designs.html",
-    "imageUrl": "assets/images/lights/pic03.jpg",
-    "icon": "fa-drafting-compass"
+  "Maintenance": {
+    "pageUrl": "pages/services/maintenance.html",
+    "imageUrl": "assets/images/lights/pic04.jpg"
   },
-  "Maintenance & Takedown": {
-    "pageUrl": "pages/services/maintenance-takedown.html",
-    "imageUrl": "assets/images/lights/pic04.jpg",
-    "icon": "fa-toolbox"
+  "Storage": {
+    "pageUrl": "pages/services/storage.html",
+    "imageUrl": "assets/images/lights/pic06.jpg"
+  },
+  "Residential": {
+    "pageUrl": "pages/services/residential.html",
+    "imageUrl": "assets/images/lights/pic01.jpg"
+  },
+  "Commercial": {
+    "pageUrl": "pages/services/commercial.html",
+    "imageUrl": "assets/images/lights/pic02.jpg"
   }
 }
+
