@@ -177,6 +177,13 @@ html, body {
 .nav-item i { font-size: 24px; }
 .nav-item span { font-size: 10px; margin-top: 4px; }
 .nav-item.active { color: var(--primary-color); }
+.nav-item.pulsing-cta { animation: subtle-jump 0.8s cubic-bezier(0.25, 0.1, 0.25, 1) forwards; }
+
+@keyframes subtle-jump {
+    0%, 100% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(-8px) scale(1.1); }
+}
+
 
 /* --- 5. General Components --- */
 .content-block { margin-bottom: var(--space-7); padding: 0 var(--space-3); }
@@ -187,11 +194,17 @@ html, body {
     display: inline-block; padding: var(--space-2) var(--space-4); border: none; border-radius: 50px;
     font-size: 1rem; font-weight: 600; text-decoration: none; text-align: center;
     cursor: pointer; transition: transform 0.1s ease, background-color 0.2s ease;
-    width: 100%;
 }
 .btn-primary { background-color: var(--primary-color); color: #fff; box-shadow: 0 4px 15px rgba(112, 22, 30, 0.3); }
 .btn-primary:active { background-color: var(--primary-color-dark); }
-.cta-btn { max-width: 350px; margin: 0 auto; display: block; white-space: nowrap; }
+.cta-btn { 
+    max-width: 350px; 
+    margin: 0 auto; 
+    display: block; 
+    width: auto;
+    padding: var(--space-2) var(--space-5);
+    line-height: 1.5;
+}
 .btn-primary.bouncing {
     animation: bounceEffect 0.8s ease-in-out;
 }
