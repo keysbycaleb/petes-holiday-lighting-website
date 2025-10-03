@@ -497,9 +497,30 @@ document.addEventListener('DOMContentLoaded', () => {
             prevBtn.disabled = currentPage === 1;
             nextBtn.disabled = currentPage === totalPages;
         };
+
+        const handleButtonClick = (button) => {
+            button.classList.add('bouncing');
+            setTimeout(() => {
+                button.classList.remove('bouncing');
+            }, 800); // Duration of the bounce animation
+        };
         
-        prevBtn.addEventListener('click', () => { if (currentPage > 1) { currentPage--; renderFooterPage(currentPage); updateFooterControls(); }});
-        nextBtn.addEventListener('click', () => { if (currentPage < totalPages) { currentPage++; renderFooterPage(currentPage); updateFooterControls(); }});
+        prevBtn.addEventListener('click', () => { 
+            if (currentPage > 1) { 
+                handleButtonClick(prevBtn);
+                currentPage--; 
+                renderFooterPage(currentPage); 
+                updateFooterControls(); 
+            }
+        });
+        nextBtn.addEventListener('click', () => { 
+            if (currentPage < totalPages) { 
+                handleButtonClick(nextBtn);
+                currentPage++; 
+                renderFooterPage(currentPage); 
+                updateFooterControls(); 
+            }
+        });
         
         locationsHeader.addEventListener('click', () => {
             const isActive = locationsHeader.classList.toggle('active');
