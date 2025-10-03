@@ -388,42 +388,45 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
         
-        // Handle clicks within the filter panel using event delegation
+       // Delegated click listener for the entire filter options container
         filterOptionsContainer.addEventListener('click', (e) => {
-            const label = e.target.closest('label.filter-option-checkbox');
+            const label = e.target.closest('.filter-option-checkbox');
             if (!label) return;
 
-            const clickedCheckbox = label.querySelector('input');
-            const allCheckboxes = filterOptionsContainer.querySelectorAll('input[name="county"]');
-            const allCountiesCheckbox = filterOptionsContainer.querySelector('input[value="all"]');
+            console.log('Filter option clicked:', label.textContent.trim());
 
-            // Manually toggle the checkbox state because we are preventing default behavior
-            if (e.target.tagName !== 'INPUT') {
-                clickedCheckbox.checked = !clickedCheckbox.checked;
-            }
-            
-            if (clickedCheckbox.value === 'all') {
-                // If "All Counties" is checked, uncheck all others
-                allCheckboxes.forEach(cb => {
-                    if (cb.value !== 'all') cb.checked = false;
-                });
-            } else {
-                // If a specific county is checked, uncheck "All Counties"
-                if (clickedCheckbox.checked) {
-                    allCountiesCheckbox.checked = false;
+            // Use a timeout to allow the browser's default checkbox behavior to complete first
+            setTimeout(() => {
+                const allCheckboxes = filterOptionsContainer.querySelectorAll('input[name="county"]');
+                const clickedCheckbox = label.querySelector('input');
+                const allCountiesCheckbox = filterOptionsContainer.querySelector('input[value="all"]');
+
+                if (clickedCheckbox.value === 'all') {
+                    // If "All Counties" was just checked, uncheck all others
+                    if (clickedCheckbox.checked) {
+                        allCheckboxes.forEach(cb => {
+                            if (cb.value !== 'all') cb.checked = false;
+                        });
+                    }
+                } else {
+                    // If a specific county was just checked, uncheck "All Counties"
+                    if (clickedCheckbox.checked) {
+                        allCountiesCheckbox.checked = false;
+                    }
                 }
-            }
 
-            // If all specific counties are unchecked, check "All Counties"
-            const checkedCounties = Array.from(allCheckboxes).filter(cb => cb.checked && cb.value !== 'all');
-            if (checkedCounties.length === 0) {
-                allCountiesCheckbox.checked = true;
-            }
-            
-            // Update the visual "checked" state for all labels
-            allCheckboxes.forEach(cb => {
-                cb.parentElement.classList.toggle('checked', cb.checked);
-            });
+                // If no specific counties are checked, re-check "All Counties"
+                const anyCountyChecked = Array.from(allCheckboxes).some(cb => cb.checked && cb.value !== 'all');
+                if (!anyCountyChecked) {
+                    allCountiesCheckbox.checked = true;
+                }
+                
+                // Update visual styles for all checkboxes
+                allCheckboxes.forEach(cb => {
+                    cb.parentElement.classList.toggle('checked', cb.checked);
+                });
+                console.log('Checkbox states updated.');
+            }, 0);
         });
 
 
@@ -432,6 +435,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const selectedCounties = Array.from(filterOptionsContainer.querySelectorAll('input[name="county"]:checked'))
                 .map(cb => cb.value)
                 .filter(val => val !== 'all'); // Exclude 'all' from the list
+            
+            console.log('Applying filters for counties:', selectedCounties);
             
             let tempFiltered = allCities;
 
@@ -470,8 +475,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 cb.checked = isAllCounties;
                 cb.parentElement.classList.toggle('checked', isAllCounties);
             });
-            applyFilters();
-            // We don't close the modal here, to allow user to see the change
+             console.log('Filters cleared, "All Counties" selected.');
+            // We don't apply filters or close modal here, user clicks "Apply"
         });
 
         fetchLocations();
