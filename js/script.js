@@ -538,6 +538,21 @@ document.addEventListener('DOMContentLoaded', () => {
     const successModalOverlay = document.getElementById('form-success-modal-overlay');
     const successModalPanel = document.getElementById('form-success-modal-panel');
     const successReturnBtn = document.getElementById('form-success-return-btn');
+    const successTitle = document.getElementById('form-success-title');
+    const successMessage = document.getElementById('form-success-message');
+
+    const successMessages = [
+        { title: "All set!", message: "Your neighbors are about to regret their inflatable snowman." },
+        { title: "Message sent!", message: "Elves are already arguing over ladder duty for your display." },
+        { title: "Your request is in!", message: "Santa’s jealous you didn’t call him first." },
+        { title: "Form submitted—congrats!", message: "Your house is now officially visible from the North Pole." },
+        { title: "Submission received!", message: "Rudolph’s nose is about to have some competition." },
+        { title: "All set!", message: "Your halls are about to get decked harder than Mariah Carey hits that high note." },
+        { title: "Consultation request confirmed!", message: "Your lights may cause more traffic than a mall parking lot on Christmas Eve." },
+        { title: "Form submitted!", message: "Santa just texted—he wants to move in once your lights are up." },
+        { title: "Request received!", message: "Warning: neighbors may start caroling out of sheer envy." },
+        { title: "Success!", message: "Clark Griswold just called you an inspiration." }
+    ];
 
     if (contactForm) {
         contactForm.addEventListener('submit', (e) => {
@@ -553,6 +568,12 @@ document.addEventListener('DOMContentLoaded', () => {
             }).catch((error) => {
                 console.error("Error submitting form to Netlify:", error);
             });
+
+            // Set a random success message
+            const randomIndex = Math.floor(Math.random() * successMessages.length);
+            const randomMessage = successMessages[randomIndex];
+            successTitle.textContent = randomMessage.title;
+            successMessage.textContent = randomMessage.message;
 
             // Show success modal immediately for good UX
             successModalOverlay.classList.add('active');
