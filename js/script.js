@@ -9,6 +9,19 @@ document.addEventListener('DOMContentLoaded', () => {
         const currentPage = document.querySelector('.page.active');
         const nextPage = document.getElementById(pageId);
 
+        // CTA Button Bounce Logic
+        if (pageId === 'page-home') {
+            const ctaButton = document.querySelector('#page-home .hero .btn-primary');
+            if (ctaButton) {
+                // Ensure animation can be re-triggered
+                ctaButton.classList.remove('bouncing');
+                // Use a timeout to allow the browser to process the class removal before adding it again
+                setTimeout(() => {
+                    ctaButton.classList.add('bouncing');
+                }, 10);
+            }
+        }
+
         if (!nextPage || (currentPage && currentPage.id === pageId)) return;
 
         if (!isBack) {
@@ -257,7 +270,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 card.href = '#';
                 card.className = 'city-card';
                 const imgIndex = String((index % 15) + 1).padStart(2, '0');
-                card.style.backgroundImage = `url('assets/images/lights/pic${imgIndex}.jpg')`;
+                card.style.setProperty('--bg-image', `url('../assets/images/lights/pic${imgIndex}.jpg')`);
                 card.innerHTML = `<span>${city}</span>`;
                 grid.appendChild(card);
             });
@@ -369,45 +382,148 @@ document.addEventListener('DOMContentLoaded', () => {
             clearInterval(testimonialInterval);
         }
 
-        const slides = Array.from(track.children);
-        if (slides.length <= 1) return;
+        // Use a timeout to ensure the element is rendered and has dimensions
+        setTimeout(() => {
+            // Reset position before setup
+            track.style.transition = 'none';
+            track.style.transform = 'translateX(0px)';
 
-        const firstClone = slides[0].cloneNode(true);
-        track.appendChild(firstClone);
+            const slides = Array.from(track.children);
+            const originalSlideCount = slides.find(s => !s.classList.contains('clone')) ? slides.filter(s => !s.classList.contains('clone')).length : slides.length;
 
-        let currentIndex = 0;
-        const totalSlides = slides.length;
-
-        const advanceSlide = () => {
-            currentIndex++;
-            const slideWidth = slides[0].getBoundingClientRect().width;
-            const gap = parseFloat(window.getComputedStyle(track).gap);
-            const offset = -currentIndex * (slideWidth + gap);
-
-            track.style.transition = 'transform 1.2s cubic-bezier(0.68, -0.6, 0.6, 1.6)';
-            track.style.transform = `translateX(${offset}px)`;
-
-            if (currentIndex === totalSlides) {
-                setTimeout(() => {
-                    track.style.transition = 'none';
-                    currentIndex = 0;
-                    track.style.transform = `translateX(0px)`;
-                }, 1200);
+            if (originalSlideCount <= 1) return;
+            
+            // Ensure clone doesn't already exist
+            if (track.children.length === originalSlideCount) {
+                const firstClone = slides[0].cloneNode(true);
+                firstClone.classList.add('clone');
+                track.appendChild(firstClone);
             }
-        };
 
-        testimonialInterval = setInterval(advanceSlide, 6000);
+            let currentIndex = 0;
+
+            const advanceSlide = () => {
+                const slideWidth = slides[0].getBoundingClientRect().width;
+                // If width is 0, the element is likely not visible, so don't do anything.
+                if (slideWidth === 0) return;
+
+                currentIndex++;
+                const gap = parseFloat(window.getComputedStyle(track).gap);
+                const offset = -currentIndex * (slideWidth + gap);
+
+                track.style.transition = 'transform 1.2s cubic-bezier(0.68, -0.6, 0.6, 1.6)';
+                track.style.transform = `translateX(${offset}px)`;
+
+                if (currentIndex === originalSlideCount) {
+                    setTimeout(() => {
+                        track.style.transition = 'none';
+                        currentIndex = 0;
+                        track.style.transform = `translateX(0px)`;
+                    }, 1200);
+                }
+            };
+
+            testimonialInterval = setInterval(advanceSlide, 6000);
+        }, 100); // 100ms delay
     }
 
 
 
     // --- FOOTER SETUP ---
-    function initializeFooters() {
+    async function initializeFooters() {
         const template = document.getElementById('footer-template');
-        if(!template) return;
-        document.querySelectorAll('.app-footer').forEach(footer => {
-            footer.innerHTML = template.innerHTML;
+        if (!template) return;
+
+        try {
+            const response = await fetch('js/locations.json');
+            const locationsData = await response.json();
+            const allCities = Object.entries(locationsData).flatMap(([county, cities]) =>
+                cities.map(city => ({ name: city, county: county }))
+            ).sort((a, b) => a.name.localeCompare(b.name));
+
+            document.querySelectorAll('.app-footer').forEach(footer => {
+                if (footer.innerHTML.trim() === '') {
+                    footer.innerHTML = template.innerHTML;
+                    setupFooterPagination(footer, allCities);
+                }
+            });
+
+        } catch (error) {
+            console.error("Failed to load location data for footers:", error);
+            document.querySelectorAll('.app-footer').forEach(footer => {
+                if (footer.innerHTML.trim() === '') {
+                    footer.innerHTML = template.innerHTML;
+                    const accordion = footer.querySelector('.footer-locations-accordion');
+                    if (accordion) accordion.style.display = 'none';
+                }
+            });
+        }
+    }
+
+    function setupFooterPagination(footer, allCities) {
+        const gridContainer = footer.querySelector('.city-card-grid');
+        const locationsHeader = footer.querySelector('.locations-header');
+        const locationsContainer = footer.querySelector('.locations-list-container');
+        
+        if (!gridContainer || !locationsHeader || !locationsContainer) return;
+        
+        const itemsPerPage = 6;
+        let currentPage = 1;
+        const totalPages = Math.ceil(allCities.length / itemsPerPage);
+
+        const renderFooterPage = (page) => {
+            const start = (page - 1) * itemsPerPage;
+            const end = start + itemsPerPage;
+            const pageItems = allCities.slice(start, end);
+            
+            gridContainer.innerHTML = pageItems.map((city, index) => {
+                const imgIndex = ((start + index) % 15) + 1;
+                const imgUrl = `../assets/images/lights/pic${String(imgIndex).padStart(2, '0')}.jpg`;
+                const card = document.createElement('a');
+                card.href = '#';
+                card.dataset.target = 'page-locations';
+                card.className = 'city-card location-card';
+                card.style.setProperty('--bg-image', `url('${imgUrl}')`);
+                card.innerHTML = `<span>${city.name}</span>`;
+                return card.outerHTML;
+            }).join('');
+        };
+        
+        const controlsContainer = footer.querySelector('.pagination-controls');
+        const prevBtn = controlsContainer.querySelector('[data-pagination-prev]');
+        const nextBtn = controlsContainer.querySelector('[data-pagination-next]');
+
+        const updateFooterControls = () => {
+            prevBtn.disabled = currentPage === 1;
+            nextBtn.disabled = currentPage === totalPages;
+        };
+        
+        prevBtn.addEventListener('click', () => { if (currentPage > 1) { currentPage--; renderFooterPage(currentPage); updateFooterControls(); }});
+        nextBtn.addEventListener('click', () => { if (currentPage < totalPages) { currentPage++; renderFooterPage(currentPage); updateFooterControls(); }});
+        
+        locationsHeader.addEventListener('click', () => {
+            const isActive = locationsHeader.classList.toggle('active');
+            locationsContainer.style.maxHeight = isActive ? `${locationsContainer.scrollHeight}px` : '0px';
+
+            if (isActive) {
+                const animationDuration = 400; // Match CSS transition
+                const startTime = performance.now();
+
+                function animateScroll(currentTime) {
+                    const elapsedTime = currentTime - startTime;
+                    if (elapsedTime < animationDuration) {
+                        window.scrollTo(0, document.body.scrollHeight);
+                        requestAnimationFrame(animateScroll);
+                    } else {
+                        window.scrollTo(0, document.body.scrollHeight);
+                    }
+                }
+                requestAnimationFrame(animateScroll);
+            }
         });
+
+        renderFooterPage(1);
+        updateFooterControls();
     }
     
     // --- Vertical Timeline (Original) ---
@@ -475,17 +591,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // --- INITIALIZATION ---
-    function initializeApp() {
-        const initialPage = document.querySelector('.page.active');
-        if (initialPage) {
-            setupScrollAnimations(initialPage);
-            setupTestimonialCarousel(initialPage);
-        }
-
-        initializeFooters();
+    async function initializeApp() {
+        await initializeFooters();
+        
         showPage('page-home');
+
+        // Force a check of animations on initial load
+        setTimeout(() => {
+            checkTimelineScroll();
+            const homePage = document.getElementById('page-home');
+            if (homePage) {
+                // Re-initialize animations for the home page specifically on load
+                setupScrollAnimations(homePage);
+                setupTestimonialCarousel(homePage);
+            }
+        }, 100);
     }
 
     initializeApp();
 });
-
