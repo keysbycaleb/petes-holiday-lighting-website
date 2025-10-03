@@ -59,13 +59,16 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- MAIN EVENT LISTENER FOR NAVIGATION ---
     document.body.addEventListener('click', (e) => {
         const navLink = e.target.closest('[data-target]');
-        if (navLink && !navLink.closest('.location-card')) {
+        if (navLink) {
             e.preventDefault();
             const targetId = navLink.dataset.target;
             
             if (navLink.closest('.service-page-card')) {
                 const serviceKey = navLink.dataset.serviceKey;
                 loadServiceDetailPage(serviceKey);
+            } else if (navLink.closest('.city-card')) {
+                const cityName = navLink.querySelector('span').textContent;
+                showLocationModal(cityName);
             } else {
                  showPage(targetId);
             }
@@ -328,7 +331,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const grid = document.getElementById('location-card-grid');
         const searchBar = document.getElementById('location-search-bar');
         const openFilterBtn = document.getElementById('open-filter-modal-btn');
-        const modalOverlay = document.getElementById('filter-modal-overlay');
+        const filterModalOverlay = document.getElementById('filter-modal-overlay');
         const filterPanel = document.getElementById('filter-panel');
         const filterOptionsContainer = document.getElementById('filter-options-container');
         const applyFiltersBtn = document.getElementById('apply-filters-btn');
@@ -354,6 +357,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const card = document.createElement('a');
                 card.href = '#';
                 card.className = 'city-card';
+                card.dataset.target = 'location-modal'; // For modal triggering
                 const imgIndex = String((index % 15) + 1).padStart(2, '0');
                 card.style.setProperty('--bg-image', `url('../assets/images/lights/pic${imgIndex}.jpg')`);
                 card.innerHTML = `<span>${city}</span>`;
@@ -361,34 +365,80 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
         
+        function createFilterOption(value, text, isChecked = false) {
+            const label = document.createElement('label');
+            label.className = 'filter-option-checkbox';
+            if (isChecked) label.classList.add('checked');
+            label.innerHTML = `
+                <input type="checkbox" name="county" value="${value}" ${isChecked ? 'checked' : ''}>
+                <span class="checkbox-custom"></span>
+                <span>${text}</span>
+            `;
+            return label;
+        }
+
         function populateFilterModal() {
             filterOptionsContainer.innerHTML = '';
+            // Add "All Counties" option first
+            filterOptionsContainer.appendChild(createFilterOption('all', 'All Counties', true));
+
             Object.keys(allLocationsData).forEach(countyKey => {
                 const countyName = countyKey.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-                const label = document.createElement('label');
-                label.className = 'filter-option-checkbox';
-                label.innerHTML = `
-                    <input type="checkbox" name="county" value="${countyKey}">
-                    <span class="checkbox-custom"></span>
-                    <span>${countyName}</span>
-                `;
-                 label.addEventListener('click', (e) => {
-                    const checkbox = label.querySelector('input');
-                    if (e.target !== checkbox) checkbox.checked = !checkbox.checked;
-                    label.classList.toggle('checked', checkbox.checked);
-                });
-                filterOptionsContainer.appendChild(label);
+                filterOptionsContainer.appendChild(createFilterOption(countyKey, countyName));
             });
         }
         
+        // Handle clicks within the filter panel using event delegation
+        filterOptionsContainer.addEventListener('click', (e) => {
+            const label = e.target.closest('label.filter-option-checkbox');
+            if (!label) return;
+
+            const clickedCheckbox = label.querySelector('input');
+            const allCheckboxes = filterOptionsContainer.querySelectorAll('input[name="county"]');
+            const allCountiesCheckbox = filterOptionsContainer.querySelector('input[value="all"]');
+
+            // Manually toggle the checkbox state because we are preventing default behavior
+            if (e.target.tagName !== 'INPUT') {
+                clickedCheckbox.checked = !clickedCheckbox.checked;
+            }
+            
+            if (clickedCheckbox.value === 'all') {
+                // If "All Counties" is checked, uncheck all others
+                allCheckboxes.forEach(cb => {
+                    if (cb.value !== 'all') cb.checked = false;
+                });
+            } else {
+                // If a specific county is checked, uncheck "All Counties"
+                if (clickedCheckbox.checked) {
+                    allCountiesCheckbox.checked = false;
+                }
+            }
+
+            // If all specific counties are unchecked, check "All Counties"
+            const checkedCounties = Array.from(allCheckboxes).filter(cb => cb.checked && cb.value !== 'all');
+            if (checkedCounties.length === 0) {
+                allCountiesCheckbox.checked = true;
+            }
+            
+            // Update the visual "checked" state for all labels
+            allCheckboxes.forEach(cb => {
+                cb.parentElement.classList.toggle('checked', cb.checked);
+            });
+        });
+
+
         function applyFilters() {
             const searchTerm = searchBar.value.toLowerCase();
-            const selectedCounties = Array.from(filterOptionsContainer.querySelectorAll('input:checked')).map(cb => cb.value);
+            const selectedCounties = Array.from(filterOptionsContainer.querySelectorAll('input[name="county"]:checked'))
+                .map(cb => cb.value)
+                .filter(val => val !== 'all'); // Exclude 'all' from the list
+            
             let tempFiltered = allCities;
 
             if (selectedCounties.length > 0) {
                 tempFiltered = selectedCounties.flatMap(county => allLocationsData[county]);
             }
+
             if (searchTerm) {
                 tempFiltered = tempFiltered.filter(city => city.toLowerCase().includes(searchTerm));
             }
@@ -396,29 +446,75 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         
         searchBar.addEventListener('input', applyFilters);
+        
         openFilterBtn.addEventListener('click', () => {
-            modalOverlay.classList.add('active');
+            filterModalOverlay.classList.add('active');
             filterPanel.classList.add('active');
         });
+
         const closeFilterModal = () => {
-            modalOverlay.classList.remove('active');
+            filterModalOverlay.classList.remove('active');
             filterPanel.classList.remove('active');
         };
-        modalOverlay.addEventListener('click', closeFilterModal);
+
+        filterModalOverlay.addEventListener('click', closeFilterModal);
+        
         applyFiltersBtn.addEventListener('click', () => {
             applyFilters();
             closeFilterModal();
         });
+        
         clearFiltersBtn.addEventListener('click', () => {
             filterOptionsContainer.querySelectorAll('input').forEach(cb => {
-                cb.checked = false;
-                cb.parentElement.classList.remove('checked');
+                const isAllCounties = cb.value === 'all';
+                cb.checked = isAllCounties;
+                cb.parentElement.classList.toggle('checked', isAllCounties);
             });
             applyFilters();
-            closeFilterModal();
+            // We don't close the modal here, to allow user to see the change
         });
+
         fetchLocations();
     }
+    
+    // --- LOCATION MODAL LOGIC ---
+    const locationModalOverlay = document.getElementById('location-modal-overlay');
+    const locationModalPanel = document.getElementById('location-modal-panel');
+    const locationModalMessage = document.getElementById('location-modal-message');
+    const locationModalCta = document.getElementById('location-modal-cta');
+    const locationModalCloseBtn = document.getElementById('location-modal-close-btn');
+
+    const locationMessages = [
+        "Great news! We light up homes in <b>{city}</b>! Let's get you decked out for the holidays.",
+        "Yes, we serve <b>{city}</b>! Ready to make your home the brightest on the block?",
+        "You're in luck! Our team is ready to bring holiday cheer to <b>{city}</b>.",
+        "Holiday lighting in <b>{city}</b>? Absolutely! Let’s plan your amazing display.",
+        "We're excited to serve <b>{city}</b>! Click here to start your holiday transformation."
+    ];
+
+    function showLocationModal(cityName) {
+        const randomIndex = Math.floor(Math.random() * locationMessages.length);
+        const message = locationMessages[randomIndex].replace('{city}', cityName);
+        locationModalMessage.innerHTML = message;
+        
+        locationModalOverlay.classList.add('active');
+        locationModalPanel.classList.add('active');
+    }
+
+    function closeLocationModal() {
+        locationModalOverlay.classList.remove('active');
+        locationModalPanel.classList.remove('active');
+    }
+
+    locationModalOverlay.addEventListener('click', closeLocationModal);
+    locationModalCloseBtn.addEventListener('click', closeLocationModal);
+    locationModalCta.addEventListener('click', (e) => {
+        e.preventDefault();
+        closeLocationModal();
+        showPage('page-contact');
+    });
+
+
 
     // --- SCROLL ANIMATIONS SETUP ---
     function setupScrollAnimations(pageElement) {
@@ -517,7 +613,7 @@ document.addEventListener('DOMContentLoaded', () => {
             gridContainer.innerHTML = allCities.slice(start, end).map((city, index) => {
                 const imgIndex = ((start + index) % 15) + 1;
                 const imgUrl = `../assets/images/lights/pic${String(imgIndex).padStart(2, '0')}.jpg`;
-                return `<a href="#" data-target="page-locations" class="city-card location-card" style="--bg-image: url('${imgUrl}')"><span>${city.name}</span></a>`;
+                return `<a href="#" data-target="location-modal" class="city-card" style="--bg-image: url('${imgUrl}')"><span>${city.name}</span></a>`;
             }).join('');
         };
         

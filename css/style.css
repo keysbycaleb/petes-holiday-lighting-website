@@ -145,7 +145,7 @@ html, body {
     padding: var(--space-1); display: inline-flex; align-items: center; justify-content: center;
     color: var(--dark-text); text-decoration: none; background: none; border: none; cursor: pointer;
     font-size: 1.5rem;
-    transition: color 0.3s ease;
+    transition: color 0.3s ease, transform 0.1s ease;
 }
 
 .service-detail-page .app-header .header-back-btn { font-size: 1rem; font-weight: 500; }
@@ -168,9 +168,9 @@ html, body {
 .nav-item {
     display: flex; flex-direction: column; align-items: center; justify-content: center;
     flex-grow: 1; text-decoration: none; color: var(--text-color-secondary);
-    padding: var(--space-1) 0; transition: color 0.2s ease-in-out, transform 0.2s ease;
+    padding: var(--space-1) 0; transition: color 0.2s ease-in-out, transform 0.1s ease;
 }
-.nav-item:active { transform: scale(0.92); }
+
 .nav-item i { font-size: 24px; }
 .nav-item span { font-size: 10px; margin-top: var(--space-1); }
 .nav-item.active { color: var(--primary-color); }
@@ -198,6 +198,24 @@ html, body {
     50% { transform: scale(1.05); }
     75% { transform: scale(0.98); }
 }
+
+/* --- Universal Click/Press Effect --- */
+.btn:active,
+.nav-item:active,
+.icon-btn:active,
+.header-back-btn:active,
+.service-page-card:active,
+.city-card:active,
+.btn-filter:active,
+.pagination-btn:active,
+.footer-socials a:active,
+.faq-question:active,
+.filter-option-checkbox:active,
+#location-modal-close-btn:active {
+    transform: scale(0.95);
+    transition-duration: 0.05s;
+}
+
 
 /* --- 6. Home Page --- */
 .hero {
@@ -449,6 +467,7 @@ html, body {
     opacity: 0;
     transform: scale(0.5);
     animation: none;
+    transition: transform 0.1s ease;
 }
 .service-page-card.animate {
     animation-name: cardBounceIn;
@@ -510,7 +529,7 @@ html, body {
 .location-filters-bar .search-input-wrapper .search-icon { position: absolute; top: 50%; left: var(--space-2); transform: translateY(-50%); color: var(--text-color-secondary); }
 #location-search-bar { width: 100%; padding: var(--space-2) var(--space-2) var(--space-2) var(--space-5); border-radius: var(--border-radius-input); border: 1px solid var(--border-color); background-color: var(--card-bg); color: var(--dark-text); font-size: 1rem; font-family: var(--font-primary); height: var(--space-6); }
 #location-search-bar:focus { border-color: var(--secondary-color); outline: none; box-shadow: 0 0 0 2px rgba(184, 140, 86, 0.3); }
-.btn-filter { flex-shrink: 0; width: var(--space-6); height: var(--space-6); padding: 0; background-color: var(--card-bg); border: 1px solid var(--border-color); color: var(--dark-text); border-radius: var(--border-radius-input); font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+.btn-filter { flex-shrink: 0; width: var(--space-6); height: var(--space-6); padding: 0; background-color: var(--card-bg); border: 1px solid var(--border-color); color: var(--dark-text); border-radius: var(--border-radius-input); font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: transform 0.1s ease;}
 .btn-filter .fa-filter { color: var(--primary-color); }
 .location-card-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-2); }
 .location-list-item { background-color: var(--card-bg); padding: var(--space-2) var(--space-3); font-weight: 500; font-size: 1.1rem; }
@@ -649,7 +668,7 @@ html, body {
 .info-card ul { list-style-position: inside; }
 
 .faq-item { border: none !important; }
-.faq-question { width: 100%; background: none; border: none; text-align: left; padding: 0 !important; font-size: 1rem; font-weight: 600; color: var(--dark-text); cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: var(--space-2); }
+.faq-question { width: 100%; background: none; border: none; text-align: left; padding: 0 !important; font-size: 1rem; font-weight: 600; color: var(--dark-text); cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: var(--space-2); transition: transform 0.1s ease;}
 .faq-question::after { content: '+'; font-family: var(--font-primary); font-weight: 700; transition: transform 0.3s ease; }
 .faq-item.active .faq-question::after { transform: rotate(45deg); }
 .faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; }
@@ -700,6 +719,7 @@ html, body {
     color: var(--light-text);
     text-decoration: none;
     font-size: 1.5rem;
+    transition: transform 0.1s ease;
 }
 
 .footer-locations-accordion {
@@ -749,6 +769,7 @@ html, body {
     overflow: hidden;
     text-align: center;
     background-color: var(--border-color); /* Fallback color */
+    transition: transform 0.1s ease;
 }
 
 .city-card::before {
@@ -797,10 +818,6 @@ html, body {
     transition: transform 0.1s ease;
 }
 
-.pagination-btn:active {
-    transform: scale(0.95);
-}
-
 .pagination-btn.bouncing {
     animation: bounceEffect 0.8s ease-in-out;
 }
@@ -816,6 +833,70 @@ html, body {
     opacity: 0.7;
     margin-top: var(--space-2);
 }
+
+/* --- 12. Location Modal --- */
+#location-modal-overlay { 
+    position: fixed; inset: 0; background-color: rgba(10, 10, 10, 0.5); 
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    z-index: 2900; 
+    opacity: 0; visibility: hidden; 
+    transition: opacity 0.3s ease; 
+}
+#location-modal-overlay.active { opacity: 1; visibility: visible; }
+
+#location-modal-panel { 
+    position: fixed; 
+    top: 50%; left: 50%; 
+    transform: translate(-50%, -50%) scale(0.95); 
+    background-color: #fff; 
+    border-radius: var(--border-radius); 
+    box-shadow: var(--shadow-lg); 
+    padding: var(--space-4); 
+    display: flex; flex-direction: column; 
+    gap: var(--space-3); 
+    width: 90%; max-width: 400px; 
+    z-index: 3000; 
+    opacity: 0; visibility: hidden; 
+    transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    text-align: center;
+}
+#location-modal-panel.active { 
+    opacity: 1; visibility: visible; 
+    transform: translate(-50%, -50%) scale(1); 
+}
+
+#location-modal-close-btn {
+    position: absolute;
+    top: var(--space-1);
+    right: var(--space-1);
+    background: none;
+    border: none;
+    font-size: 2rem;
+    color: var(--text-color-secondary);
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    transition: transform 0.1s ease;
+}
+
+#location-modal-message {
+    font-size: 1.2rem;
+    line-height: 1.6;
+    color: var(--dark-text);
+    margin-bottom: var(--space-2);
+}
+
+#location-modal-message b {
+    color: var(--primary-color);
+}
+
+#location-modal-cta {
+    white-space: normal;
+    padding: var(--space-2) var(--space-3);
+}
+
 
 /* --- Scroll Animations --- */
 .cd-timeline__img--hidden, .cd-timeline__content--hidden {
