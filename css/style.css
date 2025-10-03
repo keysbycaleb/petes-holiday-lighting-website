@@ -86,7 +86,8 @@ html, body {
     padding-right: 0;
 }
 
-#page-services .page-content {
+#page-services .page-content,
+#page-locations .page-content {
     padding-top: calc(var(--header-height) + var(--space-4));
 }
 
