@@ -3,6 +3,25 @@ document.addEventListener('DOMContentLoaded', () => {
     const appContainer = document.querySelector('.app-container');
     const serviceDetailPage = document.getElementById('page-service-detail-template');
 
+    // --- Data ---
+    const galleryData = [
+        { image: 'pic01.jpg', title: 'Classic Elegance', description: 'Warm white lights trace the stunning roofline of this beautiful stucco home, accented by matching wreaths. The soft glow creates a timeless and inviting holiday atmosphere. <a href="#" class="gallery-cta" data-target="page-contact">Like the look of this house? Contact us to see how we can help!</a>' },
+        { image: 'pic02.jpg', title: 'Farmhouse Festive', description: 'Crisp white lights give this modern farmhouse a clean and festive look. A single, glowing star adds a touch of classic Christmas magic to the design. <a href="#" class="gallery-cta" data-target="page-contact">Like the look of this house? Contact us to see how we can help!</a>' },
+        { image: 'pic03.jpg', title: 'Winter Wonderland', description: 'This home is transformed with brilliant white rooflines and glowing snowflake accents. The combination evokes the feeling of a perfect, snowy Christmas night. <a href="#" class="gallery-cta" data-target="page-contact">Like the look of this house? Contact us to see how we can help!</a>' },
+        { image: 'pic04.jpg', title: 'Bold & Bright', description: 'Vibrant red lights make a powerful statement, outlining the home’s architecture and creating a warm, cheerful glow. Illuminated reindeer complete this joyful scene. <a href="#" class="gallery-cta" data-target="page-contact">Like the look of this house? Contact us to see how we can help!</a>' },
+        { image: 'pic05.jpg', title: 'Icy Blue Christmas', description: 'Cool blue and white lights create a serene, wintery escape. The snowflake motifs add a delicate and magical touch to this eye-catching display. <a href="#" class="gallery-cta" data-target="page-contact">Like the look of this house? Contact us to see how we can help!</a>' },
+        { image: 'pic06.jpg', title: 'Snowy Welcome', description: 'The warm lights on this classic brick home stand out beautifully against a blanket of snow, creating a picture-perfect and cozy holiday welcome. <a href="#" class="gallery-cta" data-target="page-contact">Like the look of this house? Contact us to see how we can help!</a>' },
+        { image: 'pic07.jpg', title: 'Woodland Charm', description: 'This dark-paneled home is beautifully defined by warm white lights, with festive wreaths in each window adding a traditional and charming touch. <a href="#" class="gallery-cta" data-target="page-contact">Like the look of this house? Contact us to see how we can help!</a>' },
+        { image: 'pic08.jpg', title: 'Cozy Cottage Glow', description: 'A simple yet elegant design enhances the cozy feel of this home. Lit mini-trees frame the doorway, inviting guests in with a warm holiday spirit. <a href="#" class="gallery-cta" data-target="page-contact">Like the look of this house? Contact us to see how we can help!</a>' },
+        { image: 'pic09.jpg', title: 'Symmetrical Sparkle', description: 'Clean lines and perfect symmetry make this display a standout. The bright white lights and festive red bows create a look that is both modern and classic. <a href="#" class="gallery-cta" data-target="page-contact">Like the look of this house? Contact us to see how we can help!</a>' },
+        { image: 'pic10.jpg', title: 'Stone & Starlight', description: 'Warm lights complement the beautiful stonework of this home. Wreaths adorned with red bows add a perfect pop of traditional Christmas color. <a href="#" class="gallery-cta" data-target="page-contact">Like the look of this house? Contact us to see how we can help!</a>' },
+        { image: 'pic11.jpg', title: 'Suburban Glow', description: 'This ranch-style home shines with a classic roofline installation. The lights beautifully highlight the architectural details and create a welcoming curbside appeal. <a href="#" class="gallery-cta" data-target="page-contact">Like the look of this house? Contact us to see how we can help!</a>' },
+        { image: 'pic12.jpg', title: 'Rustic Radiance', description: 'The combination of stone, dark wood, and warm lights gives this home a rustic yet elegant holiday feel. It’s a cozy look perfect for a mountain retreat. <a href="#" class="gallery-cta" data-target="page-contact">Like the look of this house? Contact us to see how we can help!</a>' },
+        { image: 'pic13.jpg', title: 'Grand Illumination', description: 'A large home with multiple peaks provides the perfect canvas for a grand display. The lights create a stunning silhouette against the night sky. <a href="#" class="gallery-cta" data-target="page-contact">Like the look of this house? Contact us to see how we can help!</a>' },
+        { image: 'pic14.jpg', title: 'Coastal Christmas', description: 'This beautiful home with its clean white fencing gets a classic holiday treatment. The warm lights add a touch of magic to its charming coastal architecture. <a href="#" class="gallery-cta" data-target="page-contact">Like the look of this house? Contact us to see how we can help!</a>' },
+        { image: 'pic15.jpg', title: 'Architectural Highlight', description: 'Every peak and angle of this stunning home is expertly traced with light, showcasing its intricate design and creating a truly breathtaking holiday spectacle. <a href="#" class="gallery-cta" data-target="page-contact">Like the look of this house? Contact us to see how we can help!</a>' }
+    ];
+
     // --- Page Navigation & History ---
     let pageHistory = ['page-home'];
     
@@ -107,6 +126,20 @@ document.addEventListener('DOMContentLoaded', () => {
             item.classList.toggle('active', item.dataset.target === currentPageId);
         });
     };
+
+    // --- Bottom Nav CTA Animation ---
+    const contactNavBtn = document.querySelector('.bottom-nav .nav-item[data-target="page-contact"]');
+    if (contactNavBtn) {
+        setInterval(() => {
+            const contactPage = document.getElementById('page-contact');
+            if (!contactPage.classList.contains('active') && !contactNavBtn.classList.contains('pulsing-cta')) {
+                contactNavBtn.classList.add('pulsing-cta');
+                contactNavBtn.addEventListener('animationend', () => {
+                    contactNavBtn.classList.remove('pulsing-cta');
+                }, { once: true });
+            }
+        }, 3000);
+    }
 
     // --- SCROLL-BASED UI CHANGES & ANIMATIONS ---
     let lastScrollTop = 0;
@@ -797,9 +830,71 @@ document.addEventListener('DOMContentLoaded', () => {
         scrolling = false;
     }
 
+    // --- GALLERY PAGE SETUP ---
+    function setupGalleryPage() {
+        const galleryShowcase = document.getElementById('gallery-showcase');
+        if (!galleryShowcase) return;
+
+        galleryData.forEach((item, index) => {
+            const card = document.createElement('div');
+            card.className = 'gallery-card';
+            card.dataset.index = index;
+            
+            card.innerHTML = `
+                <img src="assets/images/lights/${item.image}" alt="${item.title}" class="gallery-card-image" loading="lazy">
+                <h3 class="gallery-card-title">${item.title}</h3>
+            `;
+            galleryShowcase.appendChild(card);
+        });
+    }
+
+    // --- GALLERY MODAL LOGIC ---
+    const galleryModalOverlay = document.getElementById('gallery-modal-overlay');
+    const galleryModalImage = document.getElementById('gallery-modal-image');
+    const galleryModalText = document.getElementById('gallery-modal-text');
+    const galleryShowcase = document.getElementById('gallery-showcase');
+
+    function openGalleryModal(index) {
+        const item = galleryData[index];
+        if (!item) return;
+
+        galleryModalImage.src = `assets/images/lights/${item.image}`;
+        galleryModalImage.alt = item.title;
+        galleryModalText.innerHTML = item.description;
+        galleryModalOverlay.classList.add('active');
+    }
+
+    function closeGalleryModal() {
+        galleryModalOverlay.classList.remove('active');
+    }
+
+    if (galleryShowcase) {
+        galleryShowcase.addEventListener('click', (e) => {
+            const card = e.target.closest('.gallery-card');
+            if (card) {
+                openGalleryModal(card.dataset.index);
+            }
+        });
+    }
+    
+    if (galleryModalOverlay) {
+        galleryModalOverlay.addEventListener('click', (e) => {
+            if (e.target.id === 'gallery-modal-overlay' || e.target.closest('#gallery-modal-close-btn')) {
+                closeGalleryModal();
+            }
+            if (e.target.classList.contains('gallery-cta')) {
+                e.preventDefault();
+                closeGalleryModal();
+                showPage('page-contact');
+            }
+        });
+    }
+
+
     // --- INITIALIZATION ---
     async function initializeApp() {
         await initializeFooters();
+        setupGalleryPage();
         showPage('page-home');
         setTimeout(() => {
             checkTimelineScroll();

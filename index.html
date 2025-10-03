@@ -165,6 +165,23 @@
             <footer class="app-footer"></footer>
         </section>
 
+        <section class="page" id="page-gallery">
+            <header class="app-header">
+                <a href="#" class="header-brand-name home-btn">Pete's Holiday Lighting</a>
+                <div class="header-actions">
+                    <a href="tel:+19097503143" class="icon-btn mobile-only" aria-label="Call">
+                        <i class="fa-solid fa-phone"></i>
+                    </a>
+                </div>
+            </header>
+            <main class="page-content">
+                <h2 class="page-title">Our Work</h2>
+                <div class="gallery-showcase" id="gallery-showcase">
+                    </div>
+            </main>
+            <footer class="app-footer"></footer>
+        </section>
+
         <section class="page" id="page-locations">
             <header class="app-header">
                 <a href="#" class="header-brand-name home-btn">Pete's Holiday Lighting</a>
@@ -299,6 +316,7 @@
                 <nav class="footer-links">
                     <a href="#" class="nav-item" data-target="page-home">Home</a>
                     <a href="#" class="nav-item" data-target="page-services">Services</a>
+                    <a href="#" class="nav-item" data-target="page-gallery">Gallery</a>
                     <a href="#" class="nav-item" data-target="page-locations">Locations</a>
                     <a href="#" class="nav-item" data-target="page-contact">Get a Quote</a>
                 </nav>
@@ -354,7 +372,20 @@
         <div id="form-success-modal-content">
             <h3 id="form-success-title">You're on the Nice List!</h3>
             <p id="form-success-message">Your consultation request is on its way. We're warming up the ladders and will be in touch shortly!</p>
+            <p class="form-success-note">We'll be in contact with you very shortly!</p>
             <button id="form-success-return-btn" class="btn btn-primary cta-btn">Back to Home</button>
+        </div>
+    </div>
+
+    <div id="gallery-modal-overlay">
+        <div id="gallery-modal-panel">
+            <button id="gallery-modal-close-btn">&times;</button>
+            <div class="gallery-modal-image-container">
+                <img id="gallery-modal-image" src="" alt="Enlarged gallery view">
+            </div>
+            <div class="gallery-modal-description">
+                <p id="gallery-modal-text"></p>
+            </div>
         </div>
     </div>
 
@@ -367,6 +398,10 @@
         <a href="#" class="nav-item" data-target="page-services">
             <i class="fa-solid fa-briefcase"></i>
             <span>Services</span>
+        </a>
+        <a href="#" class="nav-item" data-target="page-gallery">
+            <i class="fa-solid fa-image"></i>
+            <span>Gallery</span>
         </a>
         <a href="#" class="nav-item" data-target="page-locations">
             <i class="fa-solid fa-map-marker-alt"></i>
