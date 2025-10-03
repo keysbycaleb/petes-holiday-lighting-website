@@ -361,6 +361,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 const imgIndex = String((index % 15) + 1).padStart(2, '0');
                 card.style.setProperty('--bg-image', `url('../assets/images/lights/pic${imgIndex}.jpg')`);
                 card.innerHTML = `<span>${city}</span>`;
+
+                // Cascading animation logic
+                card.style.opacity = '0';
+                card.style.transform = 'scale(0.5)';
+                const delay = index < 10 ? index * 0.1 : 1 + (index - 10) * 0.02;
+                card.style.animation = `cardBounceIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) ${delay}s forwards`;
+                
                 grid.appendChild(card);
             });
         }
