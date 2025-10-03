@@ -79,6 +79,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 if(applyBtn) applyBtn.click();
              }
         }
+        
+        if (pageId === 'page-gallery') {
+            const galleryCards = nextPage.querySelectorAll('.gallery-card');
+            galleryCards.forEach(card => card.classList.remove('animate'));
+            setTimeout(() => {
+                galleryCards.forEach(card => card.classList.add('animate'));
+            }, 50);
+        }
     };
 
     const goBack = () => {
@@ -126,20 +134,6 @@ document.addEventListener('DOMContentLoaded', () => {
             item.classList.toggle('active', item.dataset.target === currentPageId);
         });
     };
-
-    // --- Bottom Nav CTA Animation ---
-    const contactNavBtn = document.querySelector('.bottom-nav .nav-item[data-target="page-contact"]');
-    if (contactNavBtn) {
-        setInterval(() => {
-            const contactPage = document.getElementById('page-contact');
-            if (!contactPage.classList.contains('active') && !contactNavBtn.classList.contains('pulsing-cta')) {
-                contactNavBtn.classList.add('pulsing-cta');
-                contactNavBtn.addEventListener('animationend', () => {
-                    contactNavBtn.classList.remove('pulsing-cta');
-                }, { once: true });
-            }
-        }, 3000);
-    }
 
     // --- SCROLL-BASED UI CHANGES & ANIMATIONS ---
     let lastScrollTop = 0;
@@ -834,11 +828,15 @@ document.addEventListener('DOMContentLoaded', () => {
     function setupGalleryPage() {
         const galleryShowcase = document.getElementById('gallery-showcase');
         if (!galleryShowcase) return;
-
+        
+        galleryShowcase.innerHTML = ''; // Clear existing
         galleryData.forEach((item, index) => {
             const card = document.createElement('div');
             card.className = 'gallery-card';
             card.dataset.index = index;
+            
+            // Stagger the animation
+            card.style.animationDelay = `${index * 0.1}s`;
             
             card.innerHTML = `
                 <img src="assets/images/lights/${item.image}" alt="${item.title}" class="gallery-card-image" loading="lazy">

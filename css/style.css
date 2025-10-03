@@ -162,7 +162,7 @@ html, body {
 /* --- 4. Bottom Navigation --- */
 .bottom-nav {
     position: fixed; bottom: 0; left: 0; width: 100%;
-    height: var(--bottom-nav-height); display: flex; justify-content: space-around;
+    height: var(--bottom-nav-height); display: flex; justify-content: space-evenly;
     background-color: rgba(255, 255, 255, 0.7); backdrop-filter: blur(15px);
     -webkit-backdrop-filter: blur(15px); border-top: 1px solid var(--border-color);
     z-index: 10;
@@ -177,13 +177,6 @@ html, body {
 .nav-item i { font-size: 24px; }
 .nav-item span { font-size: 10px; margin-top: 4px; }
 .nav-item.active { color: var(--primary-color); }
-.nav-item.pulsing-cta { animation: subtle-jump 0.8s cubic-bezier(0.25, 0.1, 0.25, 1) forwards; }
-
-@keyframes subtle-jump {
-    0%, 100% { transform: translateY(0) scale(1); }
-    50% { transform: translateY(-8px) scale(1.1); }
-}
-
 
 /* --- 5. General Components --- */
 .content-block { margin-bottom: var(--space-7); padding: 0 var(--space-3); }
@@ -1044,6 +1037,18 @@ html, body {
     box-shadow: var(--shadow-lg);
     cursor: pointer;
     aspect-ratio: 4 / 3;
+    opacity: 0;
+    transform: scale(0.9);
+    animation: none; /* Controlled by JS */
+}
+.gallery-card.animate {
+    animation: galleryCardFadeInUp 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+@keyframes galleryCardFadeInUp {
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
 }
 .gallery-card-image {
     width: 100%;
