@@ -87,7 +87,8 @@ html, body {
 }
 
 #page-services .page-content,
-#page-locations .page-content {
+#page-locations .page-content,
+#page-contact .page-content {
     padding-top: calc(var(--header-height) + var(--space-4));
 }
 
@@ -555,19 +556,68 @@ html, body {
 #apply-filters-btn { background-color: var(--primary-color); color: #fff; }
 
 /* --- 9. Contact Page --- */
-.contact-form { background-color: var(--card-bg); padding: var(--space-4); border-radius: var(--border-radius); box-shadow: var(--shadow-md); }
-.form-grid { display: grid; grid-template-columns: 1fr; gap: var(--space-3); }
+.contact-header {
+    text-align: center;
+    margin-bottom: var(--space-5);
+}
+.contact-header lottie-player {
+    margin: 10px auto 10px;
+}
+.contact-socials {
+    display: flex;
+    justify-content: center;
+    gap: var(--space-4);
+    margin-top: calc(-1 * var(--space-2));
+    margin-bottom: var(--space-5);
+}
+.contact-socials .icon-btn {
+    font-size: 1.8rem;
+    color: var(--dark-text);
+}
+
+.contact-form { 
+    background-color: var(--card-bg); 
+    padding: var(--space-4); 
+    border-radius: var(--border-radius); 
+    box-shadow: var(--shadow-md); 
+}
+.form-grid { 
+    display: grid; 
+    grid-template-columns: 1fr; 
+    gap: var(--space-3); 
+}
 .form-group { display: flex; flex-direction: column; }
 .form-group.full-width { grid-column: 1 / -1; }
-.form-group label { font-size: 0.9rem; font-weight: 600; margin-bottom: var(--space-1); }
-.form-group input, .form-group select { padding: var(--space-2); border-radius: var(--border-radius-input); border: 1px solid var(--border-color); background-color: var(--background-color); font-size: 1rem; color: var(--dark-text); }
-.checkbox-group { display: flex; align-items: flex-start; gap: var(--space-2); font-size: 0.8rem; color: var(--text-color-secondary); }
+.form-group label { 
+    font-size: 0.9rem; 
+    font-weight: 600; 
+    margin-bottom: var(--space-1); 
+    color: var(--dark-text);
+}
+.form-group input, .form-group select { 
+    padding: var(--space-2); 
+    border-radius: var(--border-radius-input); 
+    border: 1px solid var(--border-color); 
+    background-color: var(--background-color); 
+    font-size: 1rem; 
+    color: var(--dark-text); 
+}
+.checkbox-group { 
+    display: flex; 
+    align-items: flex-start; 
+    gap: var(--space-2); 
+    font-size: 0.8rem; 
+    color: var(--text-color-secondary); 
+}
 .checkbox-group input { margin-top: 4px; accent-color: var(--primary-color); }
 .contact-form .btn-primary { margin-top: var(--space-2); }
 
-@media (min-width: 500px) {
-    .form-grid { grid-template-columns: 1fr 1fr; }
+@media (min-width: 768px) {
+    .form-grid { 
+        grid-template-columns: 1fr 1fr; 
+    }
 }
+
 
 /* --- 10. Service Detail Page --- */
 .service-detail-page .page-content { padding-left: 0; padding-right: 0; padding-top: 0; }

@@ -12,6 +12,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     
     <link rel="stylesheet" href="css/style.css">
+
+    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
 </head>
 <body>
 
@@ -197,40 +199,46 @@
                 </div>
             </header>
             <main class="page-content">
-                <h2 class="page-title animate-on-scroll">Schedule Your Free Consultation</h2>
-                <div class="content-block">
-                    <p class="text-center animate-on-scroll" style="margin-top: -20px; margin-bottom: 30px;">
-                        Fill out the form below to get started. We'll get in touch to schedule a convenient time for your on-site design consultation and quote.
-                    </p>
+                <div class="contact-header">
+                    <lottie-player src="assets/lottie/christmas-wreath.json" background="transparent" speed="1" style="width: 200px; height: 200px;" loop autoplay></lottie-player>
+                    <h2 class="page-title animate-on-scroll">Get In Touch</h2>
+                    <p class="block-subtitle animate-on-scroll">Use the form or contact us directly through any of the methods below.</p>
+                     <div class="contact-socials animate-on-scroll">
+                        <a href="tel:+19097503143" aria-label="Call" class="icon-btn"><i class="fa-solid fa-phone"></i></a>
+                        <a href="mailto:quotes@petesholidaylighting.com" aria-label="Email" class="icon-btn"><i class="fa-solid fa-envelope"></i></a>
+                        <a href="https://www.instagram.com/petes_holiday_lighting/" target="_blank" aria-label="Instagram" class="icon-btn"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
 
-                    <form class="contact-form animate-on-scroll" name="holiday-lighting-quote">
+                <form class="contact-form animate-on-scroll" name="holiday-lighting-quote">
+                    <div class="form-grid">
                         <div class="form-group">
-                            <label for="mobile-first-name">First Name</label>
-                            <input type="text" id="mobile-first-name" name="first-name" required>
+                            <label for="first-name">First Name</label>
+                            <input type="text" id="first-name" name="first-name" required>
                         </div>
                         <div class="form-group">
-                            <label for="mobile-last-name">Last Name</label>
-                            <input type="text" id="mobile-last-name" name="last-name" required>
+                            <label for="last-name">Last Name</label>
+                            <input type="text" id="last-name" name="last-name" required>
                         </div>
                         <div class="form-group">
-                            <label for="mobile-email">Email Address</label>
-                            <input type="email" id="mobile-email" name="email" required>
+                            <label for="email">Email Address</label>
+                            <input type="email" id="email" name="email" required>
                         </div>
                         <div class="form-group">
-                            <label for="mobile-phone">Phone Number</label>
-                            <input type="tel" id="mobile-phone" name="phone" required>
+                            <label for="phone">Phone Number</label>
+                            <input type="tel" id="phone" name="phone" required>
                         </div>
-                        <div class="form-group">
-                            <label for="mobile-street">Street Address</label>
-                            <input type="text" id="mobile-street" name="street" required>
+                        <div class="form-group full-width">
+                            <label for="street">Street Address</label>
+                            <input type="text" id="street" name="street" required>
                         </div>
-                         <div class="form-group">
-                            <label for="mobile-city">City</label>
-                            <input type="text" id="mobile-city" name="city" required>
+                         <div class="form-group full-width">
+                            <label for="city">City</label>
+                            <input type="text" id="city" name="city" required>
                         </div>
-                        <div class="form-group">
-                            <label for="mobile-referral">How did you hear about us?</label>
-                            <select id="mobile-referral" name="referral">
+                        <div class="form-group full-width">
+                            <label for="referral">How did you hear about us?</label>
+                            <select id="referral" name="referral">
                                 <option>Google</option>
                                 <option>Facebook</option>
                                 <option>Instagram</option>
@@ -239,21 +247,21 @@
                                 <option>Other</option>
                             </select>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group full-width">
                              <div class="checkbox-group">
-                                <input type="checkbox" id="mobile-contact-permission" name="contact-permission" checked required>
-                                <label for="mobile-contact-permission">By checking this box, you agree that Pete's Holiday Lighting may contact you regarding your service inquiry.</label>
+                                <input type="checkbox" id="contact-permission" name="contact-permission" checked required>
+                                <label for="contact-permission">By checking this box, you agree that Pete's Holiday Lighting may contact you regarding your service inquiry.</label>
                             </div>
                         </div>
-                         <div class="form-group">
+                         <div class="form-group full-width">
                              <div class="checkbox-group">
-                                <input type="checkbox" id="mobile-sms-permission" name="sms-permission" checked>
-                                <label for="mobile-sms-permission">I would like to receive occasional SMS messages about future promotions and updates.</label>
+                                <input type="checkbox" id="sms-permission" name="sms-permission" checked>
+                                <label for="sms-permission">I would like to receive occasional SMS messages about future promotions and updates.</label>
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-primary" style="margin-top: 10px;">Request My Consultation</button>
-                    </form>
-                </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="margin-top: 20px;">Request My Consultation</button>
+                </form>
             </main>
             <footer class="app-footer"></footer>
         </section>
