@@ -295,6 +295,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const handleClick = (e) => {
             const card = e.target.closest('.location-card');
             if (card) {
+                e.preventDefault();
                 const cityName = card.dataset.city;
                 const randomIndex = Math.floor(Math.random() * locationMessages.length);
                 messageEl.innerHTML = locationMessages[randomIndex].replace('{city}', cityName);
@@ -310,7 +311,12 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             if (e.target.closest('#location-modal-cta')) {
                 overlay.classList.remove('active');
-                document.getElementById('locations-modal-overlay').classList.remove('active');
+                
+                // Also close the main locations modal if it's open
+                const locationsModal = document.getElementById('locations-modal-overlay');
+                if (locationsModal.classList.contains('active')) {
+                    locationsModal.classList.remove('active');
+                }
             }
         });
     };
@@ -325,13 +331,15 @@ document.addEventListener('DOMContentLoaded', () => {
         const applyModalFilters = () => {
             const searchTerm = searchBar.value.toLowerCase();
             let filteredCities = allCities;
+
             if (searchTerm) {
                 filteredCities = filteredCities.filter(city => city.name.toLowerCase().includes(searchTerm));
             }
             renderLocationGrid(filteredCities, grid);
         };
 
-        openBtn.addEventListener('click', () => {
+        openBtn.addEventListener('click', (e) => {
+            e.preventDefault();
             applyModalFilters();
             overlay.classList.add('active');
         });
@@ -356,22 +364,26 @@ document.addEventListener('DOMContentLoaded', () => {
             { title: "Success!", message: "Clark Griswold just called you an inspiration." }
         ];
 
-        form.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const formData = new FormData(form);
-            fetch("/", {
-                method: "POST",
-                headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                body: new URLSearchParams(formData).toString()
-            }).catch(error => console.error("Form submission error:", error));
+        if (form) {
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const formData = new FormData(form);
+                fetch("/", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                    body: new URLSearchParams(formData).toString()
+                }).then(() => {
+                    console.log("Desktop form successfully submitted to Netlify");
+                }).catch(error => console.error("Form submission error:", error));
 
-            const { title, message } = successMessages[Math.floor(Math.random() * successMessages.length)];
-            document.getElementById('form-success-title').textContent = title;
-            document.getElementById('form-success-message').textContent = message;
-            
-            successModal.classList.add('active');
-            form.reset();
-        });
+                const { title, message } = successMessages[Math.floor(Math.random() * successMessages.length)];
+                document.getElementById('form-success-title').textContent = title;
+                document.getElementById('form-success-message').textContent = message;
+                
+                successModal.classList.add('active');
+                form.reset();
+            });
+        }
 
         successModal.addEventListener('click', e => {
              if (e.target === successModal || e.target.closest('.modal-close-btn, #form-success-return-btn')) {
@@ -393,3 +405,4 @@ document.addEventListener('DOMContentLoaded', () => {
 
     initApp();
 });
+

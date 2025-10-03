@@ -5,6 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pete's Holiday Lighting - Desktop</title>
 
+    <script>
+      // Redirect to mobile version if screen is too narrow
+      if (window.screen.width < 1024) {
+        window.location.replace('index.html');
+      }
+    </script>
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Oswald:wght@700&display=swap" rel="stylesheet">
@@ -187,21 +194,21 @@
                         <form class="contact-form" id="contact-form" name="holiday-lighting-quote-desktop" method="POST" data-netlify="true">
                             <input type="hidden" name="form-name" value="holiday-lighting-quote-desktop" />
                             <div class="form-grid">
-                                <div class="form-group"><label for="first-name">First Name</label><input type="text" id="first-name" name="first-name" required></div>
-                                <div class="form-group"><label for="last-name">Last Name</label><input type="text" id="last-name" name="last-name" required></div>
-                                <div class="form-group"><label for="email">Email Address</label><input type="email" id="email" name="email" required></div>
-                                <div class="form-group"><label for="phone">Phone Number</label><input type="tel" id="phone" name="phone" required></div>
-                                <div class="form-group full-width"><label for="street">Street Address</label><input type="text" id="street" name="street" required></div>
-                                <div class="form-group full-width"><label for="city">City</label><input type="text" id="city" name="city" required></div>
+                                <div class="form-group"><label for="first-name-desktop">First Name</label><input type="text" id="first-name-desktop" name="first-name" required></div>
+                                <div class="form-group"><label for="last-name-desktop">Last Name</label><input type="text" id="last-name-desktop" name="last-name" required></div>
+                                <div class="form-group"><label for="email-desktop">Email Address</label><input type="email" id="email-desktop" name="email" required></div>
+                                <div class="form-group"><label for="phone-desktop">Phone Number</label><input type="tel" id="phone-desktop" name="phone" required></div>
+                                <div class="form-group full-width"><label for="street-desktop">Street Address</label><input type="text" id="street-desktop" name="street" required></div>
+                                <div class="form-group full-width"><label for="city-desktop">City</label><input type="text" id="city-desktop" name="city" required></div>
                                 <div class="form-group full-width">
-                                    <label for="referral">How did you hear about us?</label>
-                                    <select id="referral" name="referral"><option>Google</option><option>Facebook</option><option>Instagram</option><option>Friend/Family</option><option>Saw your work</option><option>Other</option></select>
+                                    <label for="referral-desktop">How did you hear about us?</label>
+                                    <select id="referral-desktop" name="referral"><option>Google</option><option>Facebook</option><option>Instagram</option><option>Friend/Family</option><option>Saw your work</option><option>Other</option></select>
                                 </div>
                                 <div class="form-group full-width">
-                                    <div class="checkbox-group"><input type="checkbox" id="contact-permission" name="contact-permission" checked required><label for="contact-permission">By checking this box, you agree that Pete's Holiday Lighting may contact you regarding your service inquiry.</label></div>
+                                    <div class="checkbox-group"><input type="checkbox" id="contact-permission-desktop" name="contact-permission" checked required><label for="contact-permission-desktop">By checking this box, you agree that Pete's Holiday Lighting may contact you regarding your service inquiry.</label></div>
                                 </div>
                                 <div class="form-group full-width">
-                                    <div class="checkbox-group"><input type="checkbox" id="sms-permission" name="sms-permission" checked><label for="sms-permission">I would like to receive occasional SMS messages about future promotions and updates.</label></div>
+                                    <div class="checkbox-group"><input type="checkbox" id="sms-permission-desktop" name="sms-permission" checked><label for="sms-permission-desktop">I would like to receive occasional SMS messages about future promotions and updates.</label></div>
                                 </div>
                             </div>
                             <button type="submit" class="btn btn-primary">Request My Consultation</button>
@@ -312,3 +319,4 @@
 
 </body>
 </html>
+
