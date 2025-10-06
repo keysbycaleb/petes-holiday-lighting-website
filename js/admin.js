@@ -107,32 +107,40 @@ document.addEventListener('DOMContentLoaded', () => {
     function applyFiltersAndSearch() {
         let processedSubmissions = [...allSubmissions];
 
-        // 1. Apply Sorting
-        const { sortBy, sortDirection, emailProvider, city } = filterState;
-
-        processedSubmissions.sort((a, b) => {
-            const aVal = a[sortBy.toLowerCase()] || '';
-            const bVal = b[sortBy.toLowerCase()] || '';
-            let comparison = 0;
-
-            if (sortBy === 'Date') {
-                const dateA = a.timestamp?.toDate() || 0;
-                const dateB = b.timestamp?.toDate() || 0;
-                comparison = dateA < dateB ? -1 : 1;
-            } else { // String comparison for Name, Email, City
-                comparison = aVal.localeCompare(bVal, undefined, { sensitivity: 'base' });
-            }
-            
-            return sortDirection === 'asc' ? comparison : -comparison;
-        });
-
-        // 2. Apply Filtering (Email Provider and City)
+        // 1. Apply Filtering (Email Provider and City)
+        const { emailProvider, city } = filterState;
         if (emailProvider !== 'All') {
             processedSubmissions = processedSubmissions.filter(sub => (sub.email || '').toLowerCase().includes(`@${emailProvider.toLowerCase()}`));
         }
         if (city !== 'All Cities') {
             processedSubmissions = processedSubmissions.filter(sub => (sub.city || '').toLowerCase() === city.toLowerCase());
         }
+
+        // 2. Apply Sorting
+        const { sortBy, sortDirection } = filterState;
+        processedSubmissions.sort((a, b) => {
+            let aVal, bVal;
+
+            if (sortBy === 'Date') {
+                aVal = a.timestamp?.toDate() || 0;
+                bVal = b.timestamp?.toDate() || 0;
+            } else if (sortBy === 'Name') {
+                aVal = `${a['first-name'] || ''} ${a['last-name'] || ''}`.toLowerCase();
+                bVal = `${b['first-name'] || ''} ${b['last-name'] || ''}`.toLowerCase();
+            } else {
+                aVal = (a[sortBy.toLowerCase()] || '').toLowerCase();
+                bVal = (b[sortBy.toLowerCase()] || '').toLowerCase();
+            }
+
+            if (aVal < bVal) {
+                return sortDirection === 'asc' ? -1 : 1;
+            }
+            if (aVal > bVal) {
+                return sortDirection === 'asc' ? 1 : -1;
+            }
+            return 0;
+        });
+
 
         // 3. Apply Search Term
         const searchTerm = searchInput.value.toLowerCase();
@@ -234,15 +242,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function showDetailsModal(submission) {
         if (!submission) return;
-        detailsModalContent.innerHTML = Object.entries(submission)
-            .map(([key, value]) => {
-                let displayValue = value;
-                if (key === 'timestamp' && value?.toDate) {
-                    displayValue = value.toDate().toLocaleString();
-                }
-                return `<p><strong>${escapeHtml(key)}:</strong> ${escapeHtml(String(displayValue))}</p>`;
-            })
-            .join('');
+        const formatted = {
+            'Full Name': `${submission['first-name'] || ''} ${submission['last-name'] || ''}`,
+            'Date Submitted': submission.timestamp?.toDate ? submission.timestamp.toDate().toLocaleString() : 'N/A',
+            ...submission
+        };
+        // Clean up and order
+        delete formatted['first-name'];
+        delete formatted['last-name'];
+        delete formatted.timestamp;
+        delete formatted.formId;
+        
+        detailsModalContent.innerHTML = Object.entries(formatted)
+            .map(([key, value]) => `
+                <div class="detail-item">
+                    <strong>${escapeHtml(key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase()))}</strong>
+                    <span>${escapeHtml(String(value))}</span>
+                </div>`
+            ).join('');
         detailsModalOverlay.classList.add('active');
     }
     
@@ -252,10 +269,12 @@ document.addEventListener('DOMContentLoaded', () => {
             btn.id = id;
             btn.className = 'filter-cycle-btn';
             btn.textContent = current;
+            btn.dataset.options = JSON.stringify(options);
             btn.addEventListener('click', () => {
-                const currentIndex = options.indexOf(btn.textContent);
-                const nextIndex = (currentIndex + 1) % options.length;
-                btn.textContent = options[nextIndex];
+                const currentOptions = JSON.parse(btn.dataset.options);
+                const currentIndex = currentOptions.indexOf(btn.textContent);
+                const nextIndex = (currentIndex + 1) % currentOptions.length;
+                btn.textContent = currentOptions[nextIndex];
                 updateFilterStateFromUI();
             });
             return btn;
@@ -266,51 +285,48 @@ document.addEventListener('DOMContentLoaded', () => {
         // Row 1: Sort By
         const sortByRow = document.createElement('div');
         sortByRow.className = 'filter-row';
-        const sortByLabel = document.createElement('label');
-        sortByLabel.textContent = 'Sort By';
+        sortByRow.innerHTML = `<label for="sort-by-btn">Sort By</label>`;
         const sortByBtn = createCycleButton('sort-by-btn', ['Date', 'Name', 'Email', 'City'], filterState.sortBy);
-        sortByRow.append(sortByLabel, sortByBtn);
+        sortByRow.appendChild(sortByBtn);
         
-        // Row 2: Direction
+        filterOptionsContainer.appendChild(sortByRow);
+        
+        // Re-render modal if main sort criteria changes, because dependent options change
+        sortByBtn.addEventListener('click', () => {
+            updateFilterStateFromUI();
+            renderFilterModal(); 
+        });
+
+        // Row 2: Direction (dependent on Sort By)
         const directionRow = document.createElement('div');
         directionRow.className = 'filter-row';
-        const directionLabel = document.createElement('label');
-        directionLabel.textContent = 'Direction';
-        const directionOptions = filterState.sortBy === 'Date' ? ['Newest First', 'Oldest First'] : ['A-Z', 'Z-A'];
-        const currentDirection = (filterState.sortDirection === 'desc') ? directionOptions[0] : directionOptions[1];
+        directionRow.innerHTML = `<label for="sort-dir-btn">Direction</label>`;
+        const directionOptions = (filterState.sortBy === 'Date') ? ['Newest First', 'Oldest First'] : ['A-Z', 'Z-A'];
+        const currentDirection = (filterState.sortDirection === 'desc' ? directionOptions[0] : directionOptions[1]);
         const directionBtn = createCycleButton('sort-dir-btn', directionOptions, currentDirection);
-        directionRow.append(directionLabel, directionBtn);
-
-        filterOptionsContainer.append(sortByRow, directionRow);
+        directionRow.appendChild(directionBtn);
+        filterOptionsContainer.appendChild(directionRow);
 
         // Conditional Rows
         if (filterState.sortBy === 'Email') {
              const emailRow = document.createElement('div');
              emailRow.className = 'filter-row';
-             const emailLabel = document.createElement('label');
-             emailLabel.textContent = 'Provider';
-             const emailProviders = ['All', 'gmail', 'yahoo', 'outlook']; // Simplified
+             emailRow.innerHTML = `<label for="email-provider-btn">Provider</label>`;
+             const emailProviders = ['All', 'gmail', 'yahoo', 'outlook'];
              const emailBtn = createCycleButton('email-provider-btn', emailProviders, filterState.emailProvider);
-             emailRow.append(emailLabel, emailBtn);
+             emailRow.appendChild(emailBtn);
              filterOptionsContainer.appendChild(emailRow);
         }
 
         if (filterState.sortBy === 'City') {
             const cityRow = document.createElement('div');
             cityRow.className = 'filter-row';
-            const cityLabel = document.createElement('label');
-            cityLabel.textContent = 'City';
+            cityRow.innerHTML = `<label for="city-filter-btn">City</label>`;
             const cities = ['All Cities', ...new Set(allSubmissions.map(s => s.city).filter(Boolean).sort())];
             const cityBtn = createCycleButton('city-filter-btn', cities, filterState.city);
-            cityRow.append(cityLabel, cityBtn);
+            cityRow.appendChild(cityBtn);
             filterOptionsContainer.appendChild(cityRow);
         }
-        
-        // Re-render modal if main sort criteria changes
-        sortByBtn.addEventListener('click', () => {
-            updateFilterStateFromUI();
-            renderFilterModal(); 
-        });
     }
 
     function updateFilterStateFromUI() {
@@ -329,8 +345,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function escapeHtml(str) {
         if (typeof str !== 'string') return str;
-        return str.replace(/[&<>"']/g, match => ({
-            '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
-        }[match]));
+        const div = document.createElement('div');
+        div.textContent = str;
+        return div.innerHTML;
     }
 });
