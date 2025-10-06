@@ -9,12 +9,25 @@ document.addEventListener('DOMContentLoaded', () => {
     const logoutBtn = document.getElementById('logoutBtn');
     const searchInput = document.getElementById('searchInput');
     const exportCsvBtn = document.getElementById('exportCsvBtn');
-    const tableBody = document.getElementById('submissionsTableBody');
-    const noResultsMessage = document.getElementById('noResultsMessage');
 
+    // Modals
+    const detailsModalOverlay = document.getElementById('details-modal-overlay');
+    const detailsModalContent = document.getElementById('details-modal-content');
+    const filterModalOverlay = document.getElementById('filter-modal-overlay');
+    const filterOptionsContainer = document.querySelector('.filter-options-container');
+    
     let allSubmissions = [];
+    let currentlyDisplayedSubmissions = [];
+    
+    // --- Filter State ---
+    let filterState = {
+        sortBy: 'Date', // 'Date', 'Name', 'Email', 'City'
+        sortDirection: 'desc', // 'asc' or 'desc'
+        emailProvider: 'All',
+        city: 'All Cities'
+    };
 
-    // --- Authentication Logic ---
+    // --- Authentication ---
     if (loginForm) {
         loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -48,9 +61,9 @@ document.addEventListener('DOMContentLoaded', () => {
             dashboardSection.classList.remove('hidden');
             try {
                 allSubmissions = await getSubmissions();
-                renderSubmissions(allSubmissions);
+                applyFiltersAndSearch();
             } catch (error) {
-                tableBody.innerHTML = `<tr><td colspan="100%">${error.message}</td></tr>`;
+                document.getElementById('submissionsTableBody').innerHTML = `<tr><td colspan="100%">${error.message}</td></tr>`;
             }
         } else {
             dashboardSection.classList.add('hidden');
@@ -62,92 +75,262 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-
-    // --- Dashboard Features ---
-    if(searchInput) {
-        searchInput.addEventListener('input', () => {
-            const searchTerm = searchInput.value.toLowerCase();
-            if (!searchTerm) {
-                renderSubmissions(allSubmissions);
-                return;
-            }
-
-            const filteredSubmissions = allSubmissions.filter(sub => {
-                // Search across all values in the submission object
-                return Object.values(sub).some(val => 
-                    String(val).toLowerCase().includes(searchTerm)
-                );
-            });
-
-            renderSubmissions(filteredSubmissions);
-        });
-    }
-
-    if(exportCsvBtn) {
-        exportCsvBtn.addEventListener('click', () => {
-            const headers = Array.from(document.querySelectorAll('#dashboardSection table thead th')).map(th => th.textContent);
-            const rows = Array.from(document.querySelectorAll('#dashboardSection table tbody tr'));
-            
-            let csvContent = "data:text/csv;charset=utf-8," + headers.join(",") + "\n";
-            
-            rows.forEach(row => {
-                const rowData = Array.from(row.querySelectorAll('td')).map(td => `"${td.textContent.replace(/"/g, '""')}"`);
-                csvContent += rowData.join(",") + "\n";
-            });
-
-            const encodedUri = encodeURI(csvContent);
-            const link = document.createElement("a");
-            link.setAttribute("href", encodedUri);
-            link.setAttribute("download", `pete's_submissions_${new Date().toISOString().slice(0,10)}.csv`);
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        });
-    }
+    // --- Event Listeners ---
+    searchInput.addEventListener('input', applyFiltersAndSearch);
     
-    function escapeHtml(str) {
-        const p = document.createElement("p");
-        p.textContent = str;
-        return p.innerHTML;
+    document.getElementById('open-filter-modal-btn').addEventListener('click', () => {
+        renderFilterModal();
+        filterModalOverlay.classList.add('active');
+    });
+
+    // --- Modal Handling ---
+    function setupModal(overlayId) {
+        const overlay = document.getElementById(overlayId);
+        if (overlay) {
+            overlay.addEventListener('click', (e) => {
+                if (e.target === overlay || e.target.closest('.modal-close-btn')) {
+                    overlay.classList.remove('active');
+                }
+            });
+        }
     }
+    setupModal('details-modal-overlay');
+    setupModal('filter-modal-overlay');
 
-    function renderSubmissions(submissions) {
-        const tableHead = document.querySelector('#dashboardSection table thead');
-        
-        tableHead.innerHTML = '';
-        tableBody.innerHTML = '';
+    document.getElementById('apply-filters-btn')?.addEventListener('click', () => {
+        applyFiltersAndSearch();
+        filterModalOverlay.classList.remove('active');
+    });
 
-        if (submissions.length === 0) {
-            noResultsMessage.classList.remove('hidden');
-            noResultsMessage.textContent = searchInput.value ? "No matching records found." : "No submissions have been recorded yet.";
-            return;
+    // --- Filtering and Sorting Logic ---
+
+    function applyFiltersAndSearch() {
+        let processedSubmissions = [...allSubmissions];
+
+        // 1. Apply Sorting
+        const { sortBy, sortDirection, emailProvider, city } = filterState;
+
+        processedSubmissions.sort((a, b) => {
+            const aVal = a[sortBy.toLowerCase()] || '';
+            const bVal = b[sortBy.toLowerCase()] || '';
+            let comparison = 0;
+
+            if (sortBy === 'Date') {
+                const dateA = a.timestamp?.toDate() || 0;
+                const dateB = b.timestamp?.toDate() || 0;
+                comparison = dateA < dateB ? -1 : 1;
+            } else { // String comparison for Name, Email, City
+                comparison = aVal.localeCompare(bVal, undefined, { sensitivity: 'base' });
+            }
+            
+            return sortDirection === 'asc' ? comparison : -comparison;
+        });
+
+        // 2. Apply Filtering (Email Provider and City)
+        if (emailProvider !== 'All') {
+            processedSubmissions = processedSubmissions.filter(sub => (sub.email || '').toLowerCase().includes(`@${emailProvider.toLowerCase()}`));
+        }
+        if (city !== 'All Cities') {
+            processedSubmissions = processedSubmissions.filter(sub => (sub.city || '').toLowerCase() === city.toLowerCase());
         }
 
-        noResultsMessage.classList.add('hidden');
-
-        const allHeaders = new Set();
-        submissions.forEach(sub => {
-            Object.keys(sub).forEach(key => allHeaders.add(key));
-        });
-
-        const headerOrder = ['id', 'formId', 'timestamp', 'name', 'email', 'phone', 'street', 'city', ...Array.from(allHeaders).filter(h => !['id', 'formId', 'timestamp', 'name', 'email', 'phone', 'street', 'city'].includes(h)).sort()];
+        // 3. Apply Search Term
+        const searchTerm = searchInput.value.toLowerCase();
+        if (searchTerm) {
+            processedSubmissions = processedSubmissions.filter(sub => {
+                const fullName = `${sub['first-name'] || ''} ${sub['last-name'] || ''}`.toLowerCase();
+                const address = `${sub.street || ''}, ${sub.city || ''}`.toLowerCase();
+                return (
+                    fullName.includes(searchTerm) ||
+                    (sub.email || '').toLowerCase().includes(searchTerm) ||
+                    (sub.phone || '').toLowerCase().includes(searchTerm) ||
+                    address.includes(searchTerm)
+                );
+            });
+        }
         
-        const headerHtml = `<tr>${headerOrder.map(h => `<th>${escapeHtml(h)}</th>`).join('')}</tr>`;
-        tableHead.innerHTML = headerHtml;
+        currentlyDisplayedSubmissions = processedSubmissions;
+        renderSubmissions(currentlyDisplayedSubmissions);
+    }
+    
+    // --- Rendering ---
 
+    function renderSubmissions(submissions) {
+        const tableHead = document.querySelector('.main-table thead');
+        const tableBody = document.getElementById('submissionsTableBody');
+        const mobileContainer = document.getElementById('mobile-card-container');
+        const noResults = document.getElementById('noResultsMessage');
+
+        tableHead.innerHTML = '';
+        tableBody.innerHTML = '';
+        mobileContainer.innerHTML = '';
+
+        if (submissions.length === 0) {
+            noResults.classList.remove('hidden');
+            noResults.textContent = searchInput.value ? "No matching records found." : "No submissions have been recorded yet.";
+            return;
+        }
+        noResults.classList.add('hidden');
+        
+        // Render Table Header
+        tableHead.innerHTML = `<tr>
+            <th>Date Submitted</th>
+            <th>Full Name</th>
+            <th>Email</th>
+            <th>Phone Number</th>
+            <th>Address</th>
+            <th class="actions-cell"></th>
+        </tr>`;
+
+        // Render Table Rows and Mobile Cards
         submissions.forEach(sub => {
-            const rowHtml = headerOrder.map(header => {
-                let cellValue = sub[header];
-                
-                if (header === 'timestamp' && cellValue && typeof cellValue.toDate === 'function') {
-                    cellValue = cellValue.toDate().toLocaleString();
-                } else if (cellValue === undefined || cellValue === null) {
-                    cellValue = ' ';
-                }
-                
-                return `<td>${escapeHtml(String(cellValue))}</td>`;
-            }).join('');
-            tableBody.innerHTML += `<tr>${rowHtml}</tr>`;
+            const fullName = `${sub['first-name'] || ''} ${sub['last-name'] || ''}`;
+            const address = `${sub.street || ''}, ${sub.city || ''}`;
+            const date = sub.timestamp?.toDate ? sub.timestamp.toDate().toLocaleDateString() : 'N/A';
+
+            // Table Row
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${date}</td>
+                <td>${escapeHtml(fullName)}</td>
+                <td>${escapeHtml(sub.email || '')}</td>
+                <td>${escapeHtml(sub.phone || '')}</td>
+                <td>${escapeHtml(address)}</td>
+                <td class="actions-cell">
+                    <button class="actions-btn" data-id="${sub.id}"><i class="fa-solid fa-ellipsis-v"></i></button>
+                </td>
+            `;
+            tableBody.appendChild(tr);
+
+            // Mobile Card
+            const card = document.createElement('div');
+            card.className = 'submission-card';
+            card.innerHTML = `
+                <div class="card-header">
+                    <div>
+                        <div class="card-name">${escapeHtml(fullName)}</div>
+                        <div class="card-date">${date}</div>
+                    </div>
+                    <button class="actions-btn" data-id="${sub.id}"><i class="fa-solid fa-ellipsis-v"></i></button>
+                </div>
+                <div class="card-body">
+                    <p><i class="fa-solid fa-envelope"></i> ${escapeHtml(sub.email || '')}</p>
+                    <p><i class="fa-solid fa-phone"></i> ${escapeHtml(sub.phone || '')}</p>
+                    <p><i class="fa-solid fa-map-marker-alt"></i> ${escapeHtml(address)}</p>
+                </div>
+            `;
+            mobileContainer.appendChild(card);
         });
+
+        // Add event listeners for the details buttons
+        document.querySelectorAll('.actions-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const id = e.currentTarget.dataset.id;
+                const submission = allSubmissions.find(s => s.id === id);
+                showDetailsModal(submission);
+            });
+        });
+    }
+
+    function showDetailsModal(submission) {
+        if (!submission) return;
+        detailsModalContent.innerHTML = Object.entries(submission)
+            .map(([key, value]) => {
+                let displayValue = value;
+                if (key === 'timestamp' && value?.toDate) {
+                    displayValue = value.toDate().toLocaleString();
+                }
+                return `<p><strong>${escapeHtml(key)}:</strong> ${escapeHtml(String(displayValue))}</p>`;
+            })
+            .join('');
+        detailsModalOverlay.classList.add('active');
+    }
+    
+    function renderFilterModal() {
+        const createCycleButton = (id, options, current) => {
+            const btn = document.createElement('button');
+            btn.id = id;
+            btn.className = 'filter-cycle-btn';
+            btn.textContent = current;
+            btn.addEventListener('click', () => {
+                const currentIndex = options.indexOf(btn.textContent);
+                const nextIndex = (currentIndex + 1) % options.length;
+                btn.textContent = options[nextIndex];
+                updateFilterStateFromUI();
+            });
+            return btn;
+        };
+
+        filterOptionsContainer.innerHTML = ''; // Clear previous
+
+        // Row 1: Sort By
+        const sortByRow = document.createElement('div');
+        sortByRow.className = 'filter-row';
+        const sortByLabel = document.createElement('label');
+        sortByLabel.textContent = 'Sort By';
+        const sortByBtn = createCycleButton('sort-by-btn', ['Date', 'Name', 'Email', 'City'], filterState.sortBy);
+        sortByRow.append(sortByLabel, sortByBtn);
+        
+        // Row 2: Direction
+        const directionRow = document.createElement('div');
+        directionRow.className = 'filter-row';
+        const directionLabel = document.createElement('label');
+        directionLabel.textContent = 'Direction';
+        const directionOptions = filterState.sortBy === 'Date' ? ['Newest First', 'Oldest First'] : ['A-Z', 'Z-A'];
+        const currentDirection = (filterState.sortDirection === 'desc') ? directionOptions[0] : directionOptions[1];
+        const directionBtn = createCycleButton('sort-dir-btn', directionOptions, currentDirection);
+        directionRow.append(directionLabel, directionBtn);
+
+        filterOptionsContainer.append(sortByRow, directionRow);
+
+        // Conditional Rows
+        if (filterState.sortBy === 'Email') {
+             const emailRow = document.createElement('div');
+             emailRow.className = 'filter-row';
+             const emailLabel = document.createElement('label');
+             emailLabel.textContent = 'Provider';
+             const emailProviders = ['All', 'gmail', 'yahoo', 'outlook']; // Simplified
+             const emailBtn = createCycleButton('email-provider-btn', emailProviders, filterState.emailProvider);
+             emailRow.append(emailLabel, emailBtn);
+             filterOptionsContainer.appendChild(emailRow);
+        }
+
+        if (filterState.sortBy === 'City') {
+            const cityRow = document.createElement('div');
+            cityRow.className = 'filter-row';
+            const cityLabel = document.createElement('label');
+            cityLabel.textContent = 'City';
+            const cities = ['All Cities', ...new Set(allSubmissions.map(s => s.city).filter(Boolean).sort())];
+            const cityBtn = createCycleButton('city-filter-btn', cities, filterState.city);
+            cityRow.append(cityLabel, cityBtn);
+            filterOptionsContainer.appendChild(cityRow);
+        }
+        
+        // Re-render modal if main sort criteria changes
+        sortByBtn.addEventListener('click', () => {
+            updateFilterStateFromUI();
+            renderFilterModal(); 
+        });
+    }
+
+    function updateFilterStateFromUI() {
+        const sortByBtn = document.getElementById('sort-by-btn');
+        const directionBtn = document.getElementById('sort-dir-btn');
+        const emailBtn = document.getElementById('email-provider-btn');
+        const cityBtn = document.getElementById('city-filter-btn');
+
+        if (sortByBtn) filterState.sortBy = sortByBtn.textContent;
+        if (directionBtn) {
+            filterState.sortDirection = (directionBtn.textContent === 'Newest First' || directionBtn.textContent === 'Z-A') ? 'desc' : 'asc';
+        }
+        filterState.emailProvider = emailBtn ? emailBtn.textContent : 'All';
+        filterState.city = cityBtn ? cityBtn.textContent : 'All Cities';
+    }
+
+    function escapeHtml(str) {
+        if (typeof str !== 'string') return str;
+        return str.replace(/[&<>"']/g, match => ({
+            '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+        }[match]));
     }
 });

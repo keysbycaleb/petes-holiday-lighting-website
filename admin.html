@@ -7,6 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Oswald:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link rel="stylesheet" href="css/desktop_style.css">
     <link rel="stylesheet" href="css/admin_style.css">
 </head>
@@ -43,24 +44,47 @@
 
             <div id="dashboardSection" class="admin-container hidden">
                 <div class="dashboard-header">
-                    <h1>Submissions Dashboard</h1>
+                    <h1>Submissions</h1>
                     <button id="logoutBtn" class="btn btn-secondary">Logout</button>
                 </div>
                 <div class="dashboard-controls">
-                    <input type="text" id="searchInput" placeholder="Filter submissions...">
-                    <button id="exportCsvBtn" class="btn btn-primary">Export to CSV</button>
+                    <div class="search-input-wrapper">
+                        <i class="fa-solid fa-search search-icon"></i>
+                        <input type="text" id="searchInput" placeholder="Search by name, email, phone...">
+                    </div>
+                    <button id="open-filter-modal-btn" class="btn-filter"><i class="fa-solid fa-filter"></i></button>
+                    <button id="exportCsvBtn" class="btn btn-primary">Export CSV</button>
                 </div>
                 <div class="table-container">
-                    <table>
-                        <thead>
-                            </thead>
+                    <table class="main-table">
+                        <thead></thead>
                         <tbody id="submissionsTableBody"></tbody>
                     </table>
+                    <div id="mobile-card-container"></div>
                     <p id="noResultsMessage" class="hidden">No submissions found.</p>
                 </div>
             </div>
         </main>
     </div>
+
+    <div class="modal-overlay" id="details-modal-overlay">
+        <div class="modal-panel" id="details-modal-panel">
+            <button class="modal-close-btn">&times;</button>
+            <h3>Submission Details</h3>
+            <div id="details-modal-content"></div>
+        </div>
+    </div>
+    
+    <div class="modal-overlay" id="filter-modal-overlay">
+        <div class="modal-panel" id="filter-modal-panel">
+             <button class="modal-close-btn">&times;</button>
+             <h3>Sort & Filter</h3>
+             <div class="filter-options-container">
+                </div>
+             <button id="apply-filters-btn" class="btn btn-primary">Apply</button>
+        </div>
+    </div>
+
 
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
