@@ -1,0 +1,128 @@
+/* --- Admin Page Specific Styles --- */
+.admin-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: var(--space-7) var(--space-4);
+}
+
+.login-wrapper {
+    max-width: 450px;
+    margin: 40px auto;
+    padding: var(--space-5);
+    background-color: var(--card-bg);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-lg);
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+}
+
+.login-form .form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.login-form label {
+    font-weight: 600;
+    margin-bottom: var(--space-1);
+}
+
+.login-form input {
+    padding: var(--space-2);
+    border-radius: var(--border-radius-small);
+    border: 1px solid var(--border-color);
+    font-size: 1rem;
+    font-family: var(--font-primary);
+}
+.login-form input:focus {
+    outline: none;
+    border-color: var(--secondary-color);
+    box-shadow: 0 0 0 3px rgba(184, 140, 86, 0.2);
+}
+
+.login-form .btn {
+    margin-top: var(--space-2);
+    padding: var(--space-3);
+    font-size: 1.1rem;
+}
+
+.message-area {
+    margin-top: var(--space-3);
+    padding: var(--space-2);
+    border-radius: var(--border-radius-small);
+    text-align: center;
+    display: none;
+}
+.message-area.error {
+    display: block;
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+/* Dashboard Styles */
+.hidden {
+    display: none !important;
+}
+
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-4);
+}
+.dashboard-header h1 {
+    font-family: var(--font-display);
+    font-size: 2.8rem;
+}
+
+.dashboard-controls {
+    display: flex;
+    gap: var(--space-3);
+    margin-bottom: var(--space-4);
+}
+#searchInput {
+    flex-grow: 1;
+    padding: var(--space-2);
+    border-radius: var(--border-radius-small);
+    border: 1px solid var(--border-color);
+    font-size: 1rem;
+}
+#searchInput:focus {
+    outline: none;
+    border-color: var(--secondary-color);
+    box-shadow: 0 0 0 3px rgba(184, 140, 86, 0.2);
+}
+
+.table-container {
+    overflow-x: auto;
+    background-color: var(--card-bg);
+    padding: var(--space-4);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-md);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: var(--space-2);
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+    white-space: nowrap;
+}
+
+thead th {
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+tbody tr:hover {
+    background-color: var(--background-color);
+}

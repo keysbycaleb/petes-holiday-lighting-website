@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Pete's Holiday Lighting</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Oswald:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/desktop_style.css">
+    <link rel="stylesheet" href="css/admin_style.css">
+</head>
+<body>
+    <div class="app-container">
+        <header class="app-header">
+            <div class="header-content">
+                <a href="desktop.html" class="header-logo">
+                    <img src="assets/images/lights/logo.webp" alt="Pete's Holiday Lighting Logo">
+                    <span>Pete's Holiday Lighting</span>
+                </a>
+            </div>
+        </header>
+
+        <main class="page-container">
+            <div id="loginSection" class="admin-container">
+                <div class="login-wrapper">
+                    <h1 class="section-title">Admin Login</h1>
+                    <p class="section-subtitle">Please sign in to view form submissions.</p>
+                    <form id="loginForm" class="login-form">
+                        <div class="form-group">
+                            <label for="adminEmail">Email</label>
+                            <input type="email" id="adminEmail" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="adminPassword">Password</label>
+                            <input type="password" id="adminPassword" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Login</button>
+                    </form>
+                    <div id="loginMessage" class="message-area"></div>
+                </div>
+            </div>
+
+            <div id="dashboardSection" class="admin-container hidden">
+                <div class="dashboard-header">
+                    <h1>Submissions Dashboard</h1>
+                    <button id="logoutBtn" class="btn btn-secondary">Logout</button>
+                </div>
+                <div class="dashboard-controls">
+                    <input type="text" id="searchInput" placeholder="Filter submissions...">
+                    <button id="exportCsvBtn" class="btn btn-primary">Export to CSV</button>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            </thead>
+                        <tbody id="submissionsTableBody"></tbody>
+                    </table>
+                    <p id="noResultsMessage" class="hidden">No submissions found.</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+
+    <script src="js/config.js"></script>
+    <script src="js/firebase-logic.js"></script>
+    <script src="js/admin.js"></script>
+</body>
+</html>
