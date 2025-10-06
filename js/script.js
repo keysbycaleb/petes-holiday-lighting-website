@@ -582,30 +582,34 @@ document.addEventListener('DOMContentLoaded', () => {
     ];
 
     if (contactForm) {
-        contactForm.addEventListener('submit', (e) => {
+        contactForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             
-            const formData = new FormData(contactForm);
-            fetch("/", {
-                method: "POST",
-                headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                body: new URLSearchParams(formData).toString()
-            }).then(() => {
-                console.log("Form successfully submitted to Netlify");
-            }).catch((error) => {
-                console.error("Error submitting form to Netlify:", error);
-            });
+            try {
+                const formData = new FormData(contactForm);
+                const submissionData = Object.fromEntries(formData.entries());
+                
+                // Add the unique identifier for your form
+                submissionData.formId = "petes-holiday-lighting"; 
 
-            // Set a random success message
-            const randomIndex = Math.floor(Math.random() * successMessages.length);
-            const randomMessage = successMessages[randomIndex];
-            successTitle.textContent = randomMessage.title;
-            successMessage.textContent = randomMessage.message;
+                await saveSubmission(submissionData);
 
-            // Show success modal immediately for good UX
-            successModalOverlay.classList.add('active');
-            successModalPanel.classList.add('active');
-            contactForm.reset();
+                // Set a random success message
+                const randomIndex = Math.floor(Math.random() * successMessages.length);
+                const randomMessage = successMessages[randomIndex];
+                successTitle.textContent = randomMessage.title;
+                successMessage.textContent = randomMessage.message;
+
+                // Show success modal
+                successModalOverlay.classList.add('active');
+                successModalPanel.classList.add('active');
+                contactForm.reset();
+
+            } catch (error) {
+                console.error("Error submitting form to Firebase:", error);
+                // You could show an error message to the user here
+                alert("There was an error submitting your request. Please try again.");
+            }
         });
     }
     

@@ -21,6 +21,9 @@
     <link rel="stylesheet" href="css/style.css">
 
     <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+    
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
 </head>
 <body>
 
@@ -234,7 +237,7 @@
                     </div>
                 </div>
 
-                <form class="contact-form animate-on-scroll" id="contact-form" name="holiday-lighting-quote" method="POST" data-netlify="true">
+                <form class="contact-form animate-on-scroll" id="contact-form" name="holiday-lighting-quote" method="POST">
                     <input type="hidden" name="form-name" value="holiday-lighting-quote" />
                     <div class="form-grid">
                         <div class="form-group">
@@ -420,8 +423,9 @@
         </a>
     </nav>
     
+    <script src="js/config.js"></script>
+    <script src="js/firebase-logic.js"></script>
     <script src="js/script.js"></script>
 
 </body>
 </html>
-

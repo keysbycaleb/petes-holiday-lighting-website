@@ -20,6 +20,9 @@
     <link rel="stylesheet" href="css/desktop_style.css">
 
     <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
 </head>
 <body>
 
@@ -191,7 +194,7 @@
                             <p class="contact-tagline">"Hang tight! We'll handle the lights!"</p>
                             <p class="contact-est">Pete's Holiday Lighting, est 2024</p>
                         </div>
-                        <form class="contact-form" id="contact-form" name="holiday-lighting-quote-desktop" method="POST" data-netlify="true">
+                        <form class="contact-form" id="contact-form" name="holiday-lighting-quote-desktop" method="POST">
                             <input type="hidden" name="form-name" value="holiday-lighting-quote-desktop" />
                             <div class="form-grid">
                                 <div class="form-group"><label for="first-name-desktop">First Name</label><input type="text" id="first-name-desktop" name="first-name" required></div>
@@ -315,6 +318,8 @@
         </div>
     </div>
 
+    <script src="js/config.js"></script>
+    <script src="js/firebase-logic.js"></script>
     <script src="js/desktop_script.js"></script>
 
 </body>

@@ -365,23 +365,29 @@ document.addEventListener('DOMContentLoaded', () => {
         ];
 
         if (form) {
-            form.addEventListener('submit', (e) => {
+            form.addEventListener('submit', async (e) => {
                 e.preventDefault();
-                const formData = new FormData(form);
-                fetch("/", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                    body: new URLSearchParams(formData).toString()
-                }).then(() => {
-                    console.log("Desktop form successfully submitted to Netlify");
-                }).catch(error => console.error("Form submission error:", error));
-
-                const { title, message } = successMessages[Math.floor(Math.random() * successMessages.length)];
-                document.getElementById('form-success-title').textContent = title;
-                document.getElementById('form-success-message').textContent = message;
                 
-                successModal.classList.add('active');
-                form.reset();
+                try {
+                    const formData = new FormData(form);
+                    const submissionData = Object.fromEntries(formData.entries());
+                    
+                    // Add the unique identifier for your form
+                    submissionData.formId = "petes-holiday-lighting"; 
+
+                    await saveSubmission(submissionData);
+
+                    const { title, message } = successMessages[Math.floor(Math.random() * successMessages.length)];
+                    document.getElementById('form-success-title').textContent = title;
+                    document.getElementById('form-success-message').textContent = message;
+                    
+                    successModal.classList.add('active');
+                    form.reset();
+
+                } catch (error) {
+                    console.error("Error submitting form to Firebase:", error);
+                    alert("There was an error submitting your request. Please try again.");
+                }
             });
         }
 
@@ -405,4 +411,3 @@ document.addEventListener('DOMContentLoaded', () => {
 
     initApp();
 });
-
