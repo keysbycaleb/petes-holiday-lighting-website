@@ -1,3 +1,37 @@
+// **NEW** This function will be called by the Google Maps script once it's loaded
+// We make a single global callback and check which input exists on the current page.
+function initAllAutocompletes() {
+    initAutocomplete('full-address', 'address-storage', 'city-storage');
+    initAutocomplete('full-address-desktop', 'address-storage-desktop', 'city-storage-desktop');
+}
+
+function initAutocomplete(inputId, addressStorageId, cityStorageId) {
+    const addressInput = document.getElementById(inputId);
+    if (!addressInput) return;
+
+    const autocomplete = new google.maps.places.Autocomplete(addressInput, {
+        componentRestrictions: { country: "us" },
+        fields: ["address_components", "formatted_address"],
+        types: ["address"],
+    });
+
+    autocomplete.addListener("place_changed", () => {
+        const place = autocomplete.getPlace();
+        
+        let city = "";
+        for (const component of place.address_components) {
+            if (component.types.includes("locality")) {
+                city = component.long_name;
+                break;
+            }
+        }
+        
+        document.getElementById(addressStorageId).value = place.formatted_address || '';
+        document.getElementById(cityStorageId).value = city;
+    });
+}
+
+
 document.addEventListener('DOMContentLoaded', () => {
 
     // --- State & Data ---

@@ -195,14 +195,17 @@
                             <p class="contact-est">Pete's Holiday Lighting, est 2024</p>
                         </div>
                         <form class="contact-form" id="contact-form" name="holiday-lighting-quote-desktop" method="POST">
-                            <input type="hidden" name="form-name" value="holiday-lighting-quote-desktop" />
                             <div class="form-grid">
                                 <div class="form-group"><label for="first-name-desktop">First Name</label><input type="text" id="first-name-desktop" name="first-name" required></div>
                                 <div class="form-group"><label for="last-name-desktop">Last Name</label><input type="text" id="last-name-desktop" name="last-name" required></div>
                                 <div class="form-group"><label for="email-desktop">Email Address</label><input type="email" id="email-desktop" name="email" required></div>
                                 <div class="form-group"><label for="phone-desktop">Phone Number</label><input type="tel" id="phone-desktop" name="phone" required></div>
-                                <div class="form-group full-width"><label for="street-desktop">Street Address</label><input type="text" id="street-desktop" name="street" required></div>
-                                <div class="form-group full-width"><label for="city-desktop">City</label><input type="text" id="city-desktop" name="city" required></div>
+                                <div class="form-group full-width">
+                                    <label for="full-address-desktop">Full Address</label>
+                                    <input type="text" id="full-address-desktop" placeholder="Start typing your address..." required>
+                                    <input type="hidden" id="address-storage-desktop" name="address">
+                                    <input type="hidden" id="city-storage-desktop" name="city">
+                                </div>
                                 <div class="form-group full-width">
                                     <label for="referral-desktop">How did you hear about us?</label>
                                     <select id="referral-desktop" name="referral"><option>Google</option><option>Facebook</option><option>Instagram</option><option>Friend/Family</option><option>Saw your work</option><option>Other</option></select>
@@ -322,7 +325,6 @@
     <script src="js/config.js"></script>
     <script src="js/firebase-logic.js"></script>
     <script src="js/desktop_script.js"></script>
-
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCrnGnkJHLdSLX_ty69jo0qGGvbN0i94PU&libraries=places&callback=initAllAutocompletes" async defer></script>
 </body>
 </html>
-

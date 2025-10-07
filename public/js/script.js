@@ -1,3 +1,31 @@
+// **NEW** This function will be called by the Google Maps script once it's loaded
+function initAutocomplete() {
+    const addressInput = document.getElementById('full-address');
+    if (!addressInput) return;
+
+    const autocomplete = new google.maps.places.Autocomplete(addressInput, {
+        componentRestrictions: { country: "us" }, // Restrict to the US
+        fields: ["address_components", "formatted_address"],
+        types: ["address"],
+    });
+
+    autocomplete.addListener("place_changed", () => {
+        const place = autocomplete.getPlace();
+        
+        let city = "";
+        for (const component of place.address_components) {
+            if (component.types.includes("locality")) {
+                city = component.long_name;
+                break;
+            }
+        }
+        
+        // Populate our hidden fields
+        document.getElementById('address-storage').value = place.formatted_address || '';
+        document.getElementById('city-storage').value = city;
+    });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     // --- App Elements ---
     const appContainer = document.querySelector('.app-container');
