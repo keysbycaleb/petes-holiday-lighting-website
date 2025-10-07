@@ -204,27 +204,38 @@ body {
     text-align: center;
     color: var(--light-text);
     overflow: hidden;
-    background-color: #000; /* Dark fallback */
+    background-color: var(--dark-text); /* Fallback */
 }
-#hero-santa-sleigh, #hero-let-it-snow {
+.hero-background-image {
+    position: absolute;
+    inset: 0;
+    background-image: url('../assets/images/lights/hero.png');
+    background-size: cover;
+    background-position: center;
+    z-index: 1;
+    animation: kenburns 20s ease-in-out infinite alternate;
+}
+@keyframes kenburns {
+    from {
+        transform: scale(1.0);
+    }
+    to {
+        transform: scale(1.1);
+    }
+}
+#hero-let-it-snow {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-}
-#hero-santa-sleigh {
-    z-index: 1;
-    transform: scale(1.3); /* Enlarge by 30% */
-}
-#hero-let-it-snow {
     z-index: 2;
 }
 .hero-section::after {
     content: '';
     position: absolute;
     inset: 0;
-    background: rgba(0,0,0,0.3); /* Dark overlay */
+    background: rgba(0,0,0,0.35); /* Dark overlay */
     z-index: 3;
 }
 .hero-content {
