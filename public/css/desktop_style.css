@@ -932,6 +932,11 @@ body {
     color: var(--primary-color);
 }
 
+#form-success-modal-panel .form-success-note {
+    font-size: 0.9rem;
+    color: var(--text-color-secondary);
+    margin-bottom: var(--space-4);
+}
 
 /* --- 13. Address Modals (Desktop) --- */
 #address-alert-modal-overlay-desktop,
