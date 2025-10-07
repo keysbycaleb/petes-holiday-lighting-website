@@ -1,11 +1,11 @@
-// **NEW** This function will be called by the Google Maps script once it's loaded
+// This function will be called by the Google Maps script once it's loaded
 // We make a single global callback and check which input exists on the current page.
 function initAllAutocompletes() {
-    initAutocomplete('full-address', 'address-storage', 'city-storage');
-    initAutocomplete('full-address-desktop', 'address-storage-desktop', 'city-storage-desktop');
+    initAutocomplete('full-address', 'address-storage', 'city-storage', 'zip-storage');
+    initAutocomplete('full-address-desktop', 'address-storage-desktop', 'city-storage-desktop', 'zip-storage-desktop');
 }
 
-function initAutocomplete(inputId, addressStorageId, cityStorageId) {
+function initAutocomplete(inputId, addressStorageId, cityStorageId, zipStorageId) {
     const addressInput = document.getElementById(inputId);
     if (!addressInput) return;
 
@@ -19,15 +19,19 @@ function initAutocomplete(inputId, addressStorageId, cityStorageId) {
         const place = autocomplete.getPlace();
         
         let city = "";
+        let zip = "";
         for (const component of place.address_components) {
             if (component.types.includes("locality")) {
                 city = component.long_name;
-                break;
+            }
+            if (component.types.includes("postal_code")) {
+                zip = component.long_name;
             }
         }
         
         document.getElementById(addressStorageId).value = place.formatted_address || '';
         document.getElementById(cityStorageId).value = city;
+        document.getElementById(zipStorageId).value = zip;
     });
 }
 
@@ -404,9 +408,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 try {
                     const formData = new FormData(form);
-                    const submissionData = Object.fromEntries(formData.entries());
+                    const submissionData = {};
+                    for (const [key, value] of formData.entries()) {
+                         if (!key.includes('full-address')) {
+                            submissionData[key] = value;
+                        }
+                    }
+
+                    if (submissionData['apt-suite']) {
+                        submissionData.address = `${submissionData.address}, ${submissionData['apt-suite']}`;
+                    }
                     
-                    // Add the unique identifier for your form
                     submissionData.formId = "petes-holiday-lighting"; 
 
                     await saveSubmission(submissionData);

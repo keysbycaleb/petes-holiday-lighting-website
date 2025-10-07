@@ -1,10 +1,15 @@
-// **NEW** This function will be called by the Google Maps script once it's loaded
-function initAutocomplete() {
-    const addressInput = document.getElementById('full-address');
+// This function will be called by the Google Maps script once it's loaded
+function initAllAutocompletes() {
+    initAutocomplete('full-address', 'address-storage', 'city-storage', 'zip-storage');
+    initAutocomplete('full-address-desktop', 'address-storage-desktop', 'city-storage-desktop', 'zip-storage-desktop');
+}
+
+function initAutocomplete(inputId, addressStorageId, cityStorageId, zipStorageId) {
+    const addressInput = document.getElementById(inputId);
     if (!addressInput) return;
 
     const autocomplete = new google.maps.places.Autocomplete(addressInput, {
-        componentRestrictions: { country: "us" }, // Restrict to the US
+        componentRestrictions: { country: "us" },
         fields: ["address_components", "formatted_address"],
         types: ["address"],
     });
@@ -13,18 +18,22 @@ function initAutocomplete() {
         const place = autocomplete.getPlace();
         
         let city = "";
+        let zip = "";
         for (const component of place.address_components) {
             if (component.types.includes("locality")) {
                 city = component.long_name;
-                break;
+            }
+            if (component.types.includes("postal_code")) {
+                zip = component.long_name;
             }
         }
         
-        // Populate our hidden fields
-        document.getElementById('address-storage').value = place.formatted_address || '';
-        document.getElementById('city-storage').value = city;
+        document.getElementById(addressStorageId).value = place.formatted_address || '';
+        document.getElementById(cityStorageId).value = city;
+        document.getElementById(zipStorageId).value = zip;
     });
 }
+
 
 document.addEventListener('DOMContentLoaded', () => {
     // --- App Elements ---
@@ -615,27 +624,34 @@ document.addEventListener('DOMContentLoaded', () => {
             
             try {
                 const formData = new FormData(contactForm);
-                const submissionData = Object.fromEntries(formData.entries());
+                // **UPDATED** Manually handle address fields
+                const submissionData = {};
+                for (const [key, value] of formData.entries()) {
+                    if (key !== 'full-address') { // Exclude the autocomplete input itself
+                        submissionData[key] = value;
+                    }
+                }
                 
-                // Add the unique identifier for your form
+                // Combine the apt/suite with the main address
+                if (submissionData['apt-suite']) {
+                    submissionData.address = `${submissionData.address}, ${submissionData['apt-suite']}`;
+                }
+
                 submissionData.formId = "petes-holiday-lighting"; 
 
                 await saveSubmission(submissionData);
 
-                // Set a random success message
                 const randomIndex = Math.floor(Math.random() * successMessages.length);
                 const randomMessage = successMessages[randomIndex];
                 successTitle.textContent = randomMessage.title;
                 successMessage.textContent = randomMessage.message;
 
-                // Show success modal
                 successModalOverlay.classList.add('active');
                 successModalPanel.classList.add('active');
                 contactForm.reset();
 
             } catch (error) {
                 console.error("Error submitting form to Firebase:", error);
-                // You could show an error message to the user here
                 alert("There was an error submitting your request. Please try again.");
             }
         });
