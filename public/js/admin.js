@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
         city: 'All Cities'
     };
 
-    // --- Authentication ---
+    // --- Authentication Logic ---
     if (loginForm) {
         loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -242,24 +242,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function showDetailsModal(submission) {
         if (!submission) return;
-        const formatted = {
-            'Full Name': `${submission['first-name'] || ''} ${submission['last-name'] || ''}`,
-            'Date Submitted': submission.timestamp?.toDate ? submission.timestamp.toDate().toLocaleString() : 'N/A',
-            ...submission
-        };
-        // Clean up and order
-        delete formatted['first-name'];
-        delete formatted['last-name'];
-        delete formatted.timestamp;
-        delete formatted.formId;
-        
-        detailsModalContent.innerHTML = Object.entries(formatted)
-            .map(([key, value]) => `
-                <div class="detail-item">
-                    <strong>${escapeHtml(key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase()))}</strong>
-                    <span>${escapeHtml(String(value))}</span>
-                </div>`
-            ).join('');
+        detailsModalContent.innerHTML = Object.entries(submission)
+            .map(([key, value]) => {
+                let displayValue = value;
+                if (key === 'timestamp' && value?.toDate) {
+                    displayValue = value.toDate().toLocaleString();
+                }
+                // Exclude formId from the visible details
+                if (key === 'formId') return '';
+
+                return `
+                    <div class="detail-item">
+                        <strong>${escapeHtml(key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase()))}</strong>
+                        <span>${escapeHtml(String(displayValue))}</span>
+                    </div>`;
+            })
+            .join('');
         detailsModalOverlay.classList.add('active');
     }
     
@@ -312,7 +310,7 @@ document.addEventListener('DOMContentLoaded', () => {
              const emailRow = document.createElement('div');
              emailRow.className = 'filter-row';
              emailRow.innerHTML = `<label for="email-provider-btn">Provider</label>`;
-             const emailProviders = ['All', 'gmail', 'yahoo', 'outlook'];
+             const emailProviders = ['All', 'gmail', 'yahoo', 'outlook']; // Simplified
              const emailBtn = createCycleButton('email-provider-btn', emailProviders, filterState.emailProvider);
              emailRow.appendChild(emailBtn);
              filterOptionsContainer.appendChild(emailRow);
