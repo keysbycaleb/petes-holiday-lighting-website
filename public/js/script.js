@@ -605,6 +605,44 @@ document.addEventListener('DOMContentLoaded', () => {
     const successTitle = document.getElementById('form-success-title');
     const successMessage = document.getElementById('form-success-message');
 
+    // --- ADDRESS VALIDATION MODALS ---
+    const addressAlertModalOverlay = document.getElementById('address-alert-modal-overlay');
+    const addressAlertModalPanel = document.getElementById('address-alert-modal-panel');
+    const addressInfoModalOverlay = document.getElementById('address-info-modal-overlay');
+    const addressInfoModalPanel = document.getElementById('address-info-modal-panel');
+
+    const openAddressInfoModal = () => {
+        addressAlertModalOverlay.classList.remove('active');
+        addressAlertModalPanel.classList.remove('active');
+        addressInfoModalOverlay.classList.add('active');
+        addressInfoModalPanel.classList.add('active');
+    };
+
+    const closeAddressAlertModal = () => {
+        addressAlertModalOverlay.classList.remove('active');
+        addressAlertModalPanel.classList.remove('active');
+    };
+    
+    const closeAddressInfoModal = () => {
+        addressInfoModalOverlay.classList.remove('active');
+        addressInfoModalPanel.classList.remove('active');
+    };
+    
+    document.getElementById('why-address-btn').addEventListener('click', openAddressInfoModal);
+    document.getElementById('address-alert-why-btn').addEventListener('click', openAddressInfoModal);
+    
+    addressAlertModalOverlay.addEventListener('click', (e) => {
+        if (e.target === addressAlertModalOverlay || e.target.closest('#address-alert-close-btn')) {
+            closeAddressAlertModal();
+        }
+    });
+
+    addressInfoModalOverlay.addEventListener('click', (e) => {
+        if (e.target === addressInfoModalOverlay || e.target.closest('#address-info-close-btn')) {
+            closeAddressInfoModal();
+        }
+    });
+
     const successMessages = [
         { title: "All set!", message: "Your neighbors are about to regret their inflatable snowman." },
         { title: "Message sent!", message: "Elves are already arguing over ladder duty for your display." },
@@ -622,10 +660,10 @@ document.addEventListener('DOMContentLoaded', () => {
         contactForm.addEventListener('submit', async (e) => {
             e.preventDefault();
 
-            // **NEW** Address validation
             const addressValue = document.getElementById('address-storage').value;
             if (!addressValue || addressValue.trim() === '') {
-                alert('Please select a valid address from the dropdown.');
+                addressAlertModalOverlay.classList.add('active');
+                addressAlertModalPanel.classList.add('active');
                 return;
             }
             

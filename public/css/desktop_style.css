@@ -604,7 +604,25 @@ body {
 .contact-form .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3); }
 .form-group { display: flex; flex-direction: column; }
 .form-group.full-width { grid-column: 1 / -1; }
-.form-group label { font-size: 0.9rem; font-weight: 600; margin-bottom: var(--space-1); }
+.form-group label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: var(--space-1);
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+}
+.form-group .text-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    font-family: inherit;
+    font-size: 0.8rem;
+    color: var(--secondary-color);
+    font-weight: 500;
+    text-decoration: underline;
+    cursor: pointer;
+}
 .form-group input, .form-group select {
     padding: var(--space-2);
     border-radius: var(--border-radius-small);
@@ -912,4 +930,52 @@ body {
 }
 #location-modal-message b {
     color: var(--primary-color);
+}
+
+
+/* --- 13. Address Modals (Desktop) --- */
+#address-alert-modal-overlay-desktop,
+#address-info-modal-overlay-desktop {
+    z-index: 2500;
+}
+
+#address-alert-modal-panel-desktop,
+#address-info-modal-panel-desktop {
+    padding: var(--space-5);
+    text-align: center;
+    width: 100%;
+    max-width: 500px;
+}
+
+#address-alert-modal-content-desktop h3,
+#address-info-modal-content-desktop h3 {
+    font-family: var(--font-display);
+    font-size: 1.8rem;
+    margin-bottom: var(--space-3);
+}
+#address-alert-modal-content-desktop p,
+#address-info-modal-content-desktop p {
+    color: var(--dark-text);
+    line-height: 1.7;
+    margin-bottom: var(--space-3);
+}
+
+#address-alert-modal-content-desktop .text-btn {
+    background: none;
+    border: none;
+    color: var(--primary-color);
+    text-decoration: underline;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+#address-info-modal-content-desktop ul {
+    list-style-position: inside;
+    text-align: left;
+    color: var(--dark-text);
+    line-height: 1.8;
+}
+#address-info-modal-content-desktop ul li {
+    margin-bottom: var(--space-2);
 }

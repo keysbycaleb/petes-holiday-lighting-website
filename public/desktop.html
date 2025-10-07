@@ -203,7 +203,7 @@
                                 <div class="form-group"><label for="email-desktop">Email Address</label><input type="email" id="email-desktop" name="email" required></div>
                                 <div class="form-group"><label for="phone-desktop">Phone Number</label><input type="tel" id="phone-desktop" name="phone" required></div>
                                 <div class="form-group full-width">
-                                    <label for="full-address-desktop">Street Address</label>
+                                    <label for="full-address-desktop">Street Address <button type="button" class="text-btn" id="why-address-btn-desktop">(Why do we need this?)</button></label>
                                     <input type="text" id="full-address-desktop" name="full-address-desktop" placeholder="Start typing your address..." required>
                                 </div>
                                 <div class="form-group full-width">
@@ -329,6 +329,33 @@
             </div>
         </div>
     </div>
+
+    <div class="modal-overlay" id="address-alert-modal-overlay-desktop">
+        <div class="modal-panel" id="address-alert-modal-panel-desktop">
+            <button class="modal-close-btn" id="address-alert-close-btn-desktop">&times;</button>
+            <div id="address-alert-modal-content-desktop">
+                <h3>Address Needed!</h3>
+                <p>To give you an accurate quote, please start typing the property address and select it from the dropdown.</p>
+                <button type="button" class="text-btn" id="address-alert-why-btn-desktop">Why do we ask for this?</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="address-info-modal-overlay-desktop">
+        <div class="modal-panel" id="address-info-modal-panel-desktop">
+            <button class="modal-close-btn" id="address-info-close-btn-desktop">&times;</button>
+            <div id="address-info-modal-content-desktop">
+                <h3>Why We Need Your Address</h3>
+                <p>Your privacy is important to us. We ask for your address for a few key reasons:</p>
+                <ul>
+                    <li><strong>Accurate Quotes:</strong> It allows us to view the property online (thank you, Google Maps!) to understand its size and features, which helps us provide a more accurate initial estimate.</li>
+                    <li><strong>Scheduling:</strong> Knowing the location helps us efficiently plan our consultation and installation routes, so we can serve you better.</li>
+                    <li><strong>No Spam, No Selling:</strong> We promise to only use your information to contact you about your holiday lighting project. We will never sell your data.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
 
     <script src="js/config.js"></script>
     <script src="js/firebase-logic.js"></script>

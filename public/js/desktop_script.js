@@ -396,6 +396,38 @@ document.addEventListener('DOMContentLoaded', () => {
     const initContactForm = () => {
         const form = document.getElementById('contact-form');
         const successModal = document.getElementById('form-success-modal-overlay');
+        
+        const addressAlertModalOverlay = document.getElementById('address-alert-modal-overlay-desktop');
+        const addressInfoModalOverlay = document.getElementById('address-info-modal-overlay-desktop');
+
+        const openAddressInfoModal = () => {
+            addressAlertModalOverlay.classList.remove('active');
+            addressInfoModalOverlay.classList.add('active');
+        };
+    
+        const closeAddressAlertModal = () => {
+            addressAlertModalOverlay.classList.remove('active');
+        };
+        
+        const closeAddressInfoModal = () => {
+            addressInfoModalOverlay.classList.remove('active');
+        };
+    
+        document.getElementById('why-address-btn-desktop').addEventListener('click', openAddressInfoModal);
+        document.getElementById('address-alert-why-btn-desktop').addEventListener('click', openAddressInfoModal);
+    
+        addressAlertModalOverlay.addEventListener('click', (e) => {
+            if (e.target === addressAlertModalOverlay || e.target.closest('#address-alert-close-btn-desktop')) {
+                closeAddressAlertModal();
+            }
+        });
+    
+        addressInfoModalOverlay.addEventListener('click', (e) => {
+            if (e.target === addressInfoModalOverlay || e.target.closest('#address-info-close-btn-desktop')) {
+                closeAddressInfoModal();
+            }
+        });
+
         const successMessages = [
             { title: "All set!", message: "Your neighbors are about to regret their inflatable snowman." },
             { title: "Message sent!", message: "Elves are already arguing over ladder duty for your display." },
@@ -406,10 +438,9 @@ document.addEventListener('DOMContentLoaded', () => {
             form.addEventListener('submit', async (e) => {
                 e.preventDefault();
 
-                // **NEW** Address validation
                 const addressValue = document.getElementById('address-storage-desktop').value;
                 if (!addressValue || addressValue.trim() === '') {
-                    alert('Please select a valid address from the dropdown.');
+                    addressAlertModalOverlay.classList.add('active');
                     return;
                 }
                 

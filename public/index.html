@@ -257,7 +257,7 @@
                             <input type="tel" id="phone" name="phone" required>
                         </div>
                         <div class="form-group full-width">
-                            <label for="full-address">Street Address</label>
+                            <label for="full-address">Street Address <button type="button" class="text-btn" id="why-address-btn">(Why do we need this?)</button></label>
                             <input type="text" id="full-address" name="full-address" placeholder="Start typing your address..." required>
                         </div>
                         <div class="form-group full-width">
@@ -401,6 +401,30 @@
             <div class="gallery-modal-description">
                 <p id="gallery-modal-text"></p>
             </div>
+        </div>
+    </div>
+
+    <div id="address-alert-modal-overlay"></div>
+    <div id="address-alert-modal-panel">
+        <button class="modal-close-btn" id="address-alert-close-btn">&times;</button>
+        <div id="address-alert-modal-content">
+            <h3>Address Needed!</h3>
+            <p>To give you an accurate quote, please start typing the property address and select it from the dropdown.</p>
+            <button type="button" class="text-btn" id="address-alert-why-btn">Why do we ask for this?</button>
+        </div>
+    </div>
+
+    <div id="address-info-modal-overlay"></div>
+    <div id="address-info-modal-panel">
+        <button class="modal-close-btn" id="address-info-close-btn">&times;</button>
+        <div id="address-info-modal-content">
+            <h3>Why We Need Your Address</h3>
+            <p>Your privacy is important to us. We ask for your address for a few key reasons:</p>
+            <ul>
+                <li><strong>Accurate Quotes:</strong> It allows us to view the property online (thank you, Google Maps!) to understand its size and features, which helps us provide a more accurate initial estimate.</li>
+                <li><strong>Scheduling:</strong> Knowing the location helps us efficiently plan our consultation and installation routes, so we can serve you better.</li>
+                <li><strong>No Spam, No Selling:</strong> We promise to only use your information to contact you about your holiday lighting project. We will never sell your data.</li>
+            </ul>
         </div>
     </div>
 
