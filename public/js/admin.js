@@ -9,16 +9,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const logoutBtn = document.getElementById('logoutBtn');
     const searchInput = document.getElementById('searchInput');
     const exportCsvBtn = document.getElementById('exportCsvBtn');
+    const viewArchivedBtn = document.getElementById('view-archived-btn');
+    const dashboardTitle = document.getElementById('dashboard-title');
 
     // Modals
     const detailsModalOverlay = document.getElementById('details-modal-overlay');
     const detailsModalContent = document.getElementById('details-modal-content');
+    const detailsModalActions = document.getElementById('details-modal-actions');
     const filterModalOverlay = document.getElementById('filter-modal-overlay');
     const infoModalOverlay = document.getElementById('info-modal-overlay');
     const filterOptionsContainer = document.querySelector('.filter-options-container');
     
     let allSubmissions = [];
     let currentlyDisplayedSubmissions = [];
+    let isViewingArchived = false;
     
     // --- Filter State ---
     let filterState = {
@@ -60,12 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (user) {
             loginSection.classList.add('hidden');
             dashboardSection.classList.remove('hidden');
-            try {
-                allSubmissions = await getSubmissions();
-                applyFiltersAndSearch();
-            } catch (error) {
-                document.getElementById('submissionsTableBody').innerHTML = `<tr><td colspan="100%">${error.message}</td></tr>`;
-            }
+            await loadSubmissions();
         } else {
             dashboardSection.classList.add('hidden');
             loginSection.classList.remove('hidden');
@@ -76,6 +75,16 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    async function loadSubmissions() {
+        try {
+            allSubmissions = await getSubmissions(isViewingArchived);
+            applyFiltersAndSearch();
+        } catch (error) {
+            document.getElementById('submissionsTableBody').innerHTML = `<tr><td colspan="100%">${error.message}</td></tr>`;
+        }
+    }
+
+
     // --- Event Listeners ---
     searchInput.addEventListener('input', applyFiltersAndSearch);
     
@@ -83,6 +92,16 @@ document.addEventListener('DOMContentLoaded', () => {
         renderFilterModal();
         filterModalOverlay.classList.add('active');
     });
+    
+    viewArchivedBtn.addEventListener('click', () => {
+        isViewingArchived = !isViewingArchived;
+        dashboardTitle.textContent = isViewingArchived ? 'Archived Submissions' : 'Submissions';
+        viewArchivedBtn.textContent = isViewingArchived ? 'View Active' : 'View Archived';
+        viewArchivedBtn.classList.toggle('btn-tertiary');
+        viewArchivedBtn.classList.toggle('btn-secondary');
+        loadSubmissions();
+    });
+
 
     // --- Modal Handling ---
     function setupModal(overlayId) {
@@ -177,7 +196,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (submissions.length === 0) {
             noResults.classList.remove('hidden');
-            noResults.textContent = searchInput.value ? "No matching records found." : "No submissions have been recorded yet.";
+            noResults.textContent = isViewingArchived ? "The archive is empty." : "No new submissions found.";
             return;
         }
         noResults.classList.add('hidden');
@@ -199,7 +218,6 @@ document.addEventListener('DOMContentLoaded', () => {
             
             const fullName = `${sub['first-name'] || ''} ${sub['last-name'] || ''}`;
             
-            // **MODIFIED**: Remove the apt/suite from the main address string for the quick view
             let quickViewAddress = sub.address || '';
             if (hasApt) {
                  quickViewAddress = quickViewAddress.replace(`, ${sub['apt-suite']}`, '');
@@ -258,7 +276,6 @@ document.addEventListener('DOMContentLoaded', () => {
     function showDetailsModal(submission) {
         if (!submission) return;
         
-        // Create an ordered object for display
         const displayOrder = [
             'first-name', 'last-name', 'email', 'phone', 'address', 'apt-suite', 
             'city', 'zip', 'referral', 'contact-permission', 'sms-permission', 'id', 'timestamp'
@@ -268,7 +285,6 @@ document.addEventListener('DOMContentLoaded', () => {
         displayOrder.forEach(key => {
             if (submission.hasOwnProperty(key)) {
                 let value = submission[key];
-                 // Clean up the main address if an apt-suite exists to avoid duplication
                 if (key === 'address' && submission['apt-suite']) {
                     value = value.replace(`, ${submission['apt-suite']}`, '');
                 }
@@ -282,8 +298,46 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>`;
             }
         });
-
         detailsModalContent.innerHTML = content;
+
+        // Add action buttons
+        detailsModalActions.innerHTML = '';
+        if (isViewingArchived) {
+            const restoreBtn = document.createElement('button');
+            restoreBtn.className = 'btn btn-primary';
+            restoreBtn.textContent = 'Restore';
+            restoreBtn.onclick = async () => {
+                await restoreSubmission(submission.id);
+                detailsModalOverlay.classList.remove('active');
+                loadSubmissions();
+            };
+            detailsModalActions.appendChild(restoreBtn);
+        } else {
+            const archiveBtn = document.createElement('button');
+            archiveBtn.className = 'btn btn-secondary';
+            archiveBtn.textContent = 'Archive';
+            archiveBtn.onclick = async () => {
+                await archiveSubmission(submission.id);
+                detailsModalOverlay.classList.remove('active');
+                loadSubmissions();
+            };
+            detailsModalActions.appendChild(archiveBtn);
+        }
+        
+        const deleteBtn = document.createElement('button');
+        deleteBtn.className = 'btn btn-danger';
+        deleteBtn.textContent = 'Delete';
+        deleteBtn.onclick = async () => {
+            try {
+                await deleteSubmission(submission.id, isViewingArchived);
+                detailsModalOverlay.classList.remove('active');
+                loadSubmissions();
+            } catch (err) {
+                console.log(err.message); // Log cancellation message
+            }
+        };
+        detailsModalActions.appendChild(deleteBtn);
+        
         detailsModalOverlay.classList.add('active');
     }
     

@@ -1,12 +1,22 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+    // Rules for active submissions
     match /submissions/{submissionId} {
       allow create: if true;
+      // Allow authenticated admins to read, update (for archiving), and delete
       allow read, update, delete: if request.auth != null;
     }
+
+    // **NEW** Rules for archived submissions
+    match /archived-submissions/{submissionId} {
+        // Only authenticated admins can interact with the archive
+        allow read, create, update, delete: if request.auth != null;
+    }
+
     match /forms/{formId} {
       allow read: if true;
     }
   }
 }
+

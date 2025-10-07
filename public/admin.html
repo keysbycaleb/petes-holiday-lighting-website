@@ -44,7 +44,7 @@
 
             <div id="dashboardSection" class="admin-container hidden">
                 <div class="dashboard-header">
-                    <h1>Submissions</h1>
+                    <h1 id="dashboard-title">Submissions</h1>
                     <button id="logoutBtn" class="btn btn-secondary">Logout</button>
                 </div>
                 <div class="dashboard-controls">
@@ -53,6 +53,7 @@
                         <input type="text" id="searchInput" placeholder="Search by name, email, phone...">
                     </div>
                     <button id="open-filter-modal-btn" class="btn-filter"><i class="fa-solid fa-filter"></i></button>
+                    <button id="view-archived-btn" class="btn btn-tertiary">View Archived</button>
                     <button id="exportCsvBtn" class="btn btn-primary">Export CSV</button>
                 </div>
                 <div class="table-container">
@@ -72,6 +73,8 @@
             <button class="modal-close-btn">&times;</button>
             <h3>Submission Details</h3>
             <div id="details-modal-content"></div>
+            <div class="modal-actions" id="details-modal-actions">
+                </div>
         </div>
     </div>
     

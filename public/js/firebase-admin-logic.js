@@ -4,15 +4,10 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 const auth = firebase.auth();
 const submissionsCollection = db.collection('submissions');
+const archivedSubmissionsCollection = db.collection('archived-submissions');
 
 // --- ADMIN DASHBOARD FUNCTIONS ---
 
-/**
- * Signs in an admin user with email and password.
- * @param {string} email - The admin's email.
- * @param {string} password - The admin's password.
- * @returns {Promise<firebase.auth.UserCredential>}
- */
 async function loginAdmin(email, password) {
     try {
         const userCredential = await auth.signInWithEmailAndPassword(email, password);
@@ -24,10 +19,6 @@ async function loginAdmin(email, password) {
     }
 }
 
-/**
- * Signs out the currently logged-in admin user.
- * @returns {Promise<void>}
- */
 async function logoutAdmin() {
     try {
         await auth.signOut();
@@ -38,35 +29,49 @@ async function logoutAdmin() {
     }
 }
 
-/**
- * Fetches all documents from the 'submissions' collection, ordered by timestamp.
- * @returns {Promise<Array<object>>} An array of submission objects.
- */
-async function getSubmissions() {
+async function getSubmissions(fromArchive = false) {
+    const collection = fromArchive ? archivedSubmissionsCollection : submissionsCollection;
     try {
-        const snapshot = await submissionsCollection.orderBy('timestamp', 'desc').get();
+        const snapshot = await collection.orderBy('timestamp', 'desc').get();
         if (snapshot.empty) {
-            console.log("No submissions found.");
             return [];
         }
-
-        const submissions = snapshot.docs.map(doc => ({
-            id: doc.id,
-            ...doc.data()
-        }));
-        
-        return submissions;
-
+        return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
     } catch (error) {
         console.error("Error fetching submissions: ", error);
-        throw new Error("Failed to load submissions. You may not have permission to view this data.");
+        throw new Error("Failed to load submissions.");
     }
 }
 
-/**
- * Listens for changes in the authentication state (login/logout).
- * @param {function} callback - A function to call when the auth state changes.
- */
 function onAuthChanged(callback) {
     return auth.onAuthStateChanged(callback);
+}
+
+// **NEW** Functions for Archiving and Deleting
+
+async function archiveSubmission(submissionId) {
+    const docRef = submissionsCollection.doc(submissionId);
+    const doc = await docRef.get();
+    if (!doc.exists) throw new Error("Document to archive not found.");
+    
+    await archivedSubmissionsCollection.doc(submissionId).set(doc.data());
+    await docRef.delete();
+}
+
+async function restoreSubmission(submissionId) {
+    const docRef = archivedSubmissionsCollection.doc(submissionId);
+    const doc = await docRef.get();
+    if (!doc.exists) throw new Error("Document to restore not found.");
+    
+    await submissionsCollection.doc(submissionId).set(doc.data());
+    await docRef.delete();
+}
+
+async function deleteSubmission(submissionId, fromArchive = false) {
+    const collection = fromArchive ? archivedSubmissionsCollection : submissionsCollection;
+    if (confirm('Are you sure you want to permanently delete this submission? This cannot be undone.')) {
+        await collection.doc(submissionId).delete();
+    } else {
+        throw new Error("Deletion cancelled.");
+    }
 }

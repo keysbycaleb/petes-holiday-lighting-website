@@ -83,6 +83,7 @@
     display: flex;
     gap: var(--space-2);
     margin-bottom: var(--space-4);
+    flex-wrap: wrap; /* Allow wrapping on small screens */
 }
 .dashboard-controls .search-input-wrapper {
     position: relative;
@@ -109,17 +110,20 @@
     border-color: var(--secondary-color);
     box-shadow: 0 0 0 3px rgba(184, 140, 86, 0.2);
 }
-.btn-filter {
+.btn-filter, .btn-tertiary {
     flex-shrink: 0;
-    width: 48px;
+    padding: 0 24px;
     height: 48px;
-    padding: 0;
     background-color: var(--card-bg);
     border: 1px solid var(--border-color);
     color: var(--dark-text);
     border-radius: var(--border-radius-small);
-    font-size: 1.1rem;
+    font-size: 1rem;
     cursor: pointer;
+    font-weight: 600;
+}
+.btn-tertiary {
+    background-color: #e9ecef;
 }
 #exportCsvBtn {
     flex-shrink: 0;
@@ -166,7 +170,7 @@ td.actions-cell {
     padding: var(--space-1);
 }
 
-/* **NEW** Apt Suite Warning Icon */
+/* Apt Suite Warning Icon */
 td.indicator-cell {
     width: 30px;
     padding-right: 0;
@@ -204,6 +208,7 @@ td.indicator-cell {
     gap: var(--space-3);
     max-height: 60vh;
     overflow-y: auto;
+    margin-bottom: var(--space-4); /* Space for buttons */
 }
 .detail-item {
     background-color: var(--background-color);
@@ -222,7 +227,26 @@ td.indicator-cell {
     color: var(--dark-text);
 }
 
-/* **NEW** Info Modal */
+/* **NEW** Modal Actions */
+.modal-actions {
+    display: flex;
+    gap: var(--space-2);
+    justify-content: flex-end;
+    padding-top: var(--space-3);
+    border-top: 1px solid var(--border-color);
+}
+.modal-actions .btn {
+    width: auto;
+    padding: var(--space-2) var(--space-3);
+    font-size: 0.9rem;
+}
+.btn-danger {
+    background-color: #dc3545;
+    color: white;
+}
+
+
+/* Info Modal */
 #info-modal-panel {
     max-width: 400px;
     text-align: center;
@@ -307,7 +331,7 @@ td.indicator-cell {
     .dashboard-header h1 { font-size: 2rem; }
     .dashboard-controls { flex-direction: column; }
 
-    /* **NEW** Mobile indicator */
+    /* Mobile indicator */
     .submission-card .apt-indicator {
         position: absolute;
         top: var(--space-2);
