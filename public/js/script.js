@@ -675,10 +675,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         submissionData[key] = value;
                     }
                 }
-
-                if (submissionData['apt-suite'] && submissionData.address) {
-                    submissionData.address = `${submissionData.address}, ${submissionData['apt-suite']}`;
-                }
                 
                 submissionData.formId = "petes-holiday-lighting"; 
 
