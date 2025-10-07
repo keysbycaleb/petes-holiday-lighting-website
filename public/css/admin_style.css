@@ -166,20 +166,38 @@ td.actions-cell {
     padding: var(--space-1);
 }
 
+/* **NEW** Apt Suite Warning Icon */
+td.indicator-cell {
+    width: 30px;
+    padding-right: 0;
+}
+.apt-indicator {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    background-color: #f0ca45;
+    color: white;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 20px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+
 /* --- Modals --- */
-#details-modal-panel, #filter-modal-panel {
+#details-modal-panel, #filter-modal-panel, #info-modal-panel {
     max-width: 600px;
     width: 90%;
     padding: var(--space-4);
 }
-#details-modal-panel h3, #filter-modal-panel h3 {
+#details-modal-panel h3, #filter-modal-panel h3, #info-modal-panel h3 {
     font-family: var(--font-display);
     font-size: 1.8rem;
     margin-bottom: var(--space-3);
     text-align: center;
 }
-
-/* **NEW** Details Modal Grid */
 #details-modal-content {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -202,6 +220,15 @@ td.actions-cell {
 .detail-item span {
     font-size: 1rem;
     color: var(--dark-text);
+}
+
+/* **NEW** Info Modal */
+#info-modal-panel {
+    max-width: 400px;
+    text-align: center;
+}
+#info-modal-panel p {
+    line-height: 1.7;
 }
 
 
@@ -253,6 +280,7 @@ td.actions-cell {
         border-radius: var(--border-radius);
         padding: var(--space-3);
         box-shadow: var(--shadow-md);
+        position: relative;
     }
     .card-header {
         display: flex;
@@ -278,4 +306,14 @@ td.actions-cell {
     }
     .dashboard-header h1 { font-size: 2rem; }
     .dashboard-controls { flex-direction: column; }
+
+    /* **NEW** Mobile indicator */
+    .submission-card .apt-indicator {
+        position: absolute;
+        top: var(--space-2);
+        left: var(--space-2);
+    }
+    .submission-card .card-header {
+        padding-left: 30px; /* Make space for indicator */
+    }
 }

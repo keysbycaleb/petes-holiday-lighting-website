@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const detailsModalOverlay = document.getElementById('details-modal-overlay');
     const detailsModalContent = document.getElementById('details-modal-content');
     const filterModalOverlay = document.getElementById('filter-modal-overlay');
+    const infoModalOverlay = document.getElementById('info-modal-overlay');
     const filterOptionsContainer = document.querySelector('.filter-options-container');
     
     let allSubmissions = [];
@@ -96,6 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     setupModal('details-modal-overlay');
     setupModal('filter-modal-overlay');
+    setupModal('info-modal-overlay');
 
     document.getElementById('apply-filters-btn')?.addEventListener('click', () => {
         applyFiltersAndSearch();
@@ -182,9 +184,9 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Render Table Header
         tableHead.innerHTML = `<tr>
-            <th>Date Submitted</th>
+            <th class="indicator-cell"></th>
             <th>Full Name</th>
-            <th>Full Address</th>
+            <th>Address</th>
             <th>Email</th>
             <th>Phone Number</th>
             <th class="actions-cell"></th>
@@ -192,16 +194,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Render Table Rows and Mobile Cards
         submissions.forEach(sub => {
+            const hasApt = sub['apt-suite'] && sub['apt-suite'].trim() !== '';
+            const indicatorHtml = hasApt ? `<div class="apt-indicator">!</div>` : '';
+            
             const fullName = `${sub['first-name'] || ''} ${sub['last-name'] || ''}`;
-            const fullAddress = sub.address || ''; // This now includes the apt number
-            const date = sub.timestamp?.toDate ? sub.timestamp.toDate().toLocaleDateString() : 'N/A';
+            
+            // **MODIFIED**: Remove the apt/suite from the main address string for the quick view
+            let quickViewAddress = sub.address || '';
+            if (hasApt) {
+                 quickViewAddress = quickViewAddress.replace(`, ${sub['apt-suite']}`, '');
+            }
 
             // Table Row
             const tr = document.createElement('tr');
             tr.innerHTML = `
-                <td>${date}</td>
+                <td class="indicator-cell">${indicatorHtml}</td>
                 <td>${escapeHtml(fullName)}</td>
-                <td>${escapeHtml(fullAddress)}</td>
+                <td>${escapeHtml(quickViewAddress)}</td>
                 <td>${escapeHtml(sub.email || '')}</td>
                 <td>${escapeHtml(sub.phone || '')}</td>
                 <td class="actions-cell">
@@ -214,28 +223,34 @@ document.addEventListener('DOMContentLoaded', () => {
             const card = document.createElement('div');
             card.className = 'submission-card';
             card.innerHTML = `
+                ${indicatorHtml}
                 <div class="card-header">
                     <div>
                         <div class="card-name">${escapeHtml(fullName)}</div>
-                        <div class="card-date">${date}</div>
+                        <div class="card-date">${sub.timestamp?.toDate ? sub.timestamp.toDate().toLocaleDateString() : 'N/A'}</div>
                     </div>
                     <button class="actions-btn" data-id="${sub.id}"><i class="fa-solid fa-ellipsis-v"></i></button>
                 </div>
                 <div class="card-body">
                     <p><i class="fa-solid fa-envelope"></i> ${escapeHtml(sub.email || '')}</p>
                     <p><i class="fa-solid fa-phone"></i> ${escapeHtml(sub.phone || '')}</p>
-                    <p><i class="fa-solid fa-map-marker-alt"></i> ${escapeHtml(fullAddress)}</p>
+                    <p><i class="fa-solid fa-map-marker-alt"></i> ${escapeHtml(quickViewAddress)}</p>
                 </div>
             `;
             mobileContainer.appendChild(card);
         });
 
-        // Add event listeners for the details buttons
+        // Add event listeners for the new buttons
         document.querySelectorAll('.actions-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 const id = e.currentTarget.dataset.id;
                 const submission = allSubmissions.find(s => s.id === id);
                 showDetailsModal(submission);
+            });
+        });
+        document.querySelectorAll('.apt-indicator').forEach(indicator => {
+            indicator.addEventListener('click', () => {
+                infoModalOverlay.classList.add('active');
             });
         });
     }
@@ -253,7 +268,7 @@ document.addEventListener('DOMContentLoaded', () => {
         displayOrder.forEach(key => {
             if (submission.hasOwnProperty(key)) {
                 let value = submission[key];
-                 // Don't show the combined address in details, show the parts
+                 // Clean up the main address if an apt-suite exists to avoid duplication
                 if (key === 'address' && submission['apt-suite']) {
                     value = value.replace(`, ${submission['apt-suite']}`, '');
                 }
