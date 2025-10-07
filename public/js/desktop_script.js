@@ -405,6 +405,13 @@ document.addEventListener('DOMContentLoaded', () => {
         if (form) {
             form.addEventListener('submit', async (e) => {
                 e.preventDefault();
+
+                // **NEW** Address validation
+                const addressValue = document.getElementById('address-storage-desktop').value;
+                if (!addressValue || addressValue.trim() === '') {
+                    alert('Please select a valid address from the dropdown.');
+                    return;
+                }
                 
                 try {
                     const formData = new FormData(form);

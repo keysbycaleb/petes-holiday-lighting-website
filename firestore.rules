@@ -3,17 +3,17 @@ service cloud.firestore {
   match /databases/{database}/documents {
     // Rules for active submissions
     match /submissions/{submissionId} {
-      allow create: if true;
-      // Allow authenticated admins to read, update (for archiving), and delete
-      allow read, update, delete: if request.auth != null;
+      allow create: if true; // Allows the website to create new submissions
+      allow read, update, delete: if request.auth != null; // Allows admins to manage them
     }
 
-    // **NEW** Rules for archived submissions
+    // Rules for archived submissions
     match /archived-submissions/{submissionId} {
-        // Only authenticated admins can interact with the archive
-        allow read, create, update, delete: if request.auth != null;
+      // ONLY authenticated admins can read, create, update, or delete archived items
+      allow read, create, update, delete: if request.auth != null;
     }
 
+    // Rules for the form configuration
     match /forms/{formId} {
       allow read: if true;
     }

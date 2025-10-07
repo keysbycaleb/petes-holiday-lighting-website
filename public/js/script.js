@@ -621,6 +621,13 @@ document.addEventListener('DOMContentLoaded', () => {
     if (contactForm) {
         contactForm.addEventListener('submit', async (e) => {
             e.preventDefault();
+
+            // **NEW** Address validation
+            const addressValue = document.getElementById('address-storage').value;
+            if (!addressValue || addressValue.trim() === '') {
+                alert('Please select a valid address from the dropdown.');
+                return;
+            }
             
             try {
                 const formData = new FormData(contactForm);
@@ -631,7 +638,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 }
 
-                // If there's an apt/suite, append it to the main address.
                 if (submissionData['apt-suite'] && submissionData.address) {
                     submissionData.address = `${submissionData.address}, ${submissionData['apt-suite']}`;
                 }
