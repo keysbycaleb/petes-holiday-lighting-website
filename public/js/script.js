@@ -624,19 +624,18 @@ document.addEventListener('DOMContentLoaded', () => {
             
             try {
                 const formData = new FormData(contactForm);
-                // **UPDATED** Manually handle address fields
                 const submissionData = {};
                 for (const [key, value] of formData.entries()) {
-                    if (key !== 'full-address') { // Exclude the autocomplete input itself
+                    if (key !== 'full-address') {
                         submissionData[key] = value;
                     }
                 }
-                
-                // Combine the apt/suite with the main address
-                if (submissionData['apt-suite']) {
+
+                // If there's an apt/suite, append it to the main address.
+                if (submissionData['apt-suite'] && submissionData.address) {
                     submissionData.address = `${submissionData.address}, ${submissionData['apt-suite']}`;
                 }
-
+                
                 submissionData.formId = "petes-holiday-lighting"; 
 
                 await saveSubmission(submissionData);

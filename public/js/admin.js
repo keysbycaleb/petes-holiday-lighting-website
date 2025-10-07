@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
         city: 'All Cities'
     };
 
-    // --- Authentication Logic ---
+    // --- Authentication ---
     if (loginForm) {
         loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -147,7 +147,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (searchTerm) {
             processedSubmissions = processedSubmissions.filter(sub => {
                 const fullName = `${sub['first-name'] || ''} ${sub['last-name'] || ''}`.toLowerCase();
-                const address = `${sub.street || ''}, ${sub.city || ''}`.toLowerCase();
+                const address = (sub.address || '').toLowerCase(); // Use the full address for searching
                 return (
                     fullName.includes(searchTerm) ||
                     (sub.email || '').toLowerCase().includes(searchTerm) ||
@@ -184,16 +184,16 @@ document.addEventListener('DOMContentLoaded', () => {
         tableHead.innerHTML = `<tr>
             <th>Date Submitted</th>
             <th>Full Name</th>
+            <th>Full Address</th>
             <th>Email</th>
             <th>Phone Number</th>
-            <th>Address</th>
             <th class="actions-cell"></th>
         </tr>`;
 
         // Render Table Rows and Mobile Cards
         submissions.forEach(sub => {
             const fullName = `${sub['first-name'] || ''} ${sub['last-name'] || ''}`;
-            const address = `${sub.street || ''}, ${sub.city || ''}`;
+            const fullAddress = sub.address || ''; // This now includes the apt number
             const date = sub.timestamp?.toDate ? sub.timestamp.toDate().toLocaleDateString() : 'N/A';
 
             // Table Row
@@ -201,9 +201,9 @@ document.addEventListener('DOMContentLoaded', () => {
             tr.innerHTML = `
                 <td>${date}</td>
                 <td>${escapeHtml(fullName)}</td>
+                <td>${escapeHtml(fullAddress)}</td>
                 <td>${escapeHtml(sub.email || '')}</td>
                 <td>${escapeHtml(sub.phone || '')}</td>
-                <td>${escapeHtml(address)}</td>
                 <td class="actions-cell">
                     <button class="actions-btn" data-id="${sub.id}"><i class="fa-solid fa-ellipsis-v"></i></button>
                 </td>
@@ -224,7 +224,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="card-body">
                     <p><i class="fa-solid fa-envelope"></i> ${escapeHtml(sub.email || '')}</p>
                     <p><i class="fa-solid fa-phone"></i> ${escapeHtml(sub.phone || '')}</p>
-                    <p><i class="fa-solid fa-map-marker-alt"></i> ${escapeHtml(address)}</p>
+                    <p><i class="fa-solid fa-map-marker-alt"></i> ${escapeHtml(fullAddress)}</p>
                 </div>
             `;
             mobileContainer.appendChild(card);
@@ -242,22 +242,33 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function showDetailsModal(submission) {
         if (!submission) return;
-        detailsModalContent.innerHTML = Object.entries(submission)
-            .map(([key, value]) => {
-                let displayValue = value;
-                if (key === 'timestamp' && value?.toDate) {
-                    displayValue = value.toDate().toLocaleString();
-                }
-                // Exclude formId from the visible details
-                if (key === 'formId') return '';
+        
+        // Create an ordered object for display
+        const displayOrder = [
+            'first-name', 'last-name', 'email', 'phone', 'address', 'apt-suite', 
+            'city', 'zip', 'referral', 'contact-permission', 'sms-permission', 'id', 'timestamp'
+        ];
 
-                return `
+        let content = '';
+        displayOrder.forEach(key => {
+            if (submission.hasOwnProperty(key)) {
+                let value = submission[key];
+                 // Don't show the combined address in details, show the parts
+                if (key === 'address' && submission['apt-suite']) {
+                    value = value.replace(`, ${submission['apt-suite']}`, '');
+                }
+                if (key === 'timestamp' && value?.toDate) {
+                    value = value.toDate().toLocaleString();
+                }
+                content += `
                     <div class="detail-item">
-                        <strong>${escapeHtml(key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase()))}</strong>
-                        <span>${escapeHtml(String(displayValue))}</span>
+                        <strong>${escapeHtml(key.replace(/-/g, ' ').replace(/^./, str => str.toUpperCase()))}</strong>
+                        <span>${escapeHtml(String(value))}</span>
                     </div>`;
-            })
-            .join('');
+            }
+        });
+
+        detailsModalContent.innerHTML = content;
         detailsModalOverlay.classList.add('active');
     }
     
