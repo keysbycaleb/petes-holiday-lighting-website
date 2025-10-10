@@ -393,6 +393,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // --- Contact Form Logic ---
+    const phoneInputDesktop = document.getElementById('phone-desktop');
     const initContactForm = () => {
         const form = document.getElementById('contact-form');
         const successModal = document.getElementById('form-success-modal-overlay');
@@ -444,6 +445,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     return;
                 }
                 
+                // --- PHONE VALIDATION ---
+                const phoneValue = phoneInputDesktop.value.replace(/\D/g, '');
+                if (phoneValue.length !== 10) {
+                    alert('Please enter a valid 10-digit phone number.');
+                    return;
+                }
+
                 try {
                     const formData = new FormData(form);
                     const submissionData = {};
@@ -480,19 +488,13 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     
     // --- PHONE INPUT MASKING ---
-    const phoneInputDesktop = document.getElementById('phone-desktop');
     if (phoneInputDesktop) {
         phoneInputDesktop.addEventListener('input', (e) => {
-            // Remove all non-digit characters from the input value
             const digits = e.target.value.replace(/\D/g, '');
-    
-            // Don't do anything if there are no digits
             if (!digits.length) {
                 e.target.value = '';
                 return;
             }
-    
-            // Format the phone number as (xxx) xxx-xxxx
             if (digits.length <= 3) {
                 e.target.value = `(${digits}`;
             } else if (digits.length <= 6) {

@@ -615,16 +615,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const phoneInput = document.getElementById('phone');
     if (phoneInput) {
         phoneInput.addEventListener('input', (e) => {
-            // Remove all non-digit characters from the input value
             const digits = e.target.value.replace(/\D/g, '');
-
-            // Don't do anything if there are no digits
             if (!digits.length) {
                 e.target.value = '';
                 return;
             }
-
-            // Format the phone number as (xxx) xxx-xxxx
             if (digits.length <= 3) {
                 e.target.value = `(${digits}`;
             } else if (digits.length <= 6) {
@@ -688,6 +683,13 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!addressValue || addressValue.trim() === '') {
                 addressAlertModalOverlay.classList.add('active');
                 addressAlertModalPanel.classList.add('active');
+                return;
+            }
+
+            // --- PHONE VALIDATION ---
+            const phoneValue = phoneInput.value.replace(/\D/g, '');
+            if (phoneValue.length !== 10) {
+                alert('Please enter a valid 10-digit phone number.');
                 return;
             }
             
