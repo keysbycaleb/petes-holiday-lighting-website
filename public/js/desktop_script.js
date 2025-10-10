@@ -398,6 +398,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const phoneAlertModalPanel = document.getElementById('phone-alert-modal-panel-desktop');
     const phoneAlertCloseBtn = document.getElementById('phone-alert-close-btn-desktop');
     const phoneAlertOkayBtn = document.getElementById('phone-alert-okay-btn-desktop');
+    const emailInputDesktop = document.getElementById('email-desktop');
+    const emailAlertModalOverlay = document.getElementById('email-alert-modal-overlay-desktop');
+    const emailAlertModalPanel = document.getElementById('email-alert-modal-panel-desktop');
+    const emailAlertCloseBtn = document.getElementById('email-alert-close-btn-desktop');
+    const emailAlertOkayBtn = document.getElementById('email-alert-okay-btn-desktop');
 
     const initContactForm = () => {
         const form = document.getElementById('contact-form');
@@ -438,6 +443,11 @@ document.addEventListener('DOMContentLoaded', () => {
             phoneAlertModalOverlay.classList.remove('active');
             phoneAlertModalPanel.classList.remove('active');
         };
+
+        const closeEmailAlertModal = () => {
+            emailAlertModalOverlay.classList.remove('active');
+            emailAlertModalPanel.classList.remove('active');
+        };
         
         phoneAlertCloseBtn.addEventListener('click', closePhoneAlertModal);
         phoneAlertOkayBtn.addEventListener('click', closePhoneAlertModal);
@@ -447,15 +457,35 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
+        emailAlertCloseBtn.addEventListener('click', closeEmailAlertModal);
+        emailAlertOkayBtn.addEventListener('click', closeEmailAlertModal);
+        emailAlertModalOverlay.addEventListener('click', (e) => {
+            if (e.target === emailAlertModalOverlay) {
+                closeEmailAlertModal();
+            }
+        });
+
         const successMessages = [
             { title: "All set!", message: "Your neighbors are about to regret their inflatable snowman." },
             { title: "Message sent!", message: "Elves are already arguing over ladder duty for your display." },
             { title: "Success!", message: "Clark Griswold just called you an inspiration." }
         ];
 
+        function isValidEmail(email) {
+            const regex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+            return regex.test(email);
+        }
+
         if (form) {
             form.addEventListener('submit', async (e) => {
                 e.preventDefault();
+
+                // --- EMAIL VALIDATION ---
+                if (!isValidEmail(emailInputDesktop.value)) {
+                    emailAlertModalOverlay.classList.add('active');
+                    emailAlertModalPanel.classList.add('active');
+                    return;
+                }
 
                 const addressValue = document.getElementById('address-storage-desktop').value;
                 if (!addressValue || addressValue.trim() === '') {

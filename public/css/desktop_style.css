@@ -941,13 +941,15 @@ body {
 /* --- 13. Address & Phone Modals (Desktop) --- */
 #address-alert-modal-overlay-desktop,
 #address-info-modal-overlay-desktop,
-#phone-alert-modal-overlay-desktop {
+#phone-alert-modal-overlay-desktop,
+#email-alert-modal-overlay-desktop {
     z-index: 2500;
 }
 
 #address-alert-modal-panel-desktop,
 #address-info-modal-panel-desktop,
-#phone-alert-modal-panel-desktop {
+#phone-alert-modal-panel-desktop,
+#email-alert-modal-panel-desktop {
     padding: var(--space-5);
     text-align: center;
     width: 100%;
@@ -956,14 +958,16 @@ body {
 
 #address-alert-modal-content-desktop h3,
 #address-info-modal-content-desktop h3,
-#phone-alert-modal-content-desktop h3 {
+#phone-alert-modal-content-desktop h3,
+#email-alert-modal-content-desktop h3 {
     font-family: var(--font-display);
     font-size: 1.8rem;
     margin-bottom: var(--space-3);
 }
 #address-alert-modal-content-desktop p,
 #address-info-modal-content-desktop p,
-#phone-alert-modal-content-desktop p {
+#phone-alert-modal-content-desktop p,
+#email-alert-modal-content-desktop p {
     color: var(--dark-text);
     line-height: 1.7;
     margin-bottom: var(--space-3);
@@ -979,7 +983,8 @@ body {
     font-size: 1rem;
 }
 
-#phone-alert-modal-content-desktop .btn {
+#phone-alert-modal-content-desktop .btn,
+#email-alert-modal-content-desktop .btn {
     width: 100%;
 }
 

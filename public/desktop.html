@@ -200,7 +200,7 @@
                             <div class="form-grid">
                                 <div class="form-group"><label for="first-name-desktop">First Name</label><input type="text" id="first-name-desktop" name="first-name" required></div>
                                 <div class="form-group"><label for="last-name-desktop">Last Name</label><input type="text" id="last-name-desktop" name="last-name" required></div>
-                                <div class="form-group"><label for="email-desktop">Email Address</label><input type="email" id="email-desktop" name="email" required></div>
+                                <div class="form-group"><label for="email-desktop">Email Address</label><input type="email" id="email-desktop" name="email" placeholder="youremail@example.com" required></div>
                                 <div class="form-group"><label for="phone-desktop">Phone Number</label><input type="tel" id="phone-desktop" name="phone" placeholder="( ___ ) ___ - ____" maxlength="14" required></div>
                                 <div class="form-group full-width">
                                     <label for="full-address-desktop">Street Address <button type="button" class="text-btn" id="why-address-btn-desktop">(Why do we need this?)</button></label>
@@ -349,6 +349,17 @@
                 <h3>Incomplete Phone Number</h3>
                 <p>Please enter a valid 10-digit phone number to continue.</p>
                 <button type="button" class="btn btn-primary cta-btn" id="phone-alert-okay-btn-desktop">Okay</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="email-alert-modal-overlay-desktop">
+        <div class="modal-panel" id="email-alert-modal-panel-desktop">
+            <button class="modal-close-btn" id="email-alert-close-btn-desktop">&times;</button>
+            <div id="email-alert-modal-content-desktop">
+                <h3>Invalid Email Address</h3>
+                <p>Please enter a valid email to continue.</p>
+                <button type="button" class="btn btn-primary cta-btn" id="email-alert-okay-btn-desktop">Okay</button>
             </div>
         </div>
     </div>

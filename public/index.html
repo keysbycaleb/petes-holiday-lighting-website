@@ -250,7 +250,7 @@
                         </div>
                         <div class="form-group">
                             <label for="email">Email Address</label>
-                            <input type="email" id="email" name="email" required>
+                            <input type="email" id="email" name="email" placeholder="youremail@example.com" required>
                         </div>
                         <div class="form-group">
                             <label for="phone">Phone Number</label>
@@ -422,6 +422,16 @@
             <h3>Incomplete Phone Number</h3>
             <p>Please enter a valid 10-digit phone number to continue.</p>
             <button type="button" class="btn btn-primary cta-btn" id="phone-alert-okay-btn">Okay</button>
+        </div>
+    </div>
+    
+    <div id="email-alert-modal-overlay"></div>
+    <div id="email-alert-modal-panel">
+        <button class="modal-close-btn" id="email-alert-close-btn">&times;</button>
+        <div id="email-alert-modal-content">
+            <h3>Invalid Email Address</h3>
+            <p>Please enter a valid email to continue.</p>
+            <button type="button" class="btn btn-primary cta-btn" id="email-alert-okay-btn">Okay</button>
         </div>
     </div>
 

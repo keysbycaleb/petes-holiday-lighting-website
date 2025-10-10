@@ -611,11 +611,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const addressInfoModalOverlay = document.getElementById('address-info-modal-overlay');
     const addressInfoModalPanel = document.getElementById('address-info-modal-panel');
     
-    // --- PHONE VALIDATION MODAL ---
+    // --- PHONE & EMAIL VALIDATION MODALS ---
     const phoneAlertModalOverlay = document.getElementById('phone-alert-modal-overlay');
     const phoneAlertModalPanel = document.getElementById('phone-alert-modal-panel');
     const phoneAlertCloseBtn = document.getElementById('phone-alert-close-btn');
     const phoneAlertOkayBtn = document.getElementById('phone-alert-okay-btn');
+    const emailAlertModalOverlay = document.getElementById('email-alert-modal-overlay');
+    const emailAlertModalPanel = document.getElementById('email-alert-modal-panel');
+    const emailAlertCloseBtn = document.getElementById('email-alert-close-btn');
+    const emailAlertOkayBtn = document.getElementById('email-alert-okay-btn');
+    const emailInput = document.getElementById('email');
 
     // --- PHONE INPUT MASKING ---
     const phoneInput = document.getElementById('phone');
@@ -657,6 +662,11 @@ document.addEventListener('DOMContentLoaded', () => {
         phoneAlertModalOverlay.classList.remove('active');
         phoneAlertModalPanel.classList.remove('active');
     };
+
+    const closeEmailAlertModal = () => {
+        emailAlertModalOverlay.classList.remove('active');
+        emailAlertModalPanel.classList.remove('active');
+    };
     
     document.getElementById('why-address-btn').addEventListener('click', openAddressInfoModal);
     document.getElementById('address-alert-why-btn').addEventListener('click', openAddressInfoModal);
@@ -681,6 +691,14 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    emailAlertCloseBtn.addEventListener('click', closeEmailAlertModal);
+    emailAlertOkayBtn.addEventListener('click', closeEmailAlertModal);
+    emailAlertModalOverlay.addEventListener('click', (e) => {
+        if (e.target === emailAlertModalOverlay) {
+            closeEmailAlertModal();
+        }
+    });
+
     const successMessages = [
         { title: "All set!", message: "Your neighbors are about to regret their inflatable snowman." },
         { title: "Message sent!", message: "Elves are already arguing over ladder duty for your display." },
@@ -694,9 +712,21 @@ document.addEventListener('DOMContentLoaded', () => {
         { title: "Success!", message: "Clark Griswold just called you an inspiration." }
     ];
 
+    function isValidEmail(email) {
+        const regex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+        return regex.test(email);
+    }
+
     if (contactForm) {
         contactForm.addEventListener('submit', async (e) => {
             e.preventDefault();
+
+            // --- EMAIL VALIDATION ---
+            if (!isValidEmail(emailInput.value)) {
+                emailAlertModalOverlay.classList.add('active');
+                emailAlertModalPanel.classList.add('active');
+                return;
+            }
 
             const addressValue = document.getElementById('address-storage').value;
             if (!addressValue || addressValue.trim() === '') {

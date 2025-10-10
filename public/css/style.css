@@ -1181,7 +1181,8 @@ html, body {
 /* --- 16. Address & Phone Modals --- */
 #address-alert-modal-overlay,
 #address-info-modal-overlay,
-#phone-alert-modal-overlay {
+#phone-alert-modal-overlay,
+#email-alert-modal-overlay {
     position: fixed; inset: 0; background-color: rgba(10, 10, 10, 0.5); 
     backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
     z-index: 4500; 
@@ -1190,11 +1191,13 @@ html, body {
 }
 #address-alert-modal-overlay.active,
 #address-info-modal-overlay.active,
-#phone-alert-modal-overlay.active { opacity: 1; visibility: visible; }
+#phone-alert-modal-overlay.active,
+#email-alert-modal-overlay.active { opacity: 1; visibility: visible; }
 
 #address-alert-modal-panel,
 #address-info-modal-panel,
-#phone-alert-modal-panel {
+#phone-alert-modal-panel,
+#email-alert-modal-panel {
     position: fixed; 
     top: 50%; left: 50%; 
     transform: translate(-50%, -50%) scale(0.95); 
@@ -1210,7 +1213,8 @@ html, body {
 }
 #address-alert-modal-panel.active,
 #address-info-modal-panel.active,
-#phone-alert-modal-panel.active { 
+#phone-alert-modal-panel.active,
+#email-alert-modal-panel.active { 
     opacity: 1; visibility: visible; 
     transform: translate(-50%, -50%) scale(1); 
 }
@@ -1232,14 +1236,16 @@ html, body {
 
 #address-alert-modal-content h3,
 #address-info-modal-content h3,
-#phone-alert-modal-content h3 {
+#phone-alert-modal-content h3,
+#email-alert-modal-content h3 {
     font-family: var(--font-display);
     font-size: 1.5rem;
     margin-bottom: var(--space-2);
 }
 #address-alert-modal-content p,
 #address-info-modal-content p,
-#phone-alert-modal-content p {
+#phone-alert-modal-content p,
+#email-alert-modal-content p {
     color: var(--dark-text);
     line-height: 1.6;
     margin-bottom: var(--space-3);
@@ -1255,7 +1261,8 @@ html, body {
     font-size: 1rem;
 }
 
-#phone-alert-modal-content .btn {
+#phone-alert-modal-content .btn,
+#email-alert-modal-content .btn {
     width: 100%;
 }
 
