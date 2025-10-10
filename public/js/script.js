@@ -615,23 +615,23 @@ document.addEventListener('DOMContentLoaded', () => {
     const phoneInput = document.getElementById('phone');
     if (phoneInput) {
         phoneInput.addEventListener('input', (e) => {
-            let input = e.target.value.replace(/\D/g, ''); // Remove all non-digit characters
-            if (input.length > 10) {
-                input = input.substring(0, 10);
+            // Remove all non-digit characters from the input value
+            const digits = e.target.value.replace(/\D/g, '');
+
+            // Don't do anything if there are no digits
+            if (!digits.length) {
+                e.target.value = '';
+                return;
             }
-            
-            let formattedInput = '';
-            if (input.length > 0) {
-                formattedInput = '(' + input.substring(0, 3);
+
+            // Format the phone number as (xxx) xxx-xxxx
+            if (digits.length <= 3) {
+                e.target.value = `(${digits}`;
+            } else if (digits.length <= 6) {
+                e.target.value = `(${digits.slice(0, 3)}) ${digits.slice(3)}`;
+            } else {
+                e.target.value = `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6, 10)}`;
             }
-            if (input.length > 3) {
-                formattedInput += ') ' + input.substring(3, 6);
-            }
-            if (input.length > 6) {
-                formattedInput += ' - ' + input.substring(6, 10);
-            }
-            
-            e.target.value = formattedInput;
         });
     }
 
