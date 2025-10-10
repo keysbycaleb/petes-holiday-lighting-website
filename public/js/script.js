@@ -610,6 +610,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const addressAlertModalPanel = document.getElementById('address-alert-modal-panel');
     const addressInfoModalOverlay = document.getElementById('address-info-modal-overlay');
     const addressInfoModalPanel = document.getElementById('address-info-modal-panel');
+    
+    // --- PHONE VALIDATION MODAL ---
+    const phoneAlertModalOverlay = document.getElementById('phone-alert-modal-overlay');
+    const phoneAlertModalPanel = document.getElementById('phone-alert-modal-panel');
+    const phoneAlertCloseBtn = document.getElementById('phone-alert-close-btn');
+    const phoneAlertOkayBtn = document.getElementById('phone-alert-okay-btn');
 
     // --- PHONE INPUT MASKING ---
     const phoneInput = document.getElementById('phone');
@@ -647,6 +653,11 @@ document.addEventListener('DOMContentLoaded', () => {
         addressInfoModalPanel.classList.remove('active');
     };
     
+    const closePhoneAlertModal = () => {
+        phoneAlertModalOverlay.classList.remove('active');
+        phoneAlertModalPanel.classList.remove('active');
+    };
+    
     document.getElementById('why-address-btn').addEventListener('click', openAddressInfoModal);
     document.getElementById('address-alert-why-btn').addEventListener('click', openAddressInfoModal);
     
@@ -659,6 +670,14 @@ document.addEventListener('DOMContentLoaded', () => {
     addressInfoModalOverlay.addEventListener('click', (e) => {
         if (e.target === addressInfoModalOverlay || e.target.closest('#address-info-close-btn')) {
             closeAddressInfoModal();
+        }
+    });
+
+    phoneAlertCloseBtn.addEventListener('click', closePhoneAlertModal);
+    phoneAlertOkayBtn.addEventListener('click', closePhoneAlertModal);
+    phoneAlertModalOverlay.addEventListener('click', (e) => {
+        if (e.target === phoneAlertModalOverlay) {
+            closePhoneAlertModal();
         }
     });
 
@@ -689,7 +708,8 @@ document.addEventListener('DOMContentLoaded', () => {
             // --- PHONE VALIDATION ---
             const phoneValue = phoneInput.value.replace(/\D/g, '');
             if (phoneValue.length !== 10) {
-                alert('Please enter a valid 10-digit phone number.');
+                phoneAlertModalOverlay.classList.add('active');
+                phoneAlertModalPanel.classList.add('active');
                 return;
             }
             

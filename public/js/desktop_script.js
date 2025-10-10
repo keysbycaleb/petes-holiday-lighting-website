@@ -394,6 +394,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Contact Form Logic ---
     const phoneInputDesktop = document.getElementById('phone-desktop');
+    const phoneAlertModalOverlay = document.getElementById('phone-alert-modal-overlay-desktop');
+    const phoneAlertModalPanel = document.getElementById('phone-alert-modal-panel-desktop');
+    const phoneAlertCloseBtn = document.getElementById('phone-alert-close-btn-desktop');
+    const phoneAlertOkayBtn = document.getElementById('phone-alert-okay-btn-desktop');
+
     const initContactForm = () => {
         const form = document.getElementById('contact-form');
         const successModal = document.getElementById('form-success-modal-overlay');
@@ -428,6 +433,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 closeAddressInfoModal();
             }
         });
+        
+        const closePhoneAlertModal = () => {
+            phoneAlertModalOverlay.classList.remove('active');
+            phoneAlertModalPanel.classList.remove('active');
+        };
+        
+        phoneAlertCloseBtn.addEventListener('click', closePhoneAlertModal);
+        phoneAlertOkayBtn.addEventListener('click', closePhoneAlertModal);
+        phoneAlertModalOverlay.addEventListener('click', (e) => {
+            if (e.target === phoneAlertModalOverlay) {
+                closePhoneAlertModal();
+            }
+        });
 
         const successMessages = [
             { title: "All set!", message: "Your neighbors are about to regret their inflatable snowman." },
@@ -448,7 +466,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 // --- PHONE VALIDATION ---
                 const phoneValue = phoneInputDesktop.value.replace(/\D/g, '');
                 if (phoneValue.length !== 10) {
-                    alert('Please enter a valid 10-digit phone number.');
+                    phoneAlertModalOverlay.classList.add('active');
+                    phoneAlertModalPanel.classList.add('active');
                     return;
                 }
 
