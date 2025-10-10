@@ -611,6 +611,30 @@ document.addEventListener('DOMContentLoaded', () => {
     const addressInfoModalOverlay = document.getElementById('address-info-modal-overlay');
     const addressInfoModalPanel = document.getElementById('address-info-modal-panel');
 
+    // --- PHONE INPUT MASKING ---
+    const phoneInput = document.getElementById('phone');
+    if (phoneInput) {
+        phoneInput.addEventListener('input', (e) => {
+            let input = e.target.value.replace(/\D/g, ''); // Remove all non-digit characters
+            if (input.length > 10) {
+                input = input.substring(0, 10);
+            }
+            
+            let formattedInput = '';
+            if (input.length > 0) {
+                formattedInput = '(' + input.substring(0, 3);
+            }
+            if (input.length > 3) {
+                formattedInput += ') ' + input.substring(3, 6);
+            }
+            if (input.length > 6) {
+                formattedInput += ' - ' + input.substring(6, 10);
+            }
+            
+            e.target.value = formattedInput;
+        });
+    }
+
     const openAddressInfoModal = () => {
         addressAlertModalOverlay.classList.remove('active');
         addressAlertModalPanel.classList.remove('active');

@@ -478,6 +478,30 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     };
+    
+    // --- PHONE INPUT MASKING ---
+    const phoneInputDesktop = document.getElementById('phone-desktop');
+    if (phoneInputDesktop) {
+        phoneInputDesktop.addEventListener('input', (e) => {
+            let input = e.target.value.replace(/\D/g, ''); // Remove all non-digit characters
+            if (input.length > 10) {
+                input = input.substring(0, 10);
+            }
+
+            let formattedInput = '';
+            if (input.length > 0) {
+                formattedInput = '(' + input.substring(0, 3);
+            }
+            if (input.length > 3) {
+                formattedInput += ') ' + input.substring(3, 6);
+            }
+            if (input.length > 6) {
+                formattedInput += ' - ' + input.substring(6, 10);
+            }
+            
+            e.target.value = formattedInput;
+        });
+    }
 
     // --- App Initialization ---
     const initApp = () => {
